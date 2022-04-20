@@ -7,9 +7,12 @@ import cookieParser from "cookie-parser"
 import "dotenv/config"
 
 // modules
-// import boardRouter from './routers/boardRouter';
+import usersRouter from './routes/usersRouter';
+import partiesRouter from './routes/partiesRouter';
 
-const PORT = 4000
+
+const PORT = 4000;
+
 
 const app = express()
 const logger = morgan("dev")
@@ -46,4 +49,5 @@ app.get("/", (req, res) => {
 })
 
 // 라우터 연결
-// app.use('/', globalRouter);
+app.use('/users', usersRouter);
+app.use('/parties', partiesRouter);
