@@ -7,14 +7,14 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "writeUser_id",
       //   targetKey: "id",
       // });
-      // models.parties.hasMany(models.user_parties, {
-      //   foreignKey: "parties_id",
-      //   sourceKey: "id",
-      // });
-      models.parties.belongsToMany(models.users, {
-        through: "users_parties",
+      models.parties.hasMany(models.users_parties, {
         foreignKey: "parties_id",
+        sourceKey: "id",
       });
+      // models.parties.belongsToMany(models.users, {
+      //   through: "users_parties",
+      //   foreignKey: "parties_id",
+      // });
     }
   }
   parties.init(
@@ -31,6 +31,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: false,
       },
+      lat: DataTypes.STRING,
+      lng: DataTypes.STRING,
     },
     {
       sequelize,

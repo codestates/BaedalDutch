@@ -20,6 +20,8 @@ module.exports = {
           closed: false,
           createdAt,
           updatedAt,
+          lat: "1",
+          lng: "2",
         },
         {
           id: 2,
@@ -33,6 +35,8 @@ module.exports = {
           closed: false,
           createdAt,
           updatedAt,
+          lat: "1",
+          lng: "2",
         },
       ],
       {}

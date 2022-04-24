@@ -35,7 +35,7 @@ app.use("/users", usersRouter);
 app.use("/parties", partiesRouter);
 
 const PORT = 4000;
-
-let server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
+let server = http.createServer(app);
+server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 
 module.exports = server;
