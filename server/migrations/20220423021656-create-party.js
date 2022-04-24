@@ -40,6 +40,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      lat: {
+        type: Sequelize.STRING,
+      },
+      lng: {
+        type: Sequelize.STRING,
+      },
     });
   },
   async down(queryInterface, Sequelize) {

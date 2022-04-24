@@ -1,15 +1,98 @@
-const { user } = require("../models");
+const { users } = require("../models");
+const {
+  generateAccessToken,
+  sendAccessToken,
+  isAuthorized,
+} = require("../controllers/tokenfunctions");
 
 module.exports = {
   signup: async (req, res) => {
-    res.end();
+    const { email, password, nickname, phone_number, image } = req.body;
+
+    if (!email || !password || !nickname || !phone_number || !image) {
+      return res.status(404).send("Bad request sign up");
+    }
+
+    const checkEmail = await users.findOne({
+      where: { email: email },
+    });
+
+    const checkNickname = await users.findOne({
+      where: { nickname: nickname },
+    });
+
+    if (checkEmail) {
+      return res.status(409).send("email already exists sign up");
+    }
+
+    if (checkNickname) {
+      return res.status(409).send("nickname already exists sign up");
+    }
+
+    const [data, created] = await users.findOrCreate({
+      where: {
+        email: email,
+        password: password,
+        nickname: nickname,
+        phone_number: phone_number,
+        image: image,
+      },
+    });
+
+    if (!created) {
+      return res.status(409).send("already exists sign up");
+    }
+
+    try {
+      const accessToken = generateAccessToken(data.dataValues);
+      sendAccessToken(res, accessToken).json({
+        data: data.dataValues.email,
+        message: "created your id!!",
+      });
+    } catch (err) {
+      return res.status(500).send("Server Error sign up");
+    }
   },
+
   signin: async (req, res) => {
-    res.end();
+    const { email, password } = req.body;
+
+    const userInfo = await users.findOne({ where: { email: email, password: password } });
+    console.log("userInfo:", userInfo);
+
+    if (!userInfo) {
+      console.log("check");
+      return res.status(404).send("bad request sign in");
+    } else {
+      try {
+        console.log("try 들어왔나요");
+        console.log("userInfo.dataValues:", userInfo.dataValues);
+        const accessToken = generateAccessToken(userInfo.dataValues);
+        console.log("accessToken:", accessToken);
+        sendAccessToken(res, accessToken);
+        // res.status(200).json({
+        //   data: userInfo.dataValues.email,
+        //   message: "success sign in",
+        // });
+      } catch (err) {
+        return res.status(500).send("Server Error sign in");
+      }
+    }
   },
+
   signout: async (req, res) => {
-    res.end();
+    const userInfo = isAuthorized(req);
+    try {
+      if (!userInfo) {
+        return res.status(404).send("bad request sign out");
+      } else {
+        sendAccessToken.send("success sign out");
+      }
+    } catch (err) {
+      return res.status(500).send("Server Error sign out");
+    }
   },
+
   delUser: async (req, res) => {
     res.end();
   },

@@ -7,14 +7,14 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "writeUser_id",
       //   sourceKey: "id",
       // });
-      // models.users.hasMany(models.users_party, {
-      //   foreignKey: "user_id",
-      //   sourceKey: "id",
-      // });
-      models.users.belongsToMany(models.parties, {
-        through: "users_parties",
+      models.users.hasMany(models.users_parties, {
         foreignKey: "users_id",
+        sourceKey: "id",
       });
+      // models.users.belongsToMany(models.parties, {
+      //   through: "users_parties",
+      //   foreignKey: "users_id",
+      // });
     }
   }
   users.init(
