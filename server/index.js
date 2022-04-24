@@ -30,7 +30,7 @@ app.use(
 );
 
 app.use(cookieParser());
-app.get("/", (req, res) => res.send("hellooooo world"));
+app.get("/", (req, res) => res.send("helloooooajashdfjkhjaskdhlksd world"));
 app.use("/users", usersRouter);
 app.use("/parties", partiesRouter);
 
