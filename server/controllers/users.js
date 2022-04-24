@@ -64,7 +64,6 @@ module.exports = {
         return res.status(500).send('Server Error sign in')
       }
     }
-   
   },
 
   signout: async (req, res) => {
