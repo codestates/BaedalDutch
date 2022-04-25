@@ -14,6 +14,6 @@ export const loginSlice = createSlice({
   },
 });
 
-export const { showModalAction } = loginSlice.actions;
+export const { isLoginAction } = loginSlice.actions;
 
 export default loginSlice.reducer;

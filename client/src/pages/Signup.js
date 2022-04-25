@@ -1,8 +1,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Container, ErrorMessage, Form, Input, Label } from '../styled/signup';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { isLoginAction } from '../store/login';
 
 const Signup = () => {
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -15,6 +20,26 @@ const Signup = () => {
   const onSubmit = () => {
     const { nickname, email, password } = getValues();
     console.log(nickname, email, password);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/users/signup`,
+        {
+          email,
+          password,
+          nickname,
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        },
+      )
+      .then((res) => {
+        if (res.accessToken) {
+          dispatch(isLoginAction(true));
+        }
+
+        return;
+      });
   };
 
   const nickPattern = {
@@ -30,6 +55,10 @@ const Signup = () => {
     value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
     message: '8자이상 / 영문 / 숫자 / 특수문자를 조합해주세요',
   };
+  const phonePattern = {
+    value: /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/,
+    message: '휴대전화 번호를 입력해 주세요',
+  };
 
   return (
     <Container>
@@ -41,9 +70,9 @@ const Signup = () => {
             required: '닉네임을 꼭 입력해 주세요',
             pattern: nickPattern,
             minLength: { value: 2, message: '최소 2 글자 이상을 입력해 주세요' },
-            maxLength: { value: 8, message: '최대 8 글자 이하로 입력해 주세요' },
+            maxLength: { value: 9, message: '최대 9 글자 이하로 입력해 주세요' },
           })}
-          placeholder="2~8글자"
+          placeholder="2~9글자"
           id="nickname"
         ></Input>
         <ErrorMessage>{errors.nickname?.message}</ErrorMessage>
@@ -54,7 +83,7 @@ const Signup = () => {
             required: '이메일을 꼭 입력해 주세요',
             pattern: emailPattern,
           })}
-          placeholder="이메일을 입력하세요"
+          placeholder="주로 사용하시는 이메일을 입력해주세요"
           id="email"
         ></Input>
         <ErrorMessage>{errors.email?.message}</ErrorMessage>
@@ -85,6 +114,17 @@ const Signup = () => {
           id="passwordCheck"
         ></Input>
         <ErrorMessage>{errors.passwordCheck?.message}</ErrorMessage>
+        <Label for="phoneCheck">휴대전화</Label>
+        <Input
+          error={errors.phoneCheck?.message}
+          {...register('phoneCheck', {
+            required: '휴대전화 번호를 입력해 주세요',
+            pattern: phonePattern,
+          })}
+          placeholder="휴대전화 번호를 입력하세요"
+          id="phoneCheck"
+        ></Input>
+        <ErrorMessage>{errors.phoneCheck?.message}</ErrorMessage>
         <Button type="submit">가입신청</Button>
       </Form>
     </Container>
