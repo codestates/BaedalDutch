@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 import { isLoginAction } from '../store/login';
+import { useSelector } from 'react-redux';
 
 // import { postSignIn } from "../../Api";
 // import { useNavigate } from "react-router-dom";
@@ -54,7 +55,12 @@ const AlertBox = styled.div`
 `;
 
 function Signin() {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+
+  const isLogin = useSelector((state) => state.login.isLogin);
+
   const [loginInfo, setLoginInfo] = useState({
     email: '',
     password: '',
@@ -79,8 +85,11 @@ function Signin() {
       )
       .then((response) => {
         console.log('login res::', response);
-        if (response.accessToken) {
-          // localStorage.setItem('user', JSON.stringify(response));
+        if (response.data.accessToken) {
+          console.log('135', isLogin);
+          dispatch(isLoginAction(true));
+          dispatch(showModalAction(false));
+          navigate('/main');
         }
 
         return response.data;
@@ -97,9 +106,9 @@ function Signin() {
     try {
       await login(email, password).then(
         () => {
-          dispatch(isLoginAction(true));
-          // setShowModal(false);
-          navigate('/main');
+          // dispatch(isLoginAction(true));
+          // dispatch(showModalAction(false));
+          // navigate('/main');
         },
         (error) => {
           console.log(error);
@@ -111,7 +120,6 @@ function Signin() {
   };
 
   // const showModal = useSelector((state) => state.modal.showModal);
-  const dispatch = useDispatch();
 
   return (
     <>

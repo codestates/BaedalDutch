@@ -52,6 +52,7 @@ const Menu = styled.button`
 const Navbar = () => {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
+  console.log('로그인체크', isLogin);
 
   return (
     <Nav>
