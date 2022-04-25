@@ -145,7 +145,7 @@ module.exports = {
             { model: parties }
           ],
           where: { id: userInfo.id }
-         })        
+        })        
         console.log('userParty:', userParty)
         return res.statsu(200).json({ data: userParty })
       }
