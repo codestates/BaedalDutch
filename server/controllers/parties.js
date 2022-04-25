@@ -27,11 +27,11 @@ module.exports = {
   // 파티 하나 조회 ( 미완성 )
   getOneParty: async (req, res) => {
     console.log("getOneParty 진입");
-    // 1. closed가 false인 파티만 찾는다.
-    console.log("req.params.id:", req.parmas.id);
+    // 1. req.params.id와 일치하는 파티 하나를 찾는다. (+closed)
+    console.log("req.params.id:", req.params.id);
     const oneParty = await parties.findOne({
       where: {
-        id: req.parmas.id,
+        id: req.params.id,
         closed: false,
       },
     });
@@ -87,13 +87,13 @@ module.exports = {
         .then((data) => {
           users_parties.create({
             users_id: userInfo.id,
-            parties_id: data.id,
+            parties_id: data.dataValues.id,
           });
         });
 
       res.status(201).json({
         // data: store_name (로직 성공확인되면 이걸로 바꾸기)
-        data: partyInfo,
+        data: data.dataValues,
         message: "create party post parties",
       });
     } catch (err) {
@@ -116,7 +116,7 @@ module.exports = {
       });
     }
     try {
-      // 3. req.parmas.id DB에서 확인하고 삭제
+      // 3. req.params.id DB에서 확인하고 삭제
       console.log("req.params.id", req.params.id);
       const doDeleteParty = await parties.destroy({
         where: {
@@ -146,41 +146,38 @@ module.exports = {
       });
     }
     // 3. req.body가 제대로 들어왔는지 확인
-    const { store_name, food_category, content, fee, address } = req.body;
+    const { store_name, food_category, member_num, content, fee, address } = req.body;
     console.log("req.body:", req.body);
     try {
       console.log("req.params.id:", req.params.id);
-      const partyInfo = await parties
-        .update(
-          // 1_ update할 칼럼의 정보
-          {
-            writerUser_id: userInfo.id,
-            store_name: store_name,
-            food_category: food_category,
-            content: content,
-            fee: fee,
-            address: address,
-            closed: false,
+      // 1_ update할 칼럼의 정보
+      const partyInfo = await parties.update(
+        {
+          store_name: store_name,
+          food_category: food_category,
+          member_num: member_num,
+          content: content,
+          fee: fee,
+          address: address,
+        },
+        // where절
+        {
+          where: {
+            id: req.params.id,
           },
-          // where절
-          {
-            where: {
-              id: req.params.id,
-            },
-          }
-        )
-        .then(() => {
-          if (!isParty) {
-            res.status(404).json({
-              message: "Bad request update parties",
-            });
-          } else {
-            res.status(200).json({
-              data: partyInfo,
-              message: "success update parties update parties",
-            });
-          }
+        }
+      );
+      console.log("partyInfo", partyInfo);
+      if (!partyInfo) {
+        res.status(404).json({
+          message: "Bad request update parties",
         });
+      } else {
+        res.status(200).json({
+          data: partyInfo,
+          message: "success update parties update parties",
+        });
+      }
     } catch (err) {
       res.status(500).json({
         message: "Server Error update parties",
@@ -202,31 +199,27 @@ module.exports = {
     }
     try {
       console.log("req.params.id:", req.params.id);
-      const partyInfo = await parties
-        .update(
-          // 1_ update할 칼럼의 정보 ( closed only!!!! )
-          {
-            closed: true,
+      const partyInfo = await parties.update(
+        // 1_ update할 칼럼의 정보 ( closed only!!!! )
+        {
+          closed: true,
+        },
+        // where절
+        {
+          where: {
+            id: req.params.id,
           },
-          // where절
-          {
-            where: {
-              id: req.params.id,
-            },
-          }
-        )
-        .then(() => {
-          if (!isParty) {
-            res.status(404).json({
-              message: "Bad request close parties",
-            });
-          } else {
-            res.status(200).json({
-              data: partyInfo,
-              message: "success close parties",
-            });
-          }
+        }
+      );
+      if (!partyInfo) {
+        res.status(404).json({
+          message: "Bad request close parties",
         });
+      } else {
+        res.status(200).json({
+          message: "success close parties",
+        });
+      }
     } catch (err) {
       res.status(500).json({
         message: "Server Error close parties",

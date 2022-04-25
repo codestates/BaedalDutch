@@ -3,10 +3,10 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class parties extends Model {
     static associate(models) {
-      // models.parties.belongsTo(models.users, {
-      //   foreignKey: "writeUser_id",
-      //   targetKey: "id",
-      // });
+      models.parties.belongsTo(models.users, {
+        foreignKey: "writeUser_id",
+        targetKey: "id",
+      });
       models.parties.hasMany(models.users_parties, {
         foreignKey: "parties_id",
         sourceKey: "id",

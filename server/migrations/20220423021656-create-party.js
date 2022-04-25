@@ -40,6 +40,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+
       lat: {
         type: Sequelize.STRING,
       },

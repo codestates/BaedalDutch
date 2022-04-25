@@ -9,11 +9,9 @@ module.exports = {
     return res
       .status(200)
       .cookie("jwt", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
-      .json({ accessToken, message: "ok" });
   },
 
   isAuthorized: (req) => {
-    console.log("req.headers:", req.headers);
     let authorization = req.headers.authorization;
     if (!authorization) {
       return null;
