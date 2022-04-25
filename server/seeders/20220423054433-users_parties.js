@@ -1,6 +1,7 @@
 "use strict";
 
 const createdAt = new Date();
+const updatedAt = new Date();
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,11 +12,13 @@ module.exports = {
           users_id: 1,
           parties_id: 1,
           createdAt,
+          updatedAt,
         },
         {
           users_id: 2,
           parties_id: 2,
           createdAt,
+          updatedAt,
         },
       ],
       {}
