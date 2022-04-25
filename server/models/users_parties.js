@@ -8,13 +8,17 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      models.users.belongsToMany(models.parties, {
+        through: "user_party",
+        foreignKey: "user_id",
+      });
     }
   }
   users_parties.init(
     {
       users_id: DataTypes.INTEGER,
       parties_id: DataTypes.INTEGER,
+      updatedAt: DataTypes.DATE
     },
     {
       sequelize,

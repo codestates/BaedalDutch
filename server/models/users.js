@@ -3,12 +3,12 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
     static associate(models) {
-      // models.users.hasMany(models.parties, {
-      //   foreignKey: "writeUser_id",
-      //   sourceKey: "id",
-      // });
+      models.users.hasMany(models.parties, {
+        foreignKey: "writeUser_id",
+        sourceKey: "id",
+      });
       models.users.hasMany(models.users_parties, {
-        foreignKey: "users_id",
+        foreignKey: "writeUser_id",
         sourceKey: "id",
       });
       // models.users.belongsToMany(models.parties, {

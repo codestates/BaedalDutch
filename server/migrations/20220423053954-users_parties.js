@@ -1,18 +1,15 @@
 "use strict";
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("users_parties", {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
       users_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
       },
       parties_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
       },
       createdAt: {
         allowNull: false,
@@ -24,6 +21,7 @@ module.exports = {
       },
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("users_parties");
   },
