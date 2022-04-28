@@ -2,11 +2,10 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Container, ErrorMessage, Form, Input, Label } from '../styled/signup';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { isLoginAction } from '../store/login';
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -16,10 +15,10 @@ const Signup = () => {
   } = useForm({
     mode: 'onChange',
   });
-
+  
   const onSubmit = () => {
-    const { nickname, email, password } = getValues();
-    console.log(nickname, email, password);
+    const { nickname, email, password, phone_number, image } = getValues();
+    console.log(nickname, email, password, phone_number, image);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/users/signup`,
@@ -27,18 +26,15 @@ const Signup = () => {
           email,
           password,
           nickname,
+          phone_number,
+          image
         },
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         },
-      )
-      .then((res) => {
-        if (res.accessToken) {
-          dispatch(isLoginAction(true));
-        }
-
-        return;
+      ).then((res) => {
+        navigate('/')
       });
   };
 
@@ -114,15 +110,25 @@ const Signup = () => {
           id="passwordCheck"
         ></Input>
         <ErrorMessage>{errors.passwordCheck?.message}</ErrorMessage>
-        <Label for="phoneCheck">휴대전화</Label>
+        <Label for="phone_number">휴대전화</Label>
         <Input
           error={errors.phoneCheck?.message}
-          {...register('phoneCheck', {
+          {...register('phone_number', {
             required: '휴대전화 번호를 입력해 주세요',
             pattern: phonePattern,
           })}
           placeholder="휴대전화 번호를 입력하세요"
-          id="phoneCheck"
+          id="phone_number"
+        ></Input>
+        <ErrorMessage>{errors.phoneCheck?.message}</ErrorMessage>
+        <Label for="image">image</Label>
+        <Input
+          error={errors.phoneCheck?.message}
+          {...register('image', {
+            required: '휴대전화 번호를 입력해 주세요',
+          })}
+          placeholder="휴대전화 번호를 입력하세요"
+          id="image"
         ></Input>
         <ErrorMessage>{errors.phoneCheck?.message}</ErrorMessage>
         <Button type="submit">가입신청</Button>

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
-import { isLoginAction } from '../store/login';
 
 // import { postSignIn } from "../../Api";
-// import { useNavigate } from "react-router-dom";
+// import { usegate } from "react-rNaviouter-dom";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,7 +53,7 @@ const AlertBox = styled.div`
 `;
 
 function Signin() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [loginInfo, setLoginInfo] = useState({
     email: '',
     password: '',
@@ -80,9 +79,8 @@ function Signin() {
       .then((response) => {
         console.log('login res::', response);
         if (response.accessToken) {
-          // localStorage.setItem('user', JSON.stringify(response));
+          localStorage.setItem('user', JSON.stringify(response));
         }
-
         return response.data;
       });
   };
@@ -97,20 +95,30 @@ function Signin() {
     try {
       await login(email, password).then(
         () => {
-          dispatch(isLoginAction(true));
+          sessionStorage.setItem('isLogin', 'true');
           // setShowModal(false);
-          navigate('/main');
+          window.location.reload();
         },
         (error) => {
           console.log(error);
         },
-      );
+      )
+      navigator('/')
     } catch (err) {
       console.log(err);
     }
   };
 
-  // const showModal = useSelector((state) => state.modal.showModal);
+  // let data = await postSignIn({ email, password });
+
+  // if (data) {
+  //   console.log("user info data: ", data);
+  //   sessionStorage.setItem("isLogin", "true");
+  // sessionStorage.setItem("userInfo", data.data)
+  //   setShowModal(false);
+  // }
+
+  const showModal = useSelector((state) => state.modal.showModal);
   const dispatch = useDispatch();
 
   return (
@@ -138,7 +146,11 @@ function Signin() {
               <Link to="/signup">아직 아이디가 없으신가요?</Link>
             </InputWrap>
             <ButtonWrap>
-              <button type="submit" onClick={handleLogin}>
+              <button
+                className="cursor-pointer px-3 py-2 text-sm text-blue-100 bg-sky-500 rounded hover:bg-sky-400"
+                type="submit"
+                onClick={handleLogin}
+              >
                 로그인
               </button>
             </ButtonWrap>
