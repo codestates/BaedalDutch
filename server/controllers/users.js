@@ -1,11 +1,8 @@
-const { users, parties } = require("../models");
-const {
-  generateAccessToken,
-  sendAccessToken,
-  isAuthorized,
-} = require("../controllers/tokenfunctions");
+const { users, parties, users_parties } = require("../models");
+const { generateAccessToken, sendAccessToken, isAuthorized } = require("../controllers/tokenfunctions");
 
 module.exports = {
+  // 회원가입
   signup: async (req, res) => {
     const { email, password, nickname, phone_number, image } = req.body;
 
@@ -23,7 +20,7 @@ module.exports = {
     if (checkEmail) {
       return res.status(409).send("email already exists sign up");
     }
-    if (checkNickname) {
+    if (checkNickname || 'admin') {
       return res.status(409).send("nickname already exists sign up");
     }
 
@@ -50,6 +47,7 @@ module.exports = {
     }
   },
 
+  // 로그인
   signin: async (req, res) => {
     const { email, password } = req.body;
 
@@ -67,6 +65,7 @@ module.exports = {
     }
   },
 
+  // 로그아웃
   signout: async (req, res) => {
     const userInfo = isAuthorized(req);
     try {
@@ -83,6 +82,7 @@ module.exports = {
     }
   },
 
+  // 회원탈퇴
   delUser: async (req, res) => {
     const userInfo = isAuthorized(req);
     console.log(userInfo);
@@ -90,14 +90,15 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send("bad request users/:id");
       } else {
-        const deleteUser = await users.destroy({ where: { id: userInfo.id } });
-        return res.status(200).send("successfully delete id");
+        const deleteUser = await users.destroy({ where: { id: req.params.id}})
+        return res.status(200).send('successfully delete id')
       }
     } catch (err) {
       return res.status(500).send("Server Error users/:id");
     }
   },
 
+  // 회원정보 수정
   updateUser: async (req, res) => {
     const userInfo = isAuthorized(req);
     const { nickname, password, image, phone_number } = req.body;
@@ -128,6 +129,7 @@ module.exports = {
     }
   },
 
+  // 회원 정보 조회
   getUserInfo: async (req, res) => {
     const userInfo = isAuthorized(req);
     try {
@@ -141,6 +143,7 @@ module.exports = {
     }
   },
 
+  // 생성한 파티, 가입한 파티 조회
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req);
     console.log("userInfo", userInfo);
@@ -148,13 +151,15 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send("bad request users/:id");
       } else {
-        console.log("check");
-        const userParty = await users.findAll({
-          include: [{ model: parties }],
-          where: { id: userInfo.id },
-        });
-        console.log("userParty:", userParty);
-        return res.statsu(200).json({ data: userParty });
+        console.log('check')
+        const userParty = await parties.findAll({
+          include: [
+            { model: users_parties }
+          ],
+          where: { writeruser_id: userInfo.id }
+        })
+        console.log('userParty:', userParty)
+        return res.status(200).json({ userParty })
       }
     } catch (err) {
       return res.status(500).send("Server Error users/:id");
