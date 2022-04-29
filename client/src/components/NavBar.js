@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import NLogo from '../assets/test.png';
+import NLogo from '../assets/baedaldutch.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 
@@ -13,9 +13,9 @@ const Nav = styled.nav`
   top: 0;
   z-index: 500;
   width: 100%;
-  background-color: greenyellow;
+  background-color: yellow;
   box-shadow: 0px 1px 7px 0px rgba(0, 0, 0, 0.1);
-  height: 70px;
+  height: 100px;
 `;
 
 const LogoWrap = styled(Link)`
@@ -30,7 +30,6 @@ const LogoWrap = styled(Link)`
 const Logo = styled.img`
   width: 100%;
   height: 100%;
-  padding: 5px;
 `;
 
 const MenuWrap = styled.div`

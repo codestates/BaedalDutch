@@ -1,13 +1,24 @@
 import React, { useEffect } from 'react';
-import SearchPlace from './SearchPlace';
+import { useRef } from 'react';
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
 
 const { kakao } = window;
 
-let infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+const TopContainer = styled.div`
+  position: relative;
+  width: 140vh;
+  height: 100vh;
+`;
 
-const MapContainer = ({ searchPlace }) => {
+const MapContainer = () => {
+  const searchPlace = useSelector((state) => state.input.defaultInput);
+  const myMap = useRef(null);
+
   useEffect(() => {
-    const container = document.getElementById('myMap');
+    const container = myMap.current;
+    const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
     const options = {
       center: new kakao.maps.LatLng(33.450701, 126.570667),
       level: 3,
@@ -16,9 +27,9 @@ const MapContainer = ({ searchPlace }) => {
 
     const ps = new kakao.maps.services.Places();
 
-    ps.keywordSearch('입력 값', placesSearchCB);
+    ps.keywordSearch(searchPlace, placesSearchCB);
 
-    function placesSearchCB(data, status, pagination) {
+    function placesSearchCB(data, status) {
       if (status === kakao.maps.services.Status.OK) {
         let bounds = new kakao.maps.LatLngBounds();
 
@@ -32,11 +43,15 @@ const MapContainer = ({ searchPlace }) => {
     }
 
     function displayMarker(place) {
+      console.log('궁금', place);
       let marker = new kakao.maps.Marker({
         map: map,
         position: new kakao.maps.LatLng(place.y, place.x),
       });
+
+      // 마커에 클릭이벤트를 등록합니다
       kakao.maps.event.addListener(marker, 'click', function () {
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
         infowindow.setContent(
           '<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>',
         );
@@ -45,15 +60,7 @@ const MapContainer = ({ searchPlace }) => {
     }
   }, [searchPlace]);
 
-  return (
-    <div
-      id="myMap"
-      style={{
-        width: '3000px',
-        height: '3000px',
-      }}
-    ></div>
-  );
+  return <TopContainer ref={myMap} />;
 };
 
 export default MapContainer;

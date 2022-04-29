@@ -27,7 +27,7 @@ const Signup = () => {
           password,
           nickname,
           phone_number,
-          image,
+          image: '',
         },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -99,10 +99,12 @@ const Signup = () => {
           })}
           placeholder="패스워드를 입력하세요"
           id="password"
+          type="password"
         ></Input>
         <ErrorMessage>{errors.password?.message}</ErrorMessage>
         <Label for="passwordCheck">비밀번호 확인</Label>
         <Input
+          type="password"
           error={errors.passwordCheck?.message}
           {...register('passwordCheck', {
             required: '비밀번호를 똑같이 입력해 주세요',
@@ -128,16 +130,7 @@ const Signup = () => {
           id="phone_number"
         ></Input>
         <ErrorMessage>{errors.phone_number?.message}</ErrorMessage>
-        <Label for="image">image</Label>
-        <Input
-          error={errors.phoneCheck?.message}
-          {...register('image', {
-            required: '이미지를 입력해 주세요',
-          })}
-          placeholder="이미지를 입력하세요"
-          id="image"
-        ></Input>
-        <ErrorMessage>{errors.phoneCheck?.message}</ErrorMessage>
+
         <Button type="submit">가입신청</Button>
       </Form>
     </Container>
