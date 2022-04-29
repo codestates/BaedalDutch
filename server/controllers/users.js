@@ -1,14 +1,9 @@
-<<<<<<< HEAD
 const { users, parties } = require('../models')
 const {
   generateAccessToken,
   sendAccessToken,
   isAuthorized,
 } = require('../controllers/tokenfunctions')
-=======
-const { users, parties, users_parties } = require("../models");
-const { generateAccessToken, sendAccessToken, isAuthorized } = require("../controllers/tokenfunctions");
->>>>>>> ab1b888817e8955c7be4a040436c65b182525a35
 
 module.exports = {
   // 회원가입
@@ -29,13 +24,9 @@ module.exports = {
     if (checkEmail) {
       return res.status(409).send('email already exists sign up')
     }
-<<<<<<< HEAD
-    if (checkNickname) {
-      return res.status(409).send('nickname already exists sign up')
-=======
+
     if (checkNickname || 'admin') {
-      return res.status(409).send("nickname already exists sign up");
->>>>>>> ab1b888817e8955c7be4a040436c65b182525a35
+      return res.status(409).send('nickname already exists sign up')
     }
 
     const [data, created] = await users.findOrCreate({
@@ -114,11 +105,7 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send('bad request users/:id')
       } else {
-<<<<<<< HEAD
-        const deleteUser = await users.destroy({ where: { id: userInfo.id } })
-=======
-        const deleteUser = await users.destroy({ where: { id: req.params.id}})
->>>>>>> ab1b888817e8955c7be4a040436c65b182525a35
+        const deleteUser = await users.destroy({ where: { id: req.params.id } })
         return res.status(200).send('successfully delete id')
       }
     } catch (err) {
@@ -180,30 +167,16 @@ module.exports = {
         return res.status(404).send('bad request users/:id')
       } else {
         console.log('check')
-<<<<<<< HEAD
-        const userParty = await users.findAll({
-          include: [{ model: parties }],
-          where: { id: userInfo.id },
-        })
-        console.log('userParty:', userParty)
-        return res.statsu(200).json({ data: userParty })
-=======
+
         const userParty = await parties.findAll({
-          include: [
-            { model: users_parties }
-          ],
-          where: { writeruser_id: userInfo.id }
+          include: [{ model: users_parties }],
+          where: { writeruser_id: userInfo.id },
         })
         console.log('userParty:', userParty)
         return res.status(200).json({ userParty })
->>>>>>> ab1b888817e8955c7be4a040436c65b182525a35
       }
     } catch (err) {
       return res.status(500).send('Server Error users/:id')
     }
   },
-<<<<<<< HEAD
 }
-=======
-};
->>>>>>> ab1b888817e8955c7be4a040436c65b182525a35
