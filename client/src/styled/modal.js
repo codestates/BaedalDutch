@@ -4,7 +4,15 @@ export const ModalContainer = styled.div`
   width: 100%;
   height: 100%;
   display: ${(props) => (props.showModal ? 'block' : 'none')};
-  border: 10px solid red;
+  z-index: 999;
+  position: relative;
+`;
+export const WriteModalContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: ${(props) => (props.showWriteModal ? 'block' : 'none')};
+  z-index: 999;
+  position: relative;
 `;
 
 export const ModalBackdrop = styled.div`
@@ -20,17 +28,34 @@ export const ModalBackdrop = styled.div`
   height: 100%;
   margin: 0 auto;
   border: 10px solid black;
-  backdrop-filter: blur(4px);
+`;
+
+export const WriteModalBackdrop = styled.div`
+  position: fixed;
+  display: flex;
+  z-index: 1;
+  justify-content: right;
+  align-items: right;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  border: 10px solid black;
 `;
 
 export const ModalView = styled.div`
   display: flex;
+  position: fixed;
+  top: 200px;
+  right: 50px;
   align-items: center;
   flex-direction: column;
-  width: 360px;
+  width: 400px;
   background-color: white;
   border-radius: 10px;
-  height: 432px;
+  height: 600px;
+  border: 5px solid black;
 `;
 
 export const CloseButton = styled.div`
@@ -39,7 +64,7 @@ export const CloseButton = styled.div`
   display: flex;
   width: 100%;
   cursor: pointer;
-  z-index: 9999;
+  z-index: 99;
 `;
 export const Icon = styled.i`
   margin: 10px;

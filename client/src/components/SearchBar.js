@@ -7,7 +7,7 @@ const { kakao } = window;
 
 const InputForm = styled.form`
   position: absolute;
-  z-index: 999;
+  z-index: 300;
   top: 150px;
   left: 30px;
 `;

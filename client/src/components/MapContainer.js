@@ -9,6 +9,7 @@ const TopContainer = styled.div`
   position: relative;
   width: 140vh;
   height: 100vh;
+  z-index: 2;
 `;
 
 const MapContainer = () => {
