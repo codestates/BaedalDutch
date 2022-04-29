@@ -4,7 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
-import { isLoginAction } from '../store/login';
+import { isLoginAction, loginUserAction } from '../store/login';
 import { useSelector } from 'react-redux';
 
 // import { postSignIn } from "../../Api";
@@ -60,6 +60,7 @@ function Signin() {
   const navigate = useNavigate();
 
   const isLogin = useSelector((state) => state.login.isLogin);
+  const loginUser = useSelector((state) => state.login.loginUser);
 
   const [loginInfo, setLoginInfo] = useState({
     email: '',
@@ -88,6 +89,8 @@ function Signin() {
         if (response.data.accessToken) {
           console.log('135', isLogin);
           dispatch(isLoginAction(true));
+          dispatch(loginUserAction(response.data.data));
+          console.log('response.data.data:', response.data.data);
           dispatch(showModalAction(false));
           navigate('/main');
         }
