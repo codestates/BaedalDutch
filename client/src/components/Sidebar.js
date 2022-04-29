@@ -1,5 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { showWriteAction } from '../store/modal';
 
 const Container = styled.div`
   background-color: #e3ecf1;
@@ -61,7 +64,11 @@ const WriteButton = styled.button``;
 
 const ChattingButton = styled.button``;
 
-const Sidebar = ({ children }) => {
+const Sidebar = () => {
+  const dispatch = useDispatch();
+  const showWriteModal = useSelector((state) => state.modal.showWriteModal);
+  console.log('글쓰기모달', showWriteModal);
+
   return (
     <Container>
       <Sidebarbox>
@@ -70,7 +77,7 @@ const Sidebar = ({ children }) => {
           <MyParty>내 파티</MyParty>
         </Parties>
         <SidebarContent>
-          <WriteButton>글쓰기</WriteButton>
+          <WriteButton onClick={() => dispatch(showWriteAction(true))}>글쓰기</WriteButton>
           <ChattingButton>채팅하기</ChattingButton>
         </SidebarContent>
       </Sidebarbox>
