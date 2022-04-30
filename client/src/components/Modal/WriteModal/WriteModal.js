@@ -1,14 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { showWriteAction } from '../../store/modal';
+import { showWriteAction } from '../../../store/modal';
 import {
-  CloseButton,
+  WriteCloseButton,
   Icon,
   WriteModalBackdrop,
   WriteModalContainer,
-  ModalView,
-} from '../../styled/modal';
-import Write from '../../pages/Write';
+  WriteModalView,
+} from '../../../styled/modal';
+import Write from '../../../pages/Write';
 
 const WriteModal = () => {
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
@@ -19,16 +19,16 @@ const WriteModal = () => {
   return (
     <WriteModalContainer showWriteModal={showWriteModal}>
       <WriteModalBackdrop>
-        <ModalView>
-          <CloseButton
+        <WriteModalView>
+          <WriteCloseButton
             onClick={() => {
               dispatch(showWriteAction(false));
             }}
           >
             <Icon className="fa-solid fa-xmark"></Icon>
-          </CloseButton>
+          </WriteCloseButton>
           <Write />
-        </ModalView>
+        </WriteModalView>
       </WriteModalBackdrop>
     </WriteModalContainer>
   );

@@ -6,7 +6,7 @@ import Main from './pages/Main';
 import Navbar from './components/NavBar';
 import LoginModal from './components/Modal/LoginModal';
 import GlobalStyle from './styled/Globalstyles';
-import WriteModal from './components/Modal/WriteModal';
+import WriteModal from './components/Modal/WriteModal/WriteModal';
 
 function App() {
   return (
