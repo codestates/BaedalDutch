@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { showWriteAction } from '../store/modal';
+import { showWriteAction } from '../../store/modal';
 
 const Container = styled.div`
   background-color: #e3ecf1;
@@ -67,6 +67,7 @@ const ChattingButton = styled.button``;
 const Sidebar = () => {
   const dispatch = useDispatch();
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
+
   console.log('글쓰기모달', showWriteModal);
 
   return (
