@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { showWriteAction } from '../store/modal';
+import { showWriteAction } from '../../store/modal';
 
 const ButtonWrap = styled.div`
   display: flex;
