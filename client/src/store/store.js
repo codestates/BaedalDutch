@@ -7,5 +7,6 @@ export const store = configureStore({
   reducer: {
     modal: modalReducer,
     login: loginReducer,
+    chat: chatReducer,
   },
 });

@@ -13,6 +13,8 @@ const KaKaoAdress = ({}) => {
       }
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
+    setWriteInfo({ ...writeInfo, address: fullAddress });
+    setVisible(false);
   };
   return <DaumPostCode onComplete={handleComplete} className="post-code" />;
 };
