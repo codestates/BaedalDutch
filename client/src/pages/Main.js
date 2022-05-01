@@ -1,16 +1,16 @@
 import React from 'react';
-import MapContainer from '../components/MapContainer';
-import SearchBar from '../components/SearchBar';
-import Sidebar from '../components/Sidebar';
+import ButtonMenu from '../components/Main/ButtonMenu';
+import MapContainer from '../components/Main/MapContainer';
+import SearchBar from '../components/Main/SearchBar';
+import Sidebar from '../components/Main/Sidebar';
 
 function Main() {
   return (
     <>
-      <MapContainer>
-        <SearchBar />
-      </MapContainer>
+      <MapContainer />
       <Sidebar />
       <SearchBar />
+      <ButtonMenu />
     </>
   );
 }
