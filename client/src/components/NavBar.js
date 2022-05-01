@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import NLogo from '../assets/baedaldutch.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
-import LoginUser from '../components/LoginUser';
 
 const Nav = styled.nav`
   display: flex;
@@ -61,7 +60,7 @@ const Navbar = () => {
       </LogoWrap>
       <MenuWrap>
         {isLogin ? (
-          <LoginUser>마이페이지</LoginUser>
+          <Menu>마이페이지</Menu>
         ) : (
           <Menu onClick={() => dispatch(showModalAction(true))}>로그인</Menu>
         )}
