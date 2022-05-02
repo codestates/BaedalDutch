@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 import { isLoginAction, loginUserAction } from '../store/login';
 import { useSelector } from 'react-redux';
 
 // import { postSignIn } from "../../Api";
-// import { useNavigate } from "react-router-dom";
+// import { usegate } from "react-rNaviouter-dom";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -94,7 +94,6 @@ function Signin() {
           dispatch(showModalAction(false));
           navigate('/main');
         }
-
         return response.data;
       });
   };
@@ -114,6 +113,9 @@ function Signin() {
     try {
       await login(email, password).then(
         () => {
+          sessionStorage.setItem('isLogin', 'true');
+          // setShowModal(false);
+          window.location.reload();
           // dispatch(isLoginAction(true));
           // dispatch(showModalAction(false));
           // navigate('/main');
@@ -121,12 +123,23 @@ function Signin() {
         (error) => {
           console.log(error);
         },
-      );
+      )
+      navigator('/')
     } catch (err) {
       console.log(err);
     }
   };
 
+  // let data = await postSignIn({ email, password });
+
+  // if (data) {
+  //   console.log("user info data: ", data);
+  //   sessionStorage.setItem("isLogin", "true");
+  // sessionStorage.setItem("userInfo", data.data)
+  //   setShowModal(false);
+  // }
+
+  const showModal = useSelector((state) => state.modal.showModal);
   // const showModal = useSelector((state) => state.modal.showModal);
 
   return (
@@ -154,7 +167,11 @@ function Signin() {
               <Link to="/signup">아직 아이디가 없으신가요?</Link>
             </InputWrap>
             <ButtonWrap>
-              <button type="submit" onClick={handleLogin}>
+              <button
+                className="cursor-pointer px-3 py-2 text-sm text-blue-100 bg-sky-500 rounded hover:bg-sky-400"
+                type="submit"
+                onClick={handleLogin}
+              >
                 로그인
               </button>
             </ButtonWrap>
