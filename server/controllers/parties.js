@@ -89,13 +89,12 @@ module.exports = {
             users_id: userInfo.id,
             parties_id: data.dataValues.id,
           });
+          res.status(201).json({
+            // data: store_name (로직 성공확인되면 이걸로 바꾸기)
+            data: data.dataValues,
+            message: "create party post parties",
+          });
         });
-
-      res.status(201).json({
-        // data: store_name (로직 성공확인되면 이걸로 바꾸기)
-        data: data.dataValues,
-        message: "create party post parties",
-      });
     } catch (err) {
       res.status(500).json({
         message: "Server Error post parties",
