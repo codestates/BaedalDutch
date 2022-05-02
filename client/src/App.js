@@ -9,7 +9,6 @@ import GlobalStyle from './styled/Globalstyles';
 import OAuth2RedirectHandler from './pages/oauthLogin';
 import WriteModal from './components/Modal/WriteModal';
 
-
 function App() {
   return (
     <BrowserRouter>
