@@ -99,6 +99,11 @@ function Signin() {
       });
   };
 
+  const handleOauth = () => {
+    // eslint-disable-next-line no-restricted-globals
+    location.href =`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`
+  }
+
   const handleLogin = async () => {
     const { email, password } = loginInfo;
 
@@ -151,6 +156,11 @@ function Signin() {
             <ButtonWrap>
               <button type="submit" onClick={handleLogin}>
                 로그인
+              </button>
+            </ButtonWrap>
+            <ButtonWrap>
+              <button type="submit" onClick={handleOauth}>
+                카카오로그인
               </button>
             </ButtonWrap>
             <AlertBox className="alert-box">{errorMessage}</AlertBox>
