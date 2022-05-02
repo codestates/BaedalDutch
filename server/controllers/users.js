@@ -20,7 +20,7 @@ module.exports = {
     if (checkEmail) {
       return res.status(409).send("email already exists sign up");
     }
-    if (checkNickname || 'admin') {
+    if (checkNickname || "admin") {
       return res.status(409).send("nickname already exists sign up");
     }
 
@@ -118,11 +118,11 @@ module.exports = {
         }
 
         // 데이터 수정
-        const userNickname = await user.update(
+        const updateUserInfo = await user.update(
           { nickname, password, image, phone_number },
           { where: { email: user.dataValues.email } }
         );
-        return res.statsu(200).send("success update user info");
+        return res.statsu(200).json({ updateUserInfo, message: "success update user info"});
       }
     } catch (err) {
       return res.status(500).send("Server Error mypage");
@@ -153,13 +153,19 @@ module.exports = {
       } else {
         console.log('check')
         const userParty = await parties.findAll({
-          include: [
-            { model: users_parties }
-          ],
-          where: { writeruser_id: userInfo.id }
+          // include: [
+          //   { model: users_parties }
+          // ],
+          where: { writerUser_id: req.params.id }
+        })
+        const userJoin = await users_parties.findAll({
+          // include: [
+          //   { model: users_parties }
+          // ],
+          where: { users_id: req.params.id }
         })
         console.log('userParty:', userParty)
-        return res.status(200).json({ userParty })
+        return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {
       return res.status(500).send("Server Error users/:id");
