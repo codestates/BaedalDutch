@@ -8,7 +8,7 @@ export const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    showMypage: (state, action) => {
+    isLoginAction: (state, action) => {
       state.isLogin = action.payload;
     },
   },

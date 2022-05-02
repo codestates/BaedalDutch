@@ -27,7 +27,7 @@ const Signup = () => {
           password,
           nickname,
           phone_number,
-          image
+          image,
         },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -37,6 +37,12 @@ const Signup = () => {
         navigate('/')
       });
   };
+  // if (res.accessToken) {
+  //   console.log('체크');
+  //   navigate('/');
+  // }
+
+  // return;
 
   const nickPattern = {
     value: /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/,
@@ -120,14 +126,14 @@ const Signup = () => {
           placeholder="휴대전화 번호를 입력하세요"
           id="phone_number"
         ></Input>
-        <ErrorMessage>{errors.phoneCheck?.message}</ErrorMessage>
+        <ErrorMessage>{errors.phone_number?.message}</ErrorMessage>
         <Label for="image">image</Label>
         <Input
           error={errors.phoneCheck?.message}
           {...register('image', {
-            required: '휴대전화 번호를 입력해 주세요',
+            required: '이미지를 입력해 주세요',
           })}
-          placeholder="휴대전화 번호를 입력하세요"
+          placeholder="이미지를 입력하세요"
           id="image"
         ></Input>
         <ErrorMessage>{errors.phoneCheck?.message}</ErrorMessage>

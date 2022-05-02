@@ -30,15 +30,18 @@ module.exports = {
         password: password,
         nickname: nickname,
         phone_number: phone_number,
-        image: image
-      }
-    })
+        image: image,
+      },
+    });
     if (!created) {
       return res.status(409).send("already exists sign up");
     }
     try {
       const accessToken = generateAccessToken(data.dataValues);
-      sendAccessToken(res, accessToken).json({ data: data.dataValues.email, message: "created your id!!" });
+      sendAccessToken(res, accessToken).json({
+        data: data.dataValues.email,
+        message: "created your id!!",
+      });
     } catch (err) {
       return res.status(500).send("Server Error sign up");
     }
@@ -55,7 +58,7 @@ module.exports = {
     } else {
       try {
         const accessToken = generateAccessToken(userInfo.dataValues);
-        sendAccessToken(res, accessToken).json({ accessToken, message: 'success sign in'});
+        sendAccessToken(res, accessToken).json({ accessToken, message: "success sign in" });
       } catch (err) {
         return res.status(500).send("Server Error sign in");
       }
@@ -69,8 +72,10 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send("bad request sign out");
       } else {
-        return res.status(200).clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "none" })
-        .send({ message: "success sign out" })
+        return res
+          .status(200)
+          .clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "none" })
+          .send({ message: "success sign out" });
       }
     } catch (err) {
       return res.status(500).send("Server Error sign out");
@@ -79,30 +84,30 @@ module.exports = {
 
   // 회원탈퇴
   delUser: async (req, res) => {
-    const userInfo = isAuthorized(req)
-    console.log(userInfo)
-    try{
-      if(!userInfo){
-        return res.status(404).send('bad request users/:id')
+    const userInfo = isAuthorized(req);
+    console.log(userInfo);
+    try {
+      if (!userInfo) {
+        return res.status(404).send("bad request users/:id");
       } else {
         const deleteUser = await users.destroy({ where: { id: req.params.id}})
         return res.status(200).send('successfully delete id')
       }
-    } catch(err){
-      return res.status(500).send('Server Error users/:id')
+    } catch (err) {
+      return res.status(500).send("Server Error users/:id");
     }
   },
 
   // 회원정보 수정
   updateUser: async (req, res) => {
-    const userInfo = isAuthorized(req)
-    const { nickname, password, image, phone_number } = req.body
-    try{
-      if(!userInfo){
-        return res.status(404).send('bad request mypage')
+    const userInfo = isAuthorized(req);
+    const { nickname, password, image, phone_number } = req.body;
+    try {
+      if (!userInfo) {
+        return res.status(404).send("bad request mypage");
       } else {
-        const user = await users.findOne({ where: { email: userInfo.email }})
-        console.log(user)
+        const user = await users.findOne({ where: { email: userInfo.email } });
+        console.log(user);
 
         // 닉네임 중복 체크
         const checkNickname = await users.findOne({
@@ -115,36 +120,36 @@ module.exports = {
         // 데이터 수정
         const userNickname = await user.update(
           { nickname, password, image, phone_number },
-          { where: { email: user.dataValues.email }}
-        )
-        return res.statsu(200).send('success update user info')
+          { where: { email: user.dataValues.email } }
+        );
+        return res.statsu(200).send("success update user info");
       }
-    } catch(err){
-      return res.status(500).send('Server Error mypage')
+    } catch (err) {
+      return res.status(500).send("Server Error mypage");
     }
   },
 
   // 회원 정보 조회
   getUserInfo: async (req, res) => {
-    const userInfo = isAuthorized(req)
-    try{
-      if(!userInfo){
-        res.statsu(404).send('bad request mypage')
+    const userInfo = isAuthorized(req);
+    try {
+      if (!userInfo) {
+        res.statsu(404).send("bad request mypage");
       } else {
-        res.status(200).json({ userInfo })
+        res.status(200).json({ userInfo });
       }
-    } catch(err){
-      res.status(500).send('Server Error mypage')
+    } catch (err) {
+      res.status(500).send("Server Error mypage");
     }
   },
 
   // 생성한 파티, 가입한 파티 조회
   getUserParty: async (req, res) => {
-    const userInfo = isAuthorized(req)
-    console.log('userInfo', userInfo)
-    try{
-      if(!userInfo){
-        return res.status(404).send('bad request users/:id')
+    const userInfo = isAuthorized(req);
+    console.log("userInfo", userInfo);
+    try {
+      if (!userInfo) {
+        return res.status(404).send("bad request users/:id");
       } else {
         console.log('check')
         const userParty = await parties.findAll({
@@ -156,8 +161,8 @@ module.exports = {
         console.log('userParty:', userParty)
         return res.status(200).json({ userParty })
       }
-    } catch(err){
-      return res.status(500).send('Server Error users/:id')
+    } catch (err) {
+      return res.status(500).send("Server Error users/:id");
     }
   },
 };
