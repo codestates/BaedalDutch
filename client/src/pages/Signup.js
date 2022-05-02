@@ -2,11 +2,10 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Container, ErrorMessage, Form, Input, Label } from '../styled/signup';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { isLoginAction } from '../store/login';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -18,8 +17,8 @@ const Signup = () => {
   });
 
   const onSubmit = () => {
-    const { nickname, email, password } = getValues();
-    console.log(nickname, email, password);
+    const { nickname, email, password, phone_number, image } = getValues();
+    console.log(nickname, email, password, phone_number, image);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/users/signup`,
@@ -27,6 +26,8 @@ const Signup = () => {
           email,
           password,
           nickname,
+          phone_number,
+          image: '',
         },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -34,13 +35,15 @@ const Signup = () => {
         },
       )
       .then((res) => {
-        if (res.accessToken) {
-          dispatch(isLoginAction(true));
-        }
-
-        return;
+        navigate('/');
       });
   };
+  // if (res.accessToken) {
+  //   console.log('체크');
+  //   navigate('/');
+  // }
+
+  // return;
 
   const nickPattern = {
     value: /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/,
@@ -96,10 +99,12 @@ const Signup = () => {
           })}
           placeholder="패스워드를 입력하세요"
           id="password"
+          type="password"
         ></Input>
         <ErrorMessage>{errors.password?.message}</ErrorMessage>
         <Label for="passwordCheck">비밀번호 확인</Label>
         <Input
+          type="password"
           error={errors.passwordCheck?.message}
           {...register('passwordCheck', {
             required: '비밀번호를 똑같이 입력해 주세요',
@@ -114,17 +119,18 @@ const Signup = () => {
           id="passwordCheck"
         ></Input>
         <ErrorMessage>{errors.passwordCheck?.message}</ErrorMessage>
-        <Label for="phoneCheck">휴대전화</Label>
+        <Label for="phone_number">휴대전화</Label>
         <Input
           error={errors.phoneCheck?.message}
-          {...register('phoneCheck', {
+          {...register('phone_number', {
             required: '휴대전화 번호를 입력해 주세요',
             pattern: phonePattern,
           })}
           placeholder="휴대전화 번호를 입력하세요"
-          id="phoneCheck"
+          id="phone_number"
         ></Input>
-        <ErrorMessage>{errors.phoneCheck?.message}</ErrorMessage>
+        <ErrorMessage>{errors.phone_number?.message}</ErrorMessage>
+
         <Button type="submit">가입신청</Button>
       </Form>
     </Container>

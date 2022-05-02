@@ -4,7 +4,8 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
-import { isLoginAction } from '../store/login';
+import { isLoginAction, loginUserAction } from '../store/login';
+import { useSelector } from 'react-redux';
 
 // import { postSignIn } from "../../Api";
 // import { useNavigate } from "react-router-dom";
@@ -54,7 +55,13 @@ const AlertBox = styled.div`
 `;
 
 function Signin() {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+
+  const isLogin = useSelector((state) => state.login.isLogin);
+  const loginUser = useSelector((state) => state.login.loginUser);
+
   const [loginInfo, setLoginInfo] = useState({
     email: '',
     password: '',
@@ -79,13 +86,23 @@ function Signin() {
       )
       .then((response) => {
         console.log('login res::', response);
-        if (response.accessToken) {
-          // localStorage.setItem('user', JSON.stringify(response));
+        if (response.data.accessToken) {
+          console.log('135', isLogin);
+          dispatch(isLoginAction(true));
+          dispatch(loginUserAction(response.data.data));
+          console.log('response.data.data:', response.data.data);
+          dispatch(showModalAction(false));
+          navigate('/main');
         }
 
         return response.data;
       });
   };
+
+  const handleOauth = () => {
+    // eslint-disable-next-line no-restricted-globals
+    location.href =`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`
+  }
 
   const handleLogin = async () => {
     const { email, password } = loginInfo;
@@ -97,9 +114,9 @@ function Signin() {
     try {
       await login(email, password).then(
         () => {
-          dispatch(isLoginAction(true));
-          // setShowModal(false);
-          navigate('/main');
+          // dispatch(isLoginAction(true));
+          // dispatch(showModalAction(false));
+          // navigate('/main');
         },
         (error) => {
           console.log(error);
@@ -111,7 +128,6 @@ function Signin() {
   };
 
   // const showModal = useSelector((state) => state.modal.showModal);
-  const dispatch = useDispatch();
 
   return (
     <>
@@ -140,6 +156,11 @@ function Signin() {
             <ButtonWrap>
               <button type="submit" onClick={handleLogin}>
                 로그인
+              </button>
+            </ButtonWrap>
+            <ButtonWrap>
+              <button type="submit" onClick={handleOauth}>
+                카카오로그인
               </button>
             </ButtonWrap>
             <AlertBox className="alert-box">{errorMessage}</AlertBox>

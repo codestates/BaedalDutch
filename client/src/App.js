@@ -7,6 +7,8 @@ import Navbar from './components/NavBar';
 import LoginModal from './components/Modal/LoginModal';
 import GlobalStyle from './styled/Globalstyles';
 import OAuth2RedirectHandler from './pages/oauthLogin';
+import WriteModal from './components/Modal/WriteModal';
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
       <GlobalStyle></GlobalStyle>
       <Navbar />
       <LoginModal />
+      <WriteModal />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />

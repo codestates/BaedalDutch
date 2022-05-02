@@ -1,21 +1,29 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { isLoginAction, loginUserAction } from '../store/login';
 import { useEffect } from "react";
 
 const OAuth2RedirectHandler = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // code에 인가코드 할당
   let code = new URL(window.location.href).searchParams.get("code");
-  const REACT_APP_REST_API_KEY = '123b36cb823c40ff5618ff1d05cbec6b'
-  const REDIRECT_URI = 'http://localhost:3000/oauth/kakao'
 
   const kakaoCode = (code) => {
+    // 카카오 서버로 인가코드를 줌
     axios
         .post(
-          `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${REACT_APP_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&code=${code}`,
-          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+          `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&code=${code}`,
+          { 
+            headers: { 
+              "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" 
+            } 
+          }
         )
         .then((result) => {
-          console.log(result);
+          // result에 카카오 서버가 준 액세스 토큰이 담겨옴, BaedalDutch 서버로 액세스 토큰을 전달
           axios
             .post(
               `${process.env.REACT_APP_API_URL}/oauth/kakao`,
@@ -27,13 +35,13 @@ const OAuth2RedirectHandler = () => {
               }
             )
             .then((res) => {
-              console.log(res);
-
-              window.location.replace("/");
+              // loginUserAction이 뭐지..?
+              dispatch(isLoginAction(true));
+              navigate('/');
             })
             .catch((e) => {
               alert(e)
-              window.location.replace("/");
+              navigate('/');
             });
         });
   }
