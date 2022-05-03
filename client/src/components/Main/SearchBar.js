@@ -82,14 +82,17 @@ const SearchBar = () => {
               console.log(search.place_name);
 
               return (
-                <PlaceName
-                  onClick={() => {
-                    dispatch(inputAction(search.place_name));
-                    setIsOpen(false);
-                  }}
-                >
-                  {search.place_name}
-                </PlaceName>
+                <>
+                  <PlaceName
+                    onClick={() => {
+                      dispatch(inputAction(search.place_name));
+                      setIsOpen(false);
+                    }}
+                  >
+                    {search.place_name}
+                  </PlaceName>
+                  <PlaceName>{search.address_name}</PlaceName>
+                </>
               );
             })}
           </PlaceList>

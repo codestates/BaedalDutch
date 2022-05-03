@@ -269,7 +269,7 @@ const Write = () => {
 
   const onSubmit = () => {
     const { store_name, food_category, member_num, content, fee } = getValues();
-    console.log('writeInfo', writeInfo.lat);
+    console.log('writeInfo', writeInfo);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/parties`,

@@ -1,59 +1,59 @@
-'use strict';
+"use strict"
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('parties', {
+    await queryInterface.createTable("parties", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      writerUser_id: {
+      writeUser_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "users",
-          key: "id"
-        }
+          key: "id",
+        },
       },
       store_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       food_category: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       member_num: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       content: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       fee: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       closed: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       lat: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       lng: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
-    });
+        type: Sequelize.DATE,
+      },
+    })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('parties');
-  }
-};
+    await queryInterface.dropTable("parties")
+  },
+}
