@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import NLogo from '../assets/baedaldutch.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { showModalAction } from '../store/modal';
+import { setMyNavDivAction, showModalAction, showMyPageAction } from '../store/modal';
+import { useRef } from 'react';
+import { useEffect } from 'react';
 
 const Nav = styled.nav`
   display: flex;
@@ -51,16 +53,22 @@ const Menu = styled.button`
 const Navbar = () => {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
+  const myPage = useSelector((state) => state.modal.showMyPageModal);
+  const navContainer = useRef();
   console.log('로그인체크', isLogin);
 
+  useEffect(() => {
+    dispatch(setMyNavDivAction(navContainer));
+  });
+
   return (
-    <Nav>
+    <Nav ref={navContainer}>
       <LogoWrap to="/">
         <Logo src={NLogo}></Logo>
       </LogoWrap>
       <MenuWrap>
-        {isLogin ? (
-          <Menu>마이페이지</Menu>
+        {isLogin === true ? (
+          <Menu onClick={() => dispatch(showMyPageAction(!myPage))}>마이페이지</Menu>
         ) : (
           <Menu onClick={() => dispatch(showModalAction(true))}>로그인</Menu>
         )}
