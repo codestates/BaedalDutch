@@ -1,17 +1,20 @@
-const { users, parties } = require('../models')
+const { users, parties } = require("../models")
 const {
   generateAccessToken,
   sendAccessToken,
   isAuthorized,
-} = require('../controllers/tokenfunctions')
+} = require("../controllers/tokenfunctions")
 
 module.exports = {
   // 회원가입
   signup: async (req, res) => {
     const { email, password, nickname, phone_number, image } = req.body
+    console.log("회원가입 어디문제지", email, password, nickname, phone_number)
+    console.log("이미지?", image)
 
     if (!email || !password || !nickname || !phone_number || !image) {
-      return res.status(404).send('Bad request sign up')
+      console.log("진입")
+      return res.status(404).send("Bad request sign up")
     }
 
     const checkEmail = await users.findOne({
@@ -22,11 +25,13 @@ module.exports = {
     })
 
     if (checkEmail) {
-      return res.status(409).send('email already exists sign up')
+      return res.status(409).send("email already exists sign up")
     }
 
-    if (checkNickname || 'admin') {
-      return res.status(409).send('nickname already exists sign up')
+    if (checkNickname) {
+      //Admin 삭제
+      console.log("닉네임에러")
+      return res.status(409).send("nickname already exists sign up")
     }
 
     const [data, created] = await users.findOrCreate({
@@ -39,29 +44,30 @@ module.exports = {
       },
     })
     if (!created) {
-      return res.status(409).send('already exists sign up')
+      return res.status(409).send("already exists sign up")
     }
     try {
       const accessToken = generateAccessToken(data.dataValues)
       sendAccessToken(res, accessToken).json({
         data: data.dataValues.email,
-        message: 'created your id!!',
+        message: "created your id!!",
       })
     } catch (err) {
-      return res.status(500).send('Server Error sign up')
+      return res.status(500).send("Server Error sign up")
     }
   },
 
   // 로그인
   signin: async (req, res) => {
     const { email, password } = req.body
+    console.log("서버체크", email, password)
 
     const userInfo = await users.findOne({
       where: { email: email, password: password },
     })
-    console.log('userInfo:', userInfo)
+    console.log("userInfo:", userInfo)
     if (!userInfo) {
-      return res.status(404).send('bad request sign in')
+      return res.status(404).send("bad request sign in")
     } else {
       try {
         const accessToken = generateAccessToken(userInfo.dataValues)
@@ -74,10 +80,10 @@ module.exports = {
             image: userInfo.image,
           },
           accessToken,
-          message: 'success sign in',
+          message: "success sign in",
         })
       } catch (err) {
-        return res.status(500).send('Server Error sign in')
+        return res.status(500).send("Server Error sign in")
       }
     }
   },
@@ -87,19 +93,19 @@ module.exports = {
     const userInfo = isAuthorized(req)
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request sign out')
+        return res.status(404).send("bad request sign out")
       } else {
         return res
           .status(200)
-          .clearCookie('accessToken', {
+          .clearCookie("accessToken", {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: "none",
           })
-          .send({ message: 'success sign out' })
+          .send({ message: "success sign out" })
       }
     } catch (err) {
-      return res.status(500).send('Server Error sign out')
+      return res.status(500).send("Server Error sign out")
     }
   },
 
@@ -109,13 +115,13 @@ module.exports = {
     console.log(userInfo)
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request users/:id')
+        return res.status(404).send("bad request users/:id")
       } else {
         const deleteUser = await users.destroy({ where: { id: req.params.id } })
-        return res.status(200).send('successfully delete id')
+        return res.status(200).send("successfully delete id")
       }
     } catch (err) {
-      return res.status(500).send('Server Error users/:id')
+      return res.status(500).send("Server Error users/:id")
     }
   },
 
@@ -125,7 +131,7 @@ module.exports = {
     const { nickname, password, image, phone_number } = req.body
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request mypage')
+        return res.status(404).send("bad request mypage")
       } else {
         const user = await users.findOne({ where: { email: userInfo.email } })
         console.log(user)
@@ -135,18 +141,18 @@ module.exports = {
           where: { nickname: nickname },
         })
         if (checkNickname) {
-          return res.status(409).send('nickname already exists sign up')
+          return res.status(409).send("nickname already exists sign up")
         }
 
         // 데이터 수정
         const userNickname = await user.update(
           { nickname, password, image, phone_number },
-          { where: { email: user.dataValues.email } },
+          { where: { email: user.dataValues.email } }
         )
-        return res.statsu(200).send('success update user info')
+        return res.statsu(200).send("success update user info")
       }
     } catch (err) {
-      return res.status(500).send('Server Error mypage')
+      return res.status(500).send("Server Error mypage")
     }
   },
 
@@ -155,34 +161,34 @@ module.exports = {
     const userInfo = isAuthorized(req)
     try {
       if (!userInfo) {
-        res.statsu(404).send('bad request mypage')
+        res.statsu(404).send("bad request mypage")
       } else {
         res.status(200).json({ userInfo })
       }
     } catch (err) {
-      res.status(500).send('Server Error mypage')
+      res.status(500).send("Server Error mypage")
     }
   },
 
   // 생성한 파티, 가입한 파티 조회
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req)
-    console.log('userInfo', userInfo)
+    console.log("userInfo", userInfo)
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request users/:id')
+        return res.status(404).send("bad request users/:id")
       } else {
-        console.log('check')
+        console.log("check")
 
         const userParty = await parties.findAll({
           include: [{ model: users_parties }],
-          where: { writeruser_id: userInfo.id },
+          where: { writeUser_id: userInfo.id },
         })
-        console.log('userParty:', userParty)
+        console.log("userParty:", userParty)
         return res.status(200).json({ userParty })
       }
     } catch (err) {
-      return res.status(500).send('Server Error users/:id')
+      return res.status(500).send("Server Error users/:id")
     }
   },
 }
