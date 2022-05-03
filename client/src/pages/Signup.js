@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Container, ErrorMessage, Form, Input, Label } from '../styled/signup';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Signup = () => {
   } = useForm({
     mode: 'onChange',
   });
-
+  
   const onSubmit = () => {
     const { nickname, email, password, phone_number, image } = getValues();
     console.log(nickname, email, password, phone_number, image);
@@ -33,9 +33,8 @@ const Signup = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         },
-      )
-      .then((res) => {
-        navigate('/');
+      ).then((res) => {
+        navigate('/')
       });
   };
   // if (res.accessToken) {

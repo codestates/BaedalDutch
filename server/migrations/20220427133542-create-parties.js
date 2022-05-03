@@ -1,4 +1,6 @@
+
 "use strict"
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("parties", {
@@ -12,8 +14,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
+
           model: "users",
           key: "id",
+
         },
       },
       store_name: {
@@ -54,6 +58,8 @@ module.exports = {
     })
   },
   async down(queryInterface, Sequelize) {
+
     await queryInterface.dropTable("parties")
+
   },
 }

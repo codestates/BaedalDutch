@@ -1,5 +1,7 @@
+
 "use strict"
 const { Model } = require("sequelize")
+
 module.exports = (sequelize, DataTypes) => {
   class parties extends Model {
     /**
@@ -19,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       models.parties.hasMany(models.users_parties, {
         foreignKey: "parties_id",
         sourceKey: "id",
+
       })
     }
   }
@@ -43,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "parties",
     }
+
   )
   return parties
 }
