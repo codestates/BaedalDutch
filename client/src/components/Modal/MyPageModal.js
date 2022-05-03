@@ -34,7 +34,7 @@ const ModalView = styled.div`
   font-size: 18px;
   font-weight: bold;
 `;
-const MyPage = styled.div``;
+const MyPageButton = styled.div``;
 const LogOut = styled.button``;
 
 const MyPageModal = () => {
@@ -71,7 +71,7 @@ const MyPageModal = () => {
   return (
     <ModalContiaer ref={modalContainer} showMyPageModal={showMyPageModal}>
       <ModalView>
-        <MyPage onClick={moveToMyProfile}>내 설정 페이지</MyPage>
+        <MyPageButton onClick={moveToMyProfile}>내 설정 페이지</MyPageButton>
         <LogOut
           onClick={() => {
             dispatch(isLoginAction(false));
