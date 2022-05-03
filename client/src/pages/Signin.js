@@ -1,10 +1,11 @@
-import React, { useState, useNavigate } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 import { isLoginAction, loginUserAction } from '../store/login';
+import { useNavigate } from 'react-router-dom';
 
 // import { postSignIn } from "../../Api";
 // import { usegate } from "react-rNaviouter-dom";
