@@ -5,7 +5,9 @@ import { food, dutchPerson } from '../components/SelectorList';
 import styled from 'styled-components';
 import DaumPostcode from 'react-daum-postcode';
 import Select from 'react-select';
-import { useState, useSelector } from 'react';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { showWriteAction } from '../store/modal';
 
 const { kakao } = window;
 
@@ -163,8 +165,8 @@ const AdressDiv = styled.div`
 const CloseBtn = styled.button`
   display: block;
   position: absolute;
-  top: 80px;
-  right: 25px;
+  top: 70px;
+  right: 15px;
   z-index: 100;
   padding: 7px;
   width: 100px;
@@ -205,6 +207,8 @@ const addressStyle = {
 };
 
 const Write = () => {
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -246,7 +250,6 @@ const Write = () => {
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
 
-    console.log('어데가문제고', fullAddress);
     setWriteInfo({ ...writeInfo, address: fullAddress });
 
     console.log('여기는들어오나');
@@ -286,7 +289,7 @@ const Write = () => {
         },
       )
       .then((res) => {
-        // setWriteModal(false);
+        dispatch(showWriteAction(false));
       });
   };
 
@@ -372,7 +375,9 @@ const Write = () => {
           id="content"
         ></ContentArea>
 
-        <WriteButton type="submit">가입신청</WriteButton>
+        <WriteButton type="submit" onClick={() => dispatch(showWriteAction(false))}>
+          가입신청
+        </WriteButton>
       </WriteForm>
     </WriteContainer>
   );

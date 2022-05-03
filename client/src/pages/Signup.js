@@ -27,7 +27,7 @@ const Signup = () => {
           password,
           nickname,
           phone_number,
-          image: '',
+          image: '12',
         },
         {
           headers: { 'Content-Type': 'application/json' },
