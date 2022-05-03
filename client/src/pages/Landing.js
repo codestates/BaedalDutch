@@ -48,8 +48,6 @@ function Landing() {
   return (
     <>
       <Container>
-        <ChattingButton onClick={openModalChatting}>채팅</ChattingButton>
-        {ChattingModal === true ? <ChatModal setChattingModal={setChattingModal} /> : null}
         <Introduce1 src={dutch1}></Introduce1>
         <Introduce2 src={dutch2}></Introduce2>
         <Introduce3></Introduce3>

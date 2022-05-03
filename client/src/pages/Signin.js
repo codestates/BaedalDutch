@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useNavigate } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 import { isLoginAction, loginUserAction } from '../store/login';
-import { useSelector } from 'react-redux';
 
 // import { postSignIn } from "../../Api";
 // import { usegate } from "react-rNaviouter-dom";
@@ -115,25 +114,23 @@ function Signin() {
     try {
       await login(email, password).then(
         () => {
-
           dispatch(isLoginAction(true));
           dispatch(showModalAction(false));
           navigate('/main');
 
-//           sessionStorage.setItem('isLogin', 'true');
-//           // setShowModal(false);
-//           window.location.reload();
-//           // dispatch(isLoginAction(true));
-//           // dispatch(showModalAction(false));
-//           // navigate('/main');
-
+          //           sessionStorage.setItem('isLogin', 'true');
+          //           // setShowModal(false);
+          //           window.location.reload();
+          //           // dispatch(isLoginAction(true));
+          //           // dispatch(showModalAction(false));
+          //           // navigate('/main');
         },
         (error) => {
           console.log('에러면여기로');
           console.log(error);
         },
-      )
-      navigator('/')
+      );
+      navigator('/');
     } catch (err) {
       console.log(err);
     }
