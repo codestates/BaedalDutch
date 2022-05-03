@@ -32,6 +32,7 @@
     "socket.io-client": "^4.5.0",
     "styled-component": "^2.8.0",
     "styled-reset": "^4.3.4",
+    "sweetalert2": "^11.4.10",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

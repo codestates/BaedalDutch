@@ -66,7 +66,13 @@ module.exports = {
       try {
         const accessToken = generateAccessToken(userInfo.dataValues)
         sendAccessToken(res, accessToken).json({
-          data: userInfo.nickname,
+          data: {
+            id: userInfo.id,
+            nickname: userInfo.nickname,
+            phone_number: userInfo.phone_number,
+            email: userInfo.email,
+            image: userInfo.image,
+          },
           accessToken,
           message: 'success sign in',
         })
