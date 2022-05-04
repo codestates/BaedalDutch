@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-'use strict'
-const { Model } = require('sequelize')
-=======
 "use strict"
 const { Model } = require("sequelize")
->>>>>>> 6594e76 (FIX:SERVER 오타)
 module.exports = (sequelize, DataTypes) => {
   class parties extends Model {
     /**
@@ -18,21 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "parties_id"
       // });
       models.parties.belongsTo(models.users, {
-<<<<<<< HEAD
-        foreignKey: 'writerUser_id',
-        targetKey: 'id',
-      })
-      models.parties.hasMany(models.users_parties, {
-        foreignKey: 'parties_id',
-        sourceKey: 'id',
-=======
         foreignKey: "writeUser_id",
         targetKey: "id",
       })
       models.parties.hasMany(models.users_parties, {
         foreignKey: "parties_id",
         sourceKey: "id",
->>>>>>> 6594e76 (FIX:SERVER 오타)
       })
     }
   }
@@ -55,13 +41,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-<<<<<<< HEAD
-      modelName: 'parties',
-    },
-=======
       modelName: "parties",
     }
->>>>>>> 6594e76 (FIX:SERVER 오타)
   )
   return parties
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../components/NavBar';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -247,7 +246,6 @@ function MyPage() {
 
   return (
     <div>
-      <Navbar />
       <Wrapper>
         <MapDiv>
           <MyPageDiv>
@@ -359,13 +357,13 @@ const Wrapper = styled.div`
 `;
 
 const MapDiv = styled.div`
-  float: left;
-  margin-right: -460px;
-  padding-right: 460px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background-color: #ffffff;
   width: 100%;
-  height: calc(100vh - 100px);
-  overflow: auto;
+  border: 1px solid pink;
   @media (max-width: 576px) {
     display: ${(props) => (props.openPost ? 'none' : 'block')};
     visibility: visible;
@@ -376,10 +374,11 @@ const MapDiv = styled.div`
 `;
 
 const MyPageDiv = styled.div`
-  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #ffffff;
   width: 95%;
-  height: calc(100vh - 100px);
 `;
 
 const HomeButton = styled.button`

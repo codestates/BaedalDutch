@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-'use strict'
-=======
 "use strict"
->>>>>>> 6594e76 (FIX:SERVER 오타)
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("parties", {
@@ -16,13 +12,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-<<<<<<< HEAD
-          model: 'users',
-          key: 'id',
-=======
           model: "users",
           key: "id",
->>>>>>> 6594e76 (FIX:SERVER 오타)
         },
       },
       store_name: {
@@ -63,10 +54,6 @@ module.exports = {
     })
   },
   async down(queryInterface, Sequelize) {
-<<<<<<< HEAD
-    await queryInterface.dropTable('parties')
-=======
     await queryInterface.dropTable("parties")
->>>>>>> 6594e76 (FIX:SERVER 오타)
   },
 }

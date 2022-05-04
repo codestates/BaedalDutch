@@ -42,7 +42,6 @@ const MyPageModal = () => {
   const showMyPageModal = useSelector((state) => state.modal.showMyPageModal);
   const navDiv = useSelector((state) => state.modal.setNavContainer);
   const dispatch = useDispatch();
-  console.log('모달', showMyPageModal);
 
   const moveToMyProfile = () => {
     dispatch(showMyPageAction(false));
