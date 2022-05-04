@@ -10,9 +10,9 @@ module.exports = {
       [
         {
           id: 1,
-          writeUser_id: 1,
-          store_name: '엽떡',
-          food_category: '떡볶이',
+          leader: 2,
+          store_name: "엽떡",
+          food_category: "떡볶이",
           member_num: 4,
           content: '떡볶이 같이 시키실 분',
           fee: 10000,
@@ -25,9 +25,9 @@ module.exports = {
         },
         {
           id: 2,
-          writeUser_id: 2,
-          store_name: '굽네치킨',
-          food_category: '치킨',
+          leader: 3,
+          store_name: "굽네치킨",
+          food_category: "치킨",
           member_num: 4,
           content: '치킨 같이 시키실 분',
           fee: 10000,
@@ -46,4 +46,5 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('parties', null, {})
   },
-}
+};
+

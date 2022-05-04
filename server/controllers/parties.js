@@ -72,7 +72,7 @@ module.exports = {
     }
     // 3. req.body가 제대로 들어왔는지 확인
     const {
-      writeUser_id,
+      writerUser_id,
       store_name,
       food_category,
       member_num,
@@ -87,7 +87,7 @@ module.exports = {
       // 4. body가 잘 들어왔다면 (토큰을 가진 유저의 id + req.body)를 담아서 DB에 저장(parties, users_parties)
       const partyInfo = await parties
         .create({
-          writeUser_id: userInfo.id,
+          writerUser_id: userInfo.id,
           store_name: store_name,
           food_category: food_category,
           member_num: member_num,
@@ -99,17 +99,17 @@ module.exports = {
           lng: lng,
         })
         .then(data => {
-          console.log('data:', data)
-          users_parties.create({
-            users_id: userInfo.id,
-            parties_id: data.dataValues.id,
-          })
+          //console.log('data:', data)
+          // users_parties.create({
+          //   users_id: userInfo.id,
+          //   parties_id: data.dataValues.id,
+          // });
           res.status(201).json({
             // data: store_name (로직 성공확인되면 이걸로 바꾸기)
             data: data.dataValues,
-            message: 'create party post parties',
-          })
-        })
+            message: "create party post parties",
+          });
+        });
     } catch (err) {
       res.status(500).json({
         message: 'Server Error post parties',

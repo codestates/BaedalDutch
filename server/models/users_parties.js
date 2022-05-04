@@ -13,16 +13,22 @@ module.exports = (sequelize, DataTypes) => {
       models.users_parties.belongsTo(models.users, {
         foreignKey: "users_id",
         targetKey: "id",
+        onDelete: "CASCADE",
       });
       models.users_parties.belongsTo(models.parties, {
         foreignKey: "parties_id",
         targetKey: "id",
+        onDelete: "CASCADE",
       });
     }
   }
   users_parties.init({
-    users_id: DataTypes.INTEGER,
-    parties_id: DataTypes.INTEGER
+    users_id: {
+      type: DataTypes.INTEGER,
+    },
+    parties_id: {
+      type: DataTypes.INTEGER,
+    },
   }, {
     sequelize,
     modelName: 'users_parties',

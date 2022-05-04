@@ -1,4 +1,5 @@
-const { users, parties } = require("../models")
+const { users, parties, users_parties } = require('../models')
+
 const {
   generateAccessToken,
   sendAccessToken,
@@ -79,6 +80,7 @@ module.exports = {
             email: userInfo.email,
             image: userInfo.image,
           },
+
           accessToken,
           message: "success sign in",
         })
@@ -145,11 +147,11 @@ module.exports = {
         }
 
         // 데이터 수정
-        const userNickname = await user.update(
+        const updateUserInfo = await user.update(
           { nickname, password, image, phone_number },
           { where: { email: user.dataValues.email } }
-        )
-        return res.statsu(200).send("success update user info")
+        );
+        return res.statsu(200).json({ updateUserInfo, message: "success update user info"});
       }
     } catch (err) {
       return res.status(500).send("Server Error mypage")
@@ -170,7 +172,7 @@ module.exports = {
     }
   },
 
-  // 생성한 파티, 가입한 파티 조회
+  // 생성한 파티, 가입한 파티 조회(작업중)
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req)
     console.log("userInfo", userInfo)
@@ -178,14 +180,14 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send("bad request users/:id")
       } else {
-        console.log("check")
-
         const userParty = await parties.findAll({
-          include: [{ model: users_parties }],
-          where: { writeUser_id: userInfo.id },
+          where: { writerUser_id: req.params.id }
         })
-        console.log("userParty:", userParty)
-        return res.status(200).json({ userParty })
+        const userJoin = await users_parties.findAll({
+          where: { users_id: req.params.id }
+        })
+        console.log('userParty:', userParty)
+        return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {
       return res.status(500).send("Server Error users/:id")

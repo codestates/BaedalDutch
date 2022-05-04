@@ -10,6 +10,16 @@ module.exports = {
       [
         {
           id: 1,
+          email: "admin@test.com",
+          nickname: "admin",
+          password: "1234",
+          image: "프로필 이미지",
+          phone_number: "010-1111-1111",
+          createdAt,
+          updatedAt,
+        },
+        {
+          id: 2,
           email: "test@test.com",
           nickname: "Kimcoding",
           password: "1234",
@@ -19,7 +29,7 @@ module.exports = {
           updatedAt,
         },
         {
-          id: 2,
+          id: 3,
           email: "test1@test.com",
           nickname: "Parkhacker",
           password: "1234",
