@@ -15,12 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "users_id"
       // });
       models.users.hasMany(models.parties, {
-        foreignKey: "writerUser_id",
+        foreignKey: "leader",
         sourceKey: "id",
+        onDelete: "CASCADE"
       });
       models.users.hasMany(models.users_parties, {
         foreignKey: "users_id",
         sourceKey: "id",
+        onDelete: "CASCADE"
       });
     }
   }

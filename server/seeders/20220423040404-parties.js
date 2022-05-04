@@ -10,7 +10,7 @@ module.exports = {
       [
         {
           id: 1,
-          writeUser_id: 1,
+          writerUser_id: 2,
           store_name: "엽떡",
           food_category: "떡볶이",
           member_num: 4,
@@ -25,7 +25,7 @@ module.exports = {
         },
         {
           id: 2,
-          writeUser_id: 2,
+          writerUser_id: 3,
           store_name: "굽네치킨",
           food_category: "치킨",
           member_num: 4,
