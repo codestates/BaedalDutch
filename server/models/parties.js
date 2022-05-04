@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "parties_id"
       // });
       models.parties.belongsTo(models.users, {
-        foreignKey: 'writerUser_id',
+        foreignKey: 'writeUser_id',
         targetKey: 'id',
       })
       models.parties.hasMany(models.users_parties, {
@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   parties.init(
     {
-      writeUser_id: DataTypes.INTEGER,
       store_name: DataTypes.STRING,
       food_category: DataTypes.STRING,
       member_num: DataTypes.INTEGER,

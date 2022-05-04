@@ -26,7 +26,7 @@ module.exports = {
     }
   },
 
-  // 파티 하나 조회 ( 미완성 )
+  // 파티 하나 조회
   getOneParty: async (req, res) => {
     console.log('getOneParty 진입')
     // 1. req.params.id와 일치하는 파티 하나를 찾는다. (+closed)
@@ -100,10 +100,10 @@ module.exports = {
         })
         .then(data => {
           console.log('data:', data)
-          users_parties.create({
-            users_id: userInfo.id,
-            parties_id: data.dataValues.id,
-          })
+          // users_parties.create({
+          //   users_id: userInfo.id,
+          //   parties_id: data.dataValues.id,
+          // })
           res.status(201).json({
             // data: store_name (로직 성공확인되면 이걸로 바꾸기)
             data: data.dataValues,

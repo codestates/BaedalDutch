@@ -1,4 +1,4 @@
-const { users, parties } = require('../models')
+const { users, parties, users_parties } = require('../models')
 const {
   generateAccessToken,
   sendAccessToken,
@@ -173,13 +173,21 @@ module.exports = {
         return res.status(404).send('bad request users/:id')
       } else {
         console.log('check')
-
-        const userParty = await parties.findAll({
-          include: [{ model: users_parties }],
-          where: { writeruser_id: userInfo.id },
-        })
+        // 생성한 파티
+        const userParty = await parties
+          .findAll({
+            // include: [{ model: users_parties }],
+            where: { writeUser_id: userInfo.id },
+          })
+          .then(() => {
+            const userParty2 = users_parties.findAll({
+              // where: { users_id: userInfo.id },
+            })
+          })
         console.log('userParty:', userParty)
-        return res.status(200).json({ userParty })
+        // 가입한 파티
+        console.log('userParty2:', userParty2)
+        return res.status(200).json({ data: userParty, userParty2: userParty2 })
       }
     } catch (err) {
       return res.status(500).send('Server Error users/:id')
