@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 import { isLoginAction, loginUserAction } from '../store/login';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // import { postSignIn } from "../../Api";
 // import { usegate } from "react-rNaviouter-dom";
@@ -85,6 +85,7 @@ function Signin() {
         },
       )
       .then((response) => {
+        console.log('들어오는가');
         console.log('login res::', response);
         if (response.data.accessToken) {
           console.log('135', isLogin);
@@ -92,6 +93,7 @@ function Signin() {
           dispatch(loginUserAction(response.data.data));
           console.log('response.data.data:', response.data.data);
           dispatch(showModalAction(false));
+          sessionStorage.setItem('user', JSON.stringify(response));
           navigate('/main');
         }
         return response.data;
@@ -100,8 +102,8 @@ function Signin() {
 
   const handleOauth = () => {
     // eslint-disable-next-line no-restricted-globals
-    location.href =`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`
-  }
+    location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`;
+  };
 
   const handleLogin = async () => {
     const { email, password } = loginInfo;
@@ -113,18 +115,23 @@ function Signin() {
     try {
       await login(email, password).then(
         () => {
-          sessionStorage.setItem('isLogin', 'true');
-          // setShowModal(false);
-          window.location.reload();
-          // dispatch(isLoginAction(true));
-          // dispatch(showModalAction(false));
-          // navigate('/main');
+          dispatch(isLoginAction(true));
+          dispatch(showModalAction(false));
+          navigate('/main');
+
+          //           sessionStorage.setItem('isLogin', 'true');
+          //           // setShowModal(false);
+          //           window.location.reload();
+          //           // dispatch(isLoginAction(true));
+          //           // dispatch(showModalAction(false));
+          //           // navigate('/main');
         },
         (error) => {
+          console.log('에러면여기로');
           console.log(error);
         },
-      )
-      navigator('/')
+      );
+      navigator('/');
     } catch (err) {
       console.log(err);
     }

@@ -68,8 +68,6 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
 
-  console.log('글쓰기모달', showWriteModal);
-
   return (
     <Container>
       <Sidebarbox>
