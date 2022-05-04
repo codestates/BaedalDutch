@@ -1,5 +1,5 @@
-'use strict'
-const { Model } = require('sequelize')
+"use strict"
+const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
   class parties extends Model {
     /**
@@ -13,12 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "parties_id"
       // });
       models.parties.belongsTo(models.users, {
-        foreignKey: 'writerUser_id',
-        targetKey: 'id',
+        foreignKey: "writeUser_id",
+        targetKey: "id",
       })
       models.parties.hasMany(models.users_parties, {
-        foreignKey: 'parties_id',
-        sourceKey: 'id',
+        foreignKey: "parties_id",
+        sourceKey: "id",
       })
     }
   }
@@ -41,8 +41,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'parties',
-    },
+      modelName: "parties",
+    }
   )
   return parties
 }

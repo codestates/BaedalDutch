@@ -30,11 +30,8 @@ const ChattingButton = styled(Button)`
 `;
 
 const ButtonMenu = () => {
-  console.log('버튼메뉴');
-  console.log('버튼');
   const dispatch = useDispatch();
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
-  console.log('글쓰기모달', showWriteModal);
 
   const [ChattingModal, setChattingModal] = useState(false);
 
