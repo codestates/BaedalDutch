@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 import { isLoginAction, loginUserAction } from '../store/login';
-import { useSelector } from 'react-redux';
 
 // import { postSignIn } from "../../Api";
 // import { usegate } from "react-rNaviouter-dom";
