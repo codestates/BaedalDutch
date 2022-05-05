@@ -312,7 +312,7 @@ const Write = () => {
         },
       )
       .then((res) => {
-        console.log(writeInfo);
+        console.log('axios요청 성공');
         dispatch(showWriteAction(false));
       });
   }
