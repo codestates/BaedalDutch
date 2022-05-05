@@ -14,9 +14,12 @@ module.exports = {
       return res.status(404).send('Bad request sign up')
     }
 
+    // email 중복체크
     const checkEmail = await users.findOne({
       where: { email: email },
     })
+    
+    // nickname 중복체크
     const checkNickname = await users.findOne({
       where: { nickname: nickname },
     })
@@ -24,7 +27,7 @@ module.exports = {
     if (checkEmail) {
       return res.status(409).send('email already exists sign up')
     }
-    if (checkNickname || "admin") {
+    if (checkNickname) {
       return res.status(409).send("nickname already exists sign up");
     }
 
@@ -120,21 +123,20 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send('bad request mypage')
       } else {
-        const user = await users.findOne({ where: { email: userInfo.email } })
+        const user = await users.findOne({ where: { id: userInfo.id } })
         console.log(user)
-
         // 닉네임 중복 체크
-        const checkNickname = await users.findOne({
-          where: { nickname: nickname },
-        })
-        if (checkNickname) {
-          return res.status(409).send('nickname already exists sign up')
-        }
-
+        // const checkNickname = await users.findOne({
+        //   where: { nickname: nickname },
+        // })
+        // if (checkNickname) {
+        //   return res.status(409).send('nickname already exists sign up')
+        // }
+        // console.log('check')
         // 데이터 수정
-        const updateUserInfo = await user.update(
+        const updateUserInfo = await users.update(
           { nickname, password, image, phone_number },
-          { where: { email: user.dataValues.email } }
+          { where: { id: userInfo.id } }
         );
         return res.statsu(200).json({ updateUserInfo, message: "success update user info"});
       }
