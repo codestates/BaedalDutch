@@ -42,11 +42,12 @@ module.exports = {
   updateUser: async (req, res) => {
     const adminInfo = isAuthorized(req)
     const { nickname, password, image, phone_number } = req.body
-    
+    console.log('adminInfo', adminInfo)
     try{
-      if(adminInfo.nickname === "admin") {
-        const user = await users.findOne({ where: { id: req.params.id }})
-        console.log(user)
+      const user = await users.findOne({ where: { id: req.params.id }})
+      //console.log(user)
+      if(adminInfo.nickname === "admin") {    
+        console.log('check')
         // 닉네임 중복 체크        
         // const nicknameCheck = await users.findOne({
         //   where: { nickname: nickname },
@@ -58,11 +59,11 @@ module.exports = {
         // 데이터 수정
         const updateUser = await user.update(
           { nickname, password, image, phone_number },
-          { where: { id: req.params.id }}
+          { where: { id: user.id }}
         )
-        return res.statsu(200).json({ updateUser, message: 'success update user info'})
+        return res.status(200).json({ updateUser, message: 'success update user info'})
       } else {
-        res.ststus(400).send('Bad request admin user update')
+        return res.ststus(400).send('Bad request admin user update')
       }
     } catch(err){
       return res.status(500).send('Server Error admin update')

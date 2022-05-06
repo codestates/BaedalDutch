@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict"
+const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
   class parties extends Model {
     /**
@@ -26,23 +24,26 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  parties.init({
-    store_name: DataTypes.STRING,
-    food_category: DataTypes.STRING,
-    member_num: DataTypes.INTEGER,
-    content: DataTypes.STRING,
-    fee: DataTypes.INTEGER,
-    address: DataTypes.STRING,
-    closed: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+  parties.init(
+    {
+      store_name: DataTypes.STRING,
+      food_category: DataTypes.STRING,
+      member_num: DataTypes.INTEGER,
+      content: DataTypes.STRING,
+      fee: DataTypes.INTEGER,
+      address: DataTypes.STRING,
+      closed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      lat: DataTypes.STRING,
+      lng: DataTypes.STRING,
     },
-    lat: DataTypes.STRING,
-    lng: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'parties',
-  });
-  return parties;
-};
+    {
+      sequelize,
+      modelName: "parties",
+    }
+  )
+  return parties
+}

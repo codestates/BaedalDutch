@@ -5,7 +5,10 @@ import { food, dutchPerson } from '../components/SelectorList';
 import styled from 'styled-components';
 import DaumPostcode from 'react-daum-postcode';
 import Select from 'react-select';
-import { useState, useSelector } from 'react';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { showWriteAction } from '../store/modal';
+import { currentLocationAction } from '../store/location';
 
 const { kakao } = window;
 
@@ -163,8 +166,8 @@ const AdressDiv = styled.div`
 const CloseBtn = styled.button`
   display: block;
   position: absolute;
-  top: 80px;
-  right: 25px;
+  top: 70px;
+  right: 15px;
   z-index: 100;
   padding: 7px;
   width: 100px;
@@ -205,6 +208,8 @@ const addressStyle = {
 };
 
 const Write = () => {
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -246,34 +251,55 @@ const Write = () => {
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
 
-    console.log('어데가문제고', fullAddress);
     setWriteInfo({ ...writeInfo, address: fullAddress });
+    console.log('첫번째 어드레스', writeInfo.address);
+    setVisible(false);
+  };
 
-    console.log('여기는들어오나');
+  const test = () => {
+    console.log('늦게하더라도 늦게찍힘?');
+    console.log('비동기???', writeInfo.address);
     const geocoder = new kakao.maps.services.Geocoder();
 
     let callback = function (result, status) {
+      console.log('상태?', status);
       if (status === 'OK') {
         const newAddSearch = result[0];
-        console.log('들어오나');
-        console.log('newaddress->', newAddSearch);
         setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
       }
     };
     geocoder.addressSearch(`${writeInfo.address}`, callback);
-    setVisible(false);
   };
 
   const onSubmit = () => {
-    const { store_name, food_category, member_num, content, fee } = getValues();
-    console.log('writeInfo', writeInfo.lat);
+    console.log('제출할때', writeInfo);
+    const geocoder = new kakao.maps.services.Geocoder();
+
+    let callback = function (result, status) {
+      console.log('상태?', status);
+      if (status === 'OK') {
+        const newAddSearch = result[0];
+        console.log(newAddSearch);
+        setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
+      }
+      console.log('writeInfo.lat', typeof writeInfo.lat);
+    };
+    geocoder.addressSearch(`${writeInfo.address}`, callback);
+  };
+
+  if (writeInfo.lat !== '') {
+    dispatch(currentLocationAction({ lat: writeInfo.lat, lng: writeInfo.lng }));
+    const { store_name, content, fee } = getValues();
+
+    console.log('axios요청', writeInfo.food_category);
+
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/parties`,
         {
           store_name,
-          food_category,
-          member_num,
+          food_category: writeInfo.food_category,
+          member_num: writeInfo.member_num,
           content,
           fee,
           address: writeInfo.address,
@@ -286,9 +312,10 @@ const Write = () => {
         },
       )
       .then((res) => {
-        // setWriteModal(false);
+        console.log(writeInfo);
+        dispatch(showWriteAction(false));
       });
-  };
+  }
 
   const feePattern = {
     value: /^[|0-9|]+$/,
@@ -341,7 +368,12 @@ const Write = () => {
           {visible ? (
             <div>
               <CloseBtn onClick={() => setVisible(false)}>닫기</CloseBtn>
-              <DaumPostcode onComplete={handleComplete} style={addressStyle} height={700} />
+              <DaumPostcode
+                onComplete={handleComplete}
+                onSuccess={test}
+                style={addressStyle}
+                height={700}
+              />
             </div>
           ) : null}
 
@@ -372,7 +404,9 @@ const Write = () => {
           id="content"
         ></ContentArea>
 
-        <WriteButton type="submit">가입신청</WriteButton>
+        <WriteButton type="submit" onClick={() => dispatch(showWriteAction(false))}>
+          가입신청
+        </WriteButton>
       </WriteForm>
     </WriteContainer>
   );

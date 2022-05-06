@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { showWriteAction } from '../../store/modal';
+import ChatModal from '../Modal/ChatModal';
+import { useState } from 'react';
 
 const ButtonWrap = styled.div`
   display: flex;
@@ -28,20 +30,24 @@ const ChattingButton = styled(Button)`
 `;
 
 const ButtonMenu = () => {
-  console.log('버튼메뉴');
-  console.log('버튼');
   const dispatch = useDispatch();
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
-  console.log('글쓰기모달', showWriteModal);
+
+  const [ChattingModal, setChattingModal] = useState(false);
+
+  const openModalChatting = () => {
+    setChattingModal(!ChattingModal);
+  };
 
   return (
     <ButtonWrap>
       <WriteButton onClick={() => dispatch(showWriteAction(true))}>
         <i className="fa-solid fa-pen-to-square" />
       </WriteButton>
-      <ChattingButton>
+      <ChattingButton onClick={openModalChatting}>
         <i className="fas fa-comment-dots" />
       </ChattingButton>
+      {ChattingModal === true ? <ChatModal setChattingModal={setChattingModal} /> : null}
     </ButtonWrap>
   );
 };

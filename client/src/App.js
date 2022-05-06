@@ -9,6 +9,8 @@ import GlobalStyle from './styled/Globalstyles';
 import OAuth2RedirectHandler from './pages/oauthLogin';
 import WriteModal from './components/Modal/WriteModal/WriteModal';
 import Admin from './pages/admin';
+import MyPageModal from './components/Modal/MyPageModal';
+import MyPage from './pages/MyPage';
 
 function App() {
   return (
@@ -17,12 +19,14 @@ function App() {
       <Navbar />
       <LoginModal />
       <WriteModal />
+      <MyPageModal />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/main" element={<Main />} />
         <Route path="/oauth/kakao" element={<OAuth2RedirectHandler />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </BrowserRouter>
   );

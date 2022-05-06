@@ -14,8 +14,6 @@ const WriteModal = () => {
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
   const dispatch = useDispatch();
 
-  console.log('snowmodal상태', showWriteModal);
-
   return (
     <WriteModalContainer showWriteModal={showWriteModal}>
       <WriteModalBackdrop>
