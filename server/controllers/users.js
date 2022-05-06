@@ -171,15 +171,21 @@ module.exports = {
 
   // 회원 정보 조회
   getUserInfo: async (req, res) => {
+    console.log("들어오나")
     const userInfo = isAuthorized(req)
     try {
       if (!userInfo) {
-        res.statsu(404).send('bad request mypage')
+        console.log("1")
+        res.status(404).send("bad request mypage")
+
       } else {
+        console.log("2")
         res.status(200).json({ userInfo })
       }
     } catch (err) {
-      res.status(500).send('Server Error mypage')
+      console.log("3")
+      res.status(500).send("Server Error mypage")
+
     }
   },
 
