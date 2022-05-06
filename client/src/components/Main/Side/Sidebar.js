@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { showWriteAction } from '../../../store/modal';
-import Content from './Contents';
+import Contents from './Contents';
 
 const Container = styled.div`
   background-color: #e3ecf1;
@@ -77,7 +77,7 @@ const Sidebar = () => {
           <MyParty>내 파티</MyParty>
         </Parties>
         <SidebarContent>
-          <Content />
+          <Contents />
         </SidebarContent>
       </Sidebarbox>
     </Container>
