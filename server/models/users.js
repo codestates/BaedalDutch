@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 'use strict'
 const { Model } = require('sequelize')
-=======
-"use strict"
-const { Model } = require("sequelize")
->>>>>>> e9ac245c3d117d2f3ea08e54219fda720a2d8e4c
+
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
     /**
@@ -18,15 +14,15 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "users_id"
       // });
       models.users.hasMany(models.parties, {
-        foreignKey: "leader",
-        sourceKey: "id",
-        onDelete: "CASCADE"
-      });
+        foreignKey: 'leader',
+        sourceKey: 'id',
+        onDelete: 'CASCADE',
+      })
       models.users.hasMany(models.users_parties, {
-        foreignKey: "users_id",
-        sourceKey: "id",
-        onDelete: "CASCADE"
-      });
+        foreignKey: 'users_id',
+        sourceKey: 'id',
+        onDelete: 'CASCADE',
+      })
     }
   }
   users.init(
@@ -39,13 +35,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-<<<<<<< HEAD
+
       modelName: 'users',
     },
-=======
-      modelName: "users",
-    }
->>>>>>> e9ac245c3d117d2f3ea08e54219fda720a2d8e4c
   )
   return users
 }

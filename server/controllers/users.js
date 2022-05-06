@@ -141,18 +141,28 @@ module.exports = {
         const checkNickname = await users.findOne({
           where: { nickname: nickname },
         })
-        if (checkNickname) {
-          return res.status(409).send('nickname already exists sign up')
-        }
 
-        // 데이터 수정
-        const updateUserInfo = await user.update(
-          { nickname, password, image, phone_number },
-          { where: { email: user.dataValues.email } },
-        )
-        return res
-          .statsu(200)
-          .json({ updateUserInfo, message: 'success update user info' })
+        if (req.body.nickname === userInfo.nickname) {
+          // 데이터 수정
+          const updateUserInfo = await users.update(
+            { nickname, password, image, phone_number },
+            { where: { email: user.dataValues.email } },
+          )
+          return res
+            .status(200)
+            .json({ updateUserInfo, message: 'success update user info' })
+        } else if (checkNickname) {
+          return res.status(409).send('nickname already exists sign up')
+        } else {
+          // 데이터 수정
+          const updateUserInfo = await users.update(
+            { nickname, password, image, phone_number },
+            { where: { email: user.dataValues.email } },
+          )
+          return res
+            .status(200)
+            .json({ updateUserInfo, message: 'success update user info' })
+        }
       }
     } catch (err) {
       return res.status(500).send('Server Error mypage')
