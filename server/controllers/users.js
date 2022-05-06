@@ -9,8 +9,11 @@ module.exports = {
   // 회원가입
   signup: async (req, res) => {
     const { email, password, nickname, phone_number, image } = req.body
+    console.log('회원가입 어디문제지', email, password, nickname, phone_number)
+    console.log('이미지?', image)
 
     if (!email || !password || !nickname || !phone_number || !image) {
+      console.log('진입')
       return res.status(404).send('Bad request sign up')
     }
 
@@ -25,7 +28,9 @@ module.exports = {
       return res.status(409).send('email already exists sign up')
     }
 
-    if (checkNickname || 'admin') {
+    if (checkNickname) {
+      //Admin 삭제
+      console.log('닉네임에러')
       return res.status(409).send('nickname already exists sign up')
     }
 
@@ -55,6 +60,7 @@ module.exports = {
   // 로그인
   signin: async (req, res) => {
     const { email, password } = req.body
+    console.log('서버체크', email, password)
 
     const userInfo = await users.findOne({
       where: { email: email, password: password },
@@ -73,6 +79,7 @@ module.exports = {
             email: userInfo.email,
             image: userInfo.image,
           },
+
           accessToken,
           message: 'success sign in',
         })
@@ -139,11 +146,13 @@ module.exports = {
         }
 
         // 데이터 수정
-        const userNickname = await user.update(
+        const updateUserInfo = await user.update(
           { nickname, password, image, phone_number },
           { where: { email: user.dataValues.email } },
         )
-        return res.statsu(200).send('success update user info')
+        return res
+          .statsu(200)
+          .json({ updateUserInfo, message: 'success update user info' })
       }
     } catch (err) {
       return res.status(500).send('Server Error mypage')
@@ -164,7 +173,7 @@ module.exports = {
     }
   },
 
-  // 생성한 파티, 가입한 파티 조회
+  // 생성한 파티, 가입한 파티 조회(작업중)
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req)
     console.log('userInfo', userInfo)
@@ -172,22 +181,14 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send('bad request users/:id')
       } else {
-        console.log('check')
-        // 생성한 파티
-        const userParty = await parties
-          .findAll({
-            // include: [{ model: users_parties }],
-            where: { writeUser_id: userInfo.id },
-          })
-          .then(() => {
-            const userParty2 = users_parties.findAll({
-              // where: { users_id: userInfo.id },
-            })
-          })
+        const userParty = await parties.findAll({
+          where: { writerUser_id: req.params.id },
+        })
+        const userJoin = await users_parties.findAll({
+          where: { users_id: req.params.id },
+        })
         console.log('userParty:', userParty)
-        // 가입한 파티
-        console.log('userParty2:', userParty2)
-        return res.status(200).json({ data: userParty, userParty2: userParty2 })
+        return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {
       return res.status(500).send('Server Error users/:id')

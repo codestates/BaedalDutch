@@ -9,13 +9,13 @@ module.exports = {
       "users_parties",
       [
         {
-          users_id: 1,
+          users_id: 2,
           parties_id: 1,
           createdAt,
           updatedAt,
         },
         {
-          users_id: 2,
+          users_id: 3,
           parties_id: 2,
           createdAt,
           updatedAt,
