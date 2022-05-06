@@ -9,18 +9,19 @@ const {
 module.exports = {
   // 회원가입
   signup: async (req, res) => {
-    const { email, password, nickname, phone_number, image } = req.body
-    console.log("회원가입 어디문제지", email, password, nickname, phone_number)
-    console.log("이미지?", image)
+    const { email, password, nickname, phone_number, image, address } = req.body
 
-    if (!email || !password || !nickname || !phone_number || !image) {
+    if (!email || !password || !nickname || !phone_number || !image || !address) {
       console.log("진입")
       return res.status(404).send("Bad request sign up")
     }
 
+    // email 중복체크
     const checkEmail = await users.findOne({
       where: { email: email },
     })
+    
+    // nickname 중복체크
     const checkNickname = await users.findOne({
       where: { nickname: nickname },
     })
@@ -28,11 +29,8 @@ module.exports = {
     if (checkEmail) {
       return res.status(409).send("email already exists sign up")
     }
-
     if (checkNickname) {
-      //Admin 삭제
-      console.log("닉네임에러")
-      return res.status(409).send("nickname already exists sign up")
+      return res.status(409).send("nickname already exists sign up");
     }
 
     const [data, created] = await users.findOrCreate({
@@ -42,6 +40,7 @@ module.exports = {
         nickname: nickname,
         phone_number: phone_number,
         image: image,
+        address: address
       },
     })
     if (!created) {
@@ -72,18 +71,7 @@ module.exports = {
     } else {
       try {
         const accessToken = generateAccessToken(userInfo.dataValues)
-        sendAccessToken(res, accessToken).json({
-          data: {
-            id: userInfo.id,
-            nickname: userInfo.nickname,
-            phone_number: userInfo.phone_number,
-            email: userInfo.email,
-            image: userInfo.image,
-          },
-
-          accessToken,
-          message: "success sign in",
-        })
+        sendAccessToken(res, accessToken).json({ userInfo, accessToken, message: "success sign in" })
       } catch (err) {
         return res.status(500).send("Server Error sign in")
       }
@@ -99,7 +87,7 @@ module.exports = {
       } else {
         return res
           .status(200)
-          .clearCookie("accessToken", {
+          .clearCookie("jwt", {
             httpOnly: true,
             secure: true,
             sameSite: "none",
@@ -127,31 +115,32 @@ module.exports = {
     }
   },
 
-  // 회원정보 수정
+  // 회원정보 수정(작업중)
+  // 닉네임을 안바꾸고 다른 항목 수정하면 닉네임 중복으로 수정 안됨
   updateUser: async (req, res) => {
     const userInfo = isAuthorized(req)
-    const { nickname, password, image, phone_number } = req.body
+    const { nickname, password, image, phone_number, address } = req.body
     try {
       if (!userInfo) {
         return res.status(404).send("bad request mypage")
       } else {
-        const user = await users.findOne({ where: { email: userInfo.email } })
+        const user = await users.findOne({ where: { id: userInfo.id } })
         console.log(user)
-
         // 닉네임 중복 체크
         const checkNickname = await users.findOne({
           where: { nickname: nickname },
         })
         if (checkNickname) {
-          return res.status(409).send("nickname already exists sign up")
+          return res.status(409).send('nickname already exists sign up')
         }
+        console.log('check')
 
         // 데이터 수정
-        const updateUserInfo = await user.update(
-          { nickname, password, image, phone_number },
-          { where: { email: user.dataValues.email } }
+        const updateUserInfo = await users.update(
+          { nickname, password, image, phone_number, address },
+          { where: { id: userInfo.id } }
         );
-        return res.statsu(200).json({ updateUserInfo, message: "success update user info"});
+        return res.status(200).json({ updateUserInfo, message: "success update user info"});
       }
     } catch (err) {
       return res.status(500).send("Server Error mypage")
@@ -176,7 +165,7 @@ module.exports = {
     }
   },
 
-  // 생성한 파티, 가입한 파티 조회(작업중)
+  // 생성한 파티, 가입한 파티 조회(완료)
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req)
     console.log("userInfo", userInfo)

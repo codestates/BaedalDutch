@@ -26,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   parties.init(
     {
-      writeUser_id: DataTypes.INTEGER,
       store_name: DataTypes.STRING,
       food_category: DataTypes.STRING,
       member_num: DataTypes.INTEGER,
