@@ -17,9 +17,9 @@ function Landing1() {
         <Wrapper>
           <TextDiv>
             <Zoom triggerOnce={false} duration={1500}>
-              <Text data-text="음식값보다 비싼 배달비 ! ">음식값보다 비싼 배달비 !</Text>
-              <Text>부담되지 않으셨나요?</Text>
-              <Text>우리 함께 N빵 해봐요!</Text>
+              <Text data-text="음식값보다 비싼 배달비 ! ">비싸지는 배달비</Text>
+              <Text>함께 나눠봐요</Text>
+              <Text>BaedalDutch</Text>
             </Zoom>
             <GoButton onClick={handleMain}>바로시작</GoButton>
           </TextDiv>
