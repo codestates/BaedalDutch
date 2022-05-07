@@ -249,11 +249,9 @@ function MyPage() {
       <Wrapper>
         <MapDiv>
           <MyPageDiv>
-            {/* 프로필사진 */}
             {/* <ProfileImage updateImages={updateImages} /> */}
-            {/* --------------------------회원정보 수정------------------------- */}
             {changeInfoBtn ? (
-              // 회원정보 수정중인 상태
+              // 회원정보 수정
               <MyPageForm onSubmit={(e) => e.preventDefault()}>
                 <InputTitle>닉네임</InputTitle>
                 <InputField
