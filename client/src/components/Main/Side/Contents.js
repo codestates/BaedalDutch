@@ -1,6 +1,17 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const FoodImg = styled.img``;
+const StoreName = styled.div``;
+const PartyMember = styled.div``;
+const Fee = styled.div``;
+const Dutch = styled.div``;
 
 const Contents = () => {
   const [parties, setParties] = useState([]);
@@ -25,17 +36,20 @@ const Contents = () => {
   console.log('파리', parties);
 
   return (
-    <div>
+    <Container>
       {parties.map((party, i) => {
         console.log(party.food_category);
         return (
           <div>
-            <div>{party.store_name}</div>
-            <img src={`icon/${party.food_category}.png`} alt=""></img>
+            <StoreName>{party.store_name}</StoreName>
+            <FoodImg src={`icon/${party.food_category}.png`} alt=""></FoodImg>
+            <PartyMember> {party.member_num} 명</PartyMember>
+            <Fee>{party.fee} 원</Fee>
+            <Dutch>{parseInt(party.fee / party.member_num)} 원</Dutch>
           </div>
         );
       })}
-    </div>
+    </Container>
   );
 };
 export default Contents;
