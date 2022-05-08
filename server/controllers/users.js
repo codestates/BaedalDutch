@@ -1,38 +1,39 @@
-const { users, parties, users_parties } = require("../models")
+
+const { users, parties, users_parties } = require('../models')
 
 const {
   generateAccessToken,
   sendAccessToken,
   isAuthorized,
-} = require("../controllers/tokenfunctions")
+} = require('../controllers/tokenfunctions')
 
 module.exports = {
   // 회원가입
   signup: async (req, res) => {
-    const { email, password, nickname, phone_number, image } = req.body
-    console.log("회원가입 어디문제지", email, password, nickname, phone_number)
-    console.log("이미지?", image)
+    const { email, password, nickname, phone_number, image, address } = req.body
 
-    if (!email || !password || !nickname || !phone_number || !image) {
+    if (!email || !password || !nickname || !phone_number || !image || !address) {
       console.log("진입")
       return res.status(404).send("Bad request sign up")
     }
 
+    // email 중복체크
     const checkEmail = await users.findOne({
       where: { email: email },
     })
+    
+    // nickname 중복체크
     const checkNickname = await users.findOne({
       where: { nickname: nickname },
     })
 
     if (checkEmail) {
-      return res.status(409).send("email already exists sign up")
+      return res.status(409).send('email already exists sign up')
     }
-
     if (checkNickname) {
       //Admin 삭제
-      console.log("닉네임에러")
-      return res.status(409).send("nickname already exists sign up")
+      console.log('닉네임에러')
+      return res.status(409).send('nickname already exists sign up')
     }
 
     const [data, created] = await users.findOrCreate({
@@ -42,33 +43,34 @@ module.exports = {
         nickname: nickname,
         phone_number: phone_number,
         image: image,
+        address: address
       },
     })
     if (!created) {
-      return res.status(409).send("already exists sign up")
+      return res.status(409).send('already exists sign up')
     }
     try {
       const accessToken = generateAccessToken(data.dataValues)
       sendAccessToken(res, accessToken).json({
         data: data.dataValues.email,
-        message: "created your id!!",
+        message: 'created your id!!',
       })
     } catch (err) {
-      return res.status(500).send("Server Error sign up")
+      return res.status(500).send('Server Error sign up')
     }
   },
 
   // 로그인
   signin: async (req, res) => {
     const { email, password } = req.body
-    console.log("서버체크", email, password)
+    console.log('서버체크', email, password)
 
     const userInfo = await users.findOne({
       where: { email: email, password: password },
     })
-    console.log("userInfo:", userInfo)
+    console.log('userInfo:', userInfo)
     if (!userInfo) {
-      return res.status(404).send("bad request sign in")
+      return res.status(404).send('bad request sign in')
     } else {
       try {
         const accessToken = generateAccessToken(userInfo.dataValues)
@@ -80,12 +82,12 @@ module.exports = {
             email: userInfo.email,
             image: userInfo.image,
           },
-
           accessToken,
-          message: "success sign in",
+          message: 'success sign in',
         })
+
       } catch (err) {
-        return res.status(500).send("Server Error sign in")
+        return res.status(500).send('Server Error sign in')
       }
     }
   },
@@ -95,19 +97,19 @@ module.exports = {
     const userInfo = isAuthorized(req)
     try {
       if (!userInfo) {
-        return res.status(404).send("bad request sign out")
+        return res.status(404).send('bad request sign out')
       } else {
         return res
           .status(200)
           .clearCookie("jwt", {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: 'none',
           })
-          .send({ message: "success sign out" })
+          .send({ message: 'success sign out' })
       }
     } catch (err) {
-      return res.status(500).send("Server Error sign out")
+      return res.status(500).send('Server Error sign out')
     }
   },
 
@@ -117,46 +119,56 @@ module.exports = {
     console.log(userInfo)
     try {
       if (!userInfo) {
-        return res.status(404).send("bad request users/:id")
+        return res.status(404).send('bad request users/:id')
       } else {
         const deleteUser = await users.destroy({ where: { id: req.params.id } })
-        return res.status(200).send("successfully delete id")
+        return res.status(200).send('successfully delete id')
       }
     } catch (err) {
-      return res.status(500).send("Server Error users/:id")
+      return res.status(500).send('Server Error users/:id')
     }
   },
 
-  // 회원정보 수정
+  // 회원정보 수정(작업중)
+  // 닉네임을 안바꾸고 다른 항목 수정하면 닉네임 중복으로 수정 안됨
   updateUser: async (req, res) => {
     const userInfo = isAuthorized(req)
-    const { nickname, password, image, phone_number } = req.body
+    const { nickname, password, image, phone_number, address } = req.body
     try {
       if (!userInfo) {
-        return res.status(404).send("bad request mypage")
+        return res.status(404).send('bad request mypage')
       } else {
-        const user = await users.findOne({ where: { email: userInfo.email } })
+        const user = await users.findOne({ where: { id: userInfo.id } })
         console.log(user)
-
         // 닉네임 중복 체크
         const checkNickname = await users.findOne({
           where: { nickname: nickname },
         })
-        if (checkNickname) {
-          return res.status(409).send("nickname already exists sign up")
+        if (req.body.nickname === userInfo.nickname) {
+          // 데이터 수정
+          const updateUserInfo = await users.update(
+            { nickname, password, image, phone_number },
+            { where: { email: user.dataValues.email } },
+          )
+          return res
+            .status(200)
+            .json({ updateUserInfo, message: 'success update user info' })
+        } else if (checkNickname) {
+          return res.status(409).send('nickname already exists sign up')
+        } else {
+          // 데이터 수정
+          const updateUserInfo = await users.update(
+            { nickname, password, image, phone_number },
+            { where: { email: user.dataValues.email } },
+          )
+          return res
+            .status(200)
+            .json({ updateUserInfo, message: 'success update user info' })
         }
 
-        // 데이터 수정
-        const updateUserInfo = await user.update(
-          { nickname, password, image, phone_number },
-          { where: { email: user.dataValues.email } }
-        )
-        return res
-          .statsu(200)
-          .json({ updateUserInfo, message: "success update user info" })
       }
     } catch (err) {
-      return res.status(500).send("Server Error mypage")
+      return res.status(500).send('Server Error mypage')
     }
   },
 
@@ -168,6 +180,7 @@ module.exports = {
       if (!userInfo) {
         console.log("1")
         res.status(404).send("bad request mypage")
+
       } else {
         console.log("2")
         res.status(200).json({ userInfo })
@@ -175,16 +188,17 @@ module.exports = {
     } catch (err) {
       console.log("3")
       res.status(500).send("Server Error mypage")
+
     }
   },
 
-  // 생성한 파티, 가입한 파티 조회(작업중)
+  // 생성한 파티, 가입한 파티 조회(완료)
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req)
-    console.log("userInfo", userInfo)
+    console.log('userInfo', userInfo)
     try {
       if (!userInfo) {
-        return res.status(404).send("bad request users/:id")
+        return res.status(404).send('bad request users/:id')
       } else {
         const userParty = await parties.findAll({
           where: { writerUser_id: req.params.id },
@@ -196,7 +210,7 @@ module.exports = {
         return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {
-      return res.status(500).send("Server Error users/:id")
+      return res.status(500).send('Server Error users/:id')
     }
   },
 }
