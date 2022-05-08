@@ -163,6 +163,18 @@ module.exports = {
             .status(200)
             .json({ updateUserInfo, message: 'success update user info' })
         }
+<<<<<<< HEAD
+=======
+
+        // 데이터 수정
+        const updateUserInfo = await user.update(
+          { nickname, password, image, phone_number },
+          { where: { email: user.dataValues.email } }
+        )
+        return res
+          .statsu(200)
+          .json({ updateUserInfo, message: "success update user info" })
+>>>>>>> 9991841 (ADD:Update)
       }
     } catch (err) {
       return res.status(500).send('Server Error mypage')
@@ -203,7 +215,7 @@ module.exports = {
         const userJoin = await users_parties.findAll({
           where: { users_id: req.params.id },
         })
-        console.log('userParty:', userParty)
+        console.log("userParty:", userParty)
         return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {
