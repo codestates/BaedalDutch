@@ -1,4 +1,4 @@
-const { users, parties, users_parties } = require('../models')
+const { users, parties, users_parties } = require("../models")
 
 const {
   generateAccessToken,
@@ -99,7 +99,7 @@ module.exports = {
       } else {
         return res
           .status(200)
-          .clearCookie("accessToken", {
+          .clearCookie("jwt", {
             httpOnly: true,
             secure: true,
             sameSite: "none",
@@ -150,8 +150,10 @@ module.exports = {
         const updateUserInfo = await user.update(
           { nickname, password, image, phone_number },
           { where: { email: user.dataValues.email } }
-        );
-        return res.statsu(200).json({ updateUserInfo, message: "success update user info"});
+        )
+        return res
+          .statsu(200)
+          .json({ updateUserInfo, message: "success update user info" })
       }
     } catch (err) {
       return res.status(500).send("Server Error mypage")
@@ -185,12 +187,12 @@ module.exports = {
         return res.status(404).send("bad request users/:id")
       } else {
         const userParty = await parties.findAll({
-          where: { writerUser_id: req.params.id }
+          where: { writerUser_id: req.params.id },
         })
         const userJoin = await users_parties.findAll({
-          where: { users_id: req.params.id }
+          where: { users_id: req.params.id },
         })
-        console.log('userParty:', userParty)
+        console.log("userParty:", userParty)
         return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {

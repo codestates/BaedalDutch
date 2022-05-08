@@ -56,10 +56,8 @@ const MyParty = styled.div`
 const SidebarContent = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
   width: 100%;
-  height: 90%;
-  border: 10px solid pink;
+  height: 100%;
 `;
 const WriteButton = styled.button``;
 

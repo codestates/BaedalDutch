@@ -14,14 +14,16 @@ module.exports = {
   },
 
   isAuthorized: (req) => {
-    // let authorization = req.headers.authorization;
+    // let authorization = req.headers.authorization
     let authorization = req.headers.cookie
+    console.log("인증", authorization)
+
     if (!authorization) {
       return null
     }
 
     let token = authorization.split("=")[1]
-    // let token = authorization.split(" ")[1];
+    // let token = authorization.split(" ")[1]
 
     try {
       return verify(token, process.env.ACCESS_SECRET)
