@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "parties_id"
       // });
       models.parties.belongsTo(models.users, {
+
         foreignKey: 'leader',
         targetKey: 'id',
         onDelete: 'CASCADE',
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'parties_id',
         sourceKey: 'id',
         onDelete: 'CASCADE',
+
       })
     }
   }

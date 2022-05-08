@@ -13,6 +13,7 @@ module.exports = {
     })
   },
 
+
   isAuthorized: req => {
     let authorization = req.headers.authorization
     // let authorization = req.headers.cookie
@@ -21,6 +22,7 @@ module.exports = {
     }
     let token = authorization.split(" ")[1]
     console.log(authorization)
+
     try {
       return verify(token, process.env.ACCESS_SECRET)
     } catch (err) {

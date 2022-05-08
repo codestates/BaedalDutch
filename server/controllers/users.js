@@ -1,4 +1,6 @@
+
 const { users, parties, users_parties } = require('../models')
+
 const {
   generateAccessToken,
   sendAccessToken,
@@ -163,6 +165,7 @@ module.exports = {
             .status(200)
             .json({ updateUserInfo, message: 'success update user info' })
         }
+
       }
     } catch (err) {
       return res.status(500).send('Server Error mypage')
@@ -203,7 +206,7 @@ module.exports = {
         const userJoin = await users_parties.findAll({
           where: { users_id: req.params.id },
         })
-        console.log('userParty:', userParty)
+        console.log("userParty:", userParty)
         return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {

@@ -80,7 +80,10 @@ const MapContainer = () => {
     console.log('장소에러', searchPlace);
     let bounds = new kakao.maps.LatLngBounds();
     if (searchPlace) {
-      ps.keywordSearch(searchPlace, placesSearchCB);
+      ps.keywordSearch(searchPlace, placesSearchCB, {
+        radius: 2000,
+        location: new kakao.maps.LatLng(currentLat, currentLng),
+      });
       function placesSearchCB(data, status) {
         console.log('정보확인', data);
         dispatch(saveSearchListAction(data));
