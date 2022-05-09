@@ -1,7 +1,6 @@
-
-
-const { users, parties, users_parties } = require('../models')
-
+const { users, parties, users_parties } = require('../models');
+const bcrypt = require('bcrypt')
+const saltRounds = 10;
 
 const {
   generateAccessToken,
@@ -46,10 +45,12 @@ module.exports = {
       return res.status(409).send("nickname already exists sign up")
     }
 
+    const bPassword = await bcrypt.hash(password, saltRounds);
+
     const [data, created] = await users.findOrCreate({
       where: {
         email: email,
-        password: password,
+        password: bPassword,
         nickname: nickname,
         phone_number: phone_number,
         image: image,
@@ -74,15 +75,19 @@ module.exports = {
   signin: async (req, res) => {
     const { email, password } = req.body
     console.log("서버체크", email, password)
-
+    
     const userInfo = await users.findOne({
       where: { email: email, password: password },
     })
+
     console.log("userInfo:", userInfo)
-    if (!userInfo) {
+    if (!userInfo || !bcrypt.compareSync(password, userInfo.dataValues.password)) {
+      console.log('check')
       return res.status(404).send("bad request sign in")
     } else {
       try {
+        delete userInfo.dataValues.password
+        console.log("userInfo.password", userInfo.dataValues.password)
         const accessToken = generateAccessToken(userInfo.dataValues)
         sendAccessToken(res, accessToken).json({
           data: {
@@ -149,6 +154,13 @@ module.exports = {
       } else {
         const user = await users.findOne({ where: { id: userInfo.id } })
         console.log(user)
+        
+        // 데이터 수정
+        const updateUserInfo = await users.update(
+          { password, image, phone_number, address },
+          { where: { id: userInfo.id } }
+        );
+        console.log('check')
         // 닉네임 중복 체크
         const checkNickname = await users.findOne({
           where: { nickname: nickname },
@@ -174,7 +186,6 @@ module.exports = {
             .status(200)
             .json({ updateUserInfo, message: "success update user info" })
         }
-
       }
     } catch (err) {
       return res.status(500).send("Server Error mypage")
