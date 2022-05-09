@@ -159,7 +159,7 @@ const WriteButton = styled.button`
   border-radius: 6px;
 `;
 
-const AdressDiv = styled.div`
+const AddressDiv = styled.div`
   display: flex;
 `;
 
@@ -312,7 +312,7 @@ const Write = () => {
         },
       )
       .then((res) => {
-        console.log(writeInfo);
+        console.log('axios요청 성공');
         dispatch(showWriteAction(false));
       });
   }
@@ -364,7 +364,7 @@ const Write = () => {
           id="fee"
         />
         <ErrorMessage>{errors.fee?.message}</ErrorMessage>
-        <AdressDiv>
+        <AddressDiv>
           {visible ? (
             <div>
               <CloseBtn onClick={() => setVisible(false)}>닫기</CloseBtn>
@@ -382,7 +382,7 @@ const Write = () => {
           ) : (
             <AddressInputDiv onClick={() => setVisible(true)}>{writeInfo.address}</AddressInputDiv>
           )}
-        </AdressDiv>
+        </AddressDiv>
         <PhoneInput
           error={errors.member_num?.message}
           {...register('member_num', {
