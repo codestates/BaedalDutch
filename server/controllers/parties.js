@@ -47,11 +47,11 @@ module.exports = {
       })
     // 3. 토큰을 가진 유저인지 확인
     const userInfo = isAuthorized(req)
-    console.log('userInfo:', userInfo)
+    console.log("userInfo:", userInfo)
     // 유저가 토큰을 가지고 있지 않는 경우
     if (!userInfo) {
       res.status(404).json({
-        message: 'token none',
+        message: "token none",
       })
     }
     try {
@@ -59,13 +59,13 @@ module.exports = {
       if (userInfo.id === oneParty.leader) {
         res
           .status(200)
-          .json({ leader: oneParty, message: 'success get parties of leader' })
+          .json({ leader: oneParty, message: "success get parties of leader" })
       }
       // 5. 토큰을 가진 유저인 경우 1-2. 유저 id와 조회한 파티의 leader와 다르다면 파티(참가자)를 client에 보내주기
       else {
         res.status(200).json({
           participant: oneParty,
-          message: 'success get parties of participant',
+          message: "success get parties of participant",
         })
       }
 
@@ -82,7 +82,8 @@ module.exports = {
     console.log("createParty 진입")
     // 1. 유저가 토큰을 가지고 있는지 검증
 
-    console.log('req.headers:', req.headers)
+    console.log("req.headers:", req.headers)
+
     const userInfo = isAuthorized(req)
     console.log("userInfo:", userInfo)
     // 2. 유저가 토큰을 가지고 있지 않는 경우
@@ -130,7 +131,7 @@ module.exports = {
             // data: store_name (로직 성공확인되면 이걸로 바꾸기)
             data: data.dataValues,
 
-            message: 'create party post parties',
+            message: "create party post parties",
 
           })
         })
