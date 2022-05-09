@@ -83,7 +83,7 @@ const MapContainer = () => {
         radius: 2000,
         location: new kakao.maps.LatLng(currentLat, currentLng),
       });
-      console.log('장소에러', searchPlace);
+
       function placesSearchCB(data, status) {
         console.log('정보확인', data);
         dispatch(saveSearchListAction(data));

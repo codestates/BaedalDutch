@@ -68,6 +68,7 @@ module.exports = {
           message: "success get parties of participant",
         })
       }
+
     } catch (err) {
       // 4. 에러 처리
       return res.status(500).json({
@@ -80,7 +81,9 @@ module.exports = {
   createParty: async (req, res) => {
     console.log("createParty 진입")
     // 1. 유저가 토큰을 가지고 있는지 검증
+
     console.log("req.headers:", req.headers)
+
     const userInfo = isAuthorized(req)
     console.log("userInfo:", userInfo)
     // 2. 유저가 토큰을 가지고 있지 않는 경우
@@ -127,7 +130,9 @@ module.exports = {
           res.status(201).json({
             // data: store_name (로직 성공확인되면 이걸로 바꾸기)
             data: data.dataValues,
+
             message: "create party post parties",
+
           })
         })
     } catch (err) {
