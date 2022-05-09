@@ -2,6 +2,9 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { partyDataAction, visibleAction } from '../../../store/visible';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
   display: flex;
@@ -28,7 +31,9 @@ const Fee = styled.div``;
 const Dutch = styled.div``;
 
 const Contents = () => {
-  const [click, setClick] = useState(false);
+  const dispatch = useDispatch();
+  const partyData = useSelector((state) => state.visible.partyData);
+
   const [parties, setParties] = useState([]);
   const getAllData = async () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`);
@@ -38,7 +43,7 @@ const Contents = () => {
 
   //leader === 유저 Id(내 아이디인지아닌지) => 그래야 마감하기/신청하기 혹은 수정/삭제 화면 보이는지 안보이는지 알수있는데 서버에서 막힘
   const getMyInfo = async () => {
-    console.log('확인', parties);
+    console.log('파티정보', parties);
     const participant = await axios
       .get(`${process.env.REACT_APP_API_URL}/parties/${parties.id}`)
       .then((data) => {
@@ -54,26 +59,29 @@ const Contents = () => {
     getAllData();
   }, []);
 
+  console.log('파티확인', parties);
+
   // const handlePostList = (parties.id) => {
   //   setClick(true)
   // }
+  const SoloParty = (party) => {
+    dispatch(visibleAction(true));
+    dispatch(partyDataAction(party));
+  };
+
+  console.log('파티 걋수', parties.length);
 
   return (
     <Container>
-      {/* {(function ()  {
-        if(parties.length === 0){
-          return ( 
-            <div>
-                더치할 목록이 없어요
-            </div>
-          )
-        }else if (click){
-          return (<PostDetail click={click} setClick={setClick}/>)
-        }else if( !click ){ */}
+      {parties.length === 0 ? <div>파티가없습니다</div> : <div>파티목록 : {parties.length}개</div>}
       {parties.map((party, i) => {
         console.log(party.food_category);
         return (
-          <Party>
+          <Party
+            onClick={() => {
+              SoloParty(party);
+            }}
+          >
             <FoodImg src={`icon/${party.food_category}.png`} alt=""></FoodImg>
             <PartyDetail>
               <StoreName>가게명 : {party.store_name}</StoreName>
