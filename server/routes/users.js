@@ -8,6 +8,6 @@ router.post("/signout", usersController.signout);
 router.delete("/:id", usersController.delUser);
 router.patch("/mypage", usersController.updateUser);
 router.get("/mypage", usersController.getUserInfo);
-router.get("/:id", usersController.getUserParty)
+router.get("/:id", usersController.getUserParty);
 
 module.exports = router;
