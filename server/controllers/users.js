@@ -1,4 +1,3 @@
-
 const { users, parties, users_parties } = require('../models')
 
 const {
@@ -12,16 +11,23 @@ module.exports = {
   signup: async (req, res) => {
     const { email, password, nickname, phone_number, image, address } = req.body
 
-    if (!email || !password || !nickname || !phone_number || !image || !address) {
-      console.log("진입")
-      return res.status(404).send("Bad request sign up")
+    if (
+      !email ||
+      !password ||
+      !nickname ||
+      !phone_number ||
+      !image ||
+      !address
+    ) {
+      console.log('진입')
+      return res.status(404).send('Bad request sign up')
     }
 
     // email 중복체크
     const checkEmail = await users.findOne({
       where: { email: email },
     })
-    
+
     // nickname 중복체크
     const checkNickname = await users.findOne({
       where: { nickname: nickname },
@@ -43,7 +49,7 @@ module.exports = {
         nickname: nickname,
         phone_number: phone_number,
         image: image,
-        address: address
+        address: address,
       },
     })
     if (!created) {
@@ -79,13 +85,14 @@ module.exports = {
             id: userInfo.id,
             nickname: userInfo.nickname,
             phone_number: userInfo.phone_number,
+            address: userInfo.address,
             email: userInfo.email,
             image: userInfo.image,
+            password: userInfo.password,
           },
           accessToken,
           message: 'success sign in',
         })
-
       } catch (err) {
         return res.status(500).send('Server Error sign in')
       }
@@ -101,7 +108,7 @@ module.exports = {
       } else {
         return res
           .status(200)
-          .clearCookie("jwt", {
+          .clearCookie('jwt', {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
@@ -132,40 +139,24 @@ module.exports = {
   // 회원정보 수정(작업중)
   // 닉네임을 안바꾸고 다른 항목 수정하면 닉네임 중복으로 수정 안됨
   updateUser: async (req, res) => {
+    console.log('회원정보 수정 진입')
     const userInfo = isAuthorized(req)
     const { nickname, password, image, phone_number, address } = req.body
+    console.log('req.body:', req.body)
+    console.log('userInfo:', userInfo)
     try {
       if (!userInfo) {
         return res.status(404).send('bad request mypage')
       } else {
-        const user = await users.findOne({ where: { id: userInfo.id } })
-        console.log(user)
-        // 닉네임 중복 체크
-        const checkNickname = await users.findOne({
-          where: { nickname: nickname },
-        })
-        if (req.body.nickname === userInfo.nickname) {
-          // 데이터 수정
-          const updateUserInfo = await users.update(
-            { nickname, password, image, phone_number },
-            { where: { email: user.dataValues.email } },
-          )
-          return res
-            .status(200)
-            .json({ updateUserInfo, message: 'success update user info' })
-        } else if (checkNickname) {
-          return res.status(409).send('nickname already exists sign up')
-        } else {
-          // 데이터 수정
-          const updateUserInfo = await users.update(
-            { nickname, password, image, phone_number },
-            { where: { email: user.dataValues.email } },
-          )
-          return res
-            .status(200)
-            .json({ updateUserInfo, message: 'success update user info' })
-        }
-
+        console.log('데이터 수정 진입')
+        const updateUserInfo = await users.update(
+          { nickname, password, image, phone_number, address },
+          { where: { email: userInfo.email } },
+        )
+        console.log('updateUserInfo:', updateUserInfo)
+        return res
+          .status(200)
+          .json({ updateUserInfo, message: 'success update user info' })
       }
     } catch (err) {
       return res.status(500).send('Server Error mypage')
@@ -174,21 +165,19 @@ module.exports = {
 
   // 회원 정보 조회
   getUserInfo: async (req, res) => {
-    console.log("들어오나")
+    console.log('들어오나')
     const userInfo = isAuthorized(req)
     try {
       if (!userInfo) {
-        console.log("1")
-        res.status(404).send("bad request mypage")
-
+        console.log('1')
+        res.status(404).send('bad request mypage')
       } else {
-        console.log("2")
+        console.log('2')
         res.status(200).json({ userInfo })
       }
     } catch (err) {
-      console.log("3")
-      res.status(500).send("Server Error mypage")
-
+      console.log('3')
+      res.status(500).send('Server Error mypage')
     }
   },
 
@@ -206,11 +195,31 @@ module.exports = {
         const userJoin = await users_parties.findAll({
           where: { users_id: req.params.id },
         })
-        console.log("userParty:", userParty)
+        console.log('userParty:', userParty)
         return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {
       return res.status(500).send('Server Error users/:id')
     }
+  },
+
+  // 마이페이지 닉네임 변경 시 닉네임 확인
+  checkNickName: async (req, res) => {
+    await users
+      .findOne({
+        where: {
+          nickname: req.body.nickname,
+        },
+      })
+      .then(data => {
+        if (!data) {
+          return res.send({ message: '사용 가능한 닉네임입니다.' })
+        } else {
+          res.send({ message: '이미 사용중인 닉네임입니다.' })
+        }
+      })
+      .catch(err => {
+        res.status(500).send({ message: 'Server error checkNickName' })
+      })
   },
 }
