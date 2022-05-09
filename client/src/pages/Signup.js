@@ -108,8 +108,7 @@ const Signup = () => {
   };
 
   const onSubmit = () => {
-    const { nickname, email, password, phone_number, image, address } = getValues();
-    console.log(nickname, email, password, phone_number, image, address);
+    const { nickname, email, password, phone_number } = getValues();
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/users/signup`,
@@ -119,7 +118,7 @@ const Signup = () => {
           nickname,
           phone_number,
           image: '12',
-          address,
+          address: writeInfo.address,
         },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -155,6 +154,7 @@ const Signup = () => {
     message: '휴대전화 번호를 입력해 주세요',
   };
 
+  console.log('방금 클릭한값', writeInfo.address);
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>
