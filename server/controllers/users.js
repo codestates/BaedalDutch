@@ -1,14 +1,18 @@
-const { users, parties, users_parties } = require('../models')
+const { users, parties, users_parties } = require('../models');
+const bcrypt = require('bcrypt')
+const saltRounds = 10;
+
 
 const {
   generateAccessToken,
   sendAccessToken,
   isAuthorized,
-} = require('../controllers/tokenfunctions')
+} = require("../controllers/tokenfunctions")
 
 module.exports = {
   // 회원가입
   signup: async (req, res) => {
+    console.log("회원정보확인", req.body)
     const { email, password, nickname, phone_number, image, address } = req.body
 
     if (
@@ -19,8 +23,8 @@ module.exports = {
       !image ||
       !address
     ) {
-      console.log('진입')
-      return res.status(404).send('Bad request sign up')
+      console.log("진입")
+      return res.status(404).send("Bad request sign up")
     }
 
     // email 중복체크
@@ -34,18 +38,20 @@ module.exports = {
     })
 
     if (checkEmail) {
-      return res.status(409).send('email already exists sign up')
+      return res.status(409).send("email already exists sign up")
     }
     if (checkNickname) {
       //Admin 삭제
-      console.log('닉네임에러')
-      return res.status(409).send('nickname already exists sign up')
+      console.log("닉네임에러")
+      return res.status(409).send("nickname already exists sign up")
     }
+
+    const bPassword = await bcrypt.hash(password, saltRounds);
 
     const [data, created] = await users.findOrCreate({
       where: {
         email: email,
-        password: password,
+        password: bPassword,
         nickname: nickname,
         phone_number: phone_number,
         image: image,
@@ -53,32 +59,36 @@ module.exports = {
       },
     })
     if (!created) {
-      return res.status(409).send('already exists sign up')
+      return res.status(409).send("already exists sign up")
     }
     try {
       const accessToken = generateAccessToken(data.dataValues)
       sendAccessToken(res, accessToken).json({
         data: data.dataValues.email,
-        message: 'created your id!!',
+        message: "created your id!!",
       })
     } catch (err) {
-      return res.status(500).send('Server Error sign up')
+      return res.status(500).send("Server Error sign up")
     }
   },
 
   // 로그인
   signin: async (req, res) => {
     const { email, password } = req.body
-    console.log('서버체크', email, password)
-
+    console.log("서버체크", email, password)
+    
     const userInfo = await users.findOne({
       where: { email: email, password: password },
     })
-    console.log('userInfo:', userInfo)
-    if (!userInfo) {
-      return res.status(404).send('bad request sign in')
+
+    console.log("userInfo:", userInfo)
+    if (!userInfo || !bcrypt.compareSync(password, userInfo.dataValues.password)) {
+      console.log('check')
+      return res.status(404).send("bad request sign in")
     } else {
       try {
+        delete userInfo.dataValues.password
+        console.log("userInfo.password", userInfo.dataValues.password)
         const accessToken = generateAccessToken(userInfo.dataValues)
         sendAccessToken(res, accessToken).json({
           data: {
@@ -91,10 +101,10 @@ module.exports = {
             password: userInfo.password,
           },
           accessToken,
-          message: 'success sign in',
+          message: "success sign in",
         })
       } catch (err) {
-        return res.status(500).send('Server Error sign in')
+        return res.status(500).send("Server Error sign in")
       }
     }
   },
@@ -104,19 +114,19 @@ module.exports = {
     const userInfo = isAuthorized(req)
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request sign out')
+        return res.status(404).send("bad request sign out")
       } else {
         return res
           .status(200)
           .clearCookie('jwt', {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: "none",
           })
-          .send({ message: 'success sign out' })
+          .send({ message: "success sign out" })
       }
     } catch (err) {
-      return res.status(500).send('Server Error sign out')
+      return res.status(500).send("Server Error sign out")
     }
   },
 
@@ -126,13 +136,13 @@ module.exports = {
     console.log(userInfo)
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request users/:id')
+        return res.status(404).send("bad request users/:id")
       } else {
         const deleteUser = await users.destroy({ where: { id: req.params.id } })
-        return res.status(200).send('successfully delete id')
+        return res.status(200).send("successfully delete id")
       }
     } catch (err) {
-      return res.status(500).send('Server Error users/:id')
+      return res.status(500).send("Server Error users/:id")
     }
   },
 
@@ -146,20 +156,45 @@ module.exports = {
     console.log('userInfo:', userInfo)
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request mypage')
+        return res.status(404).send("bad request mypage")
       } else {
-        console.log('데이터 수정 진입')
+        const user = await users.findOne({ where: { id: userInfo.id } })
+        console.log(user)
+        
+        // 데이터 수정
         const updateUserInfo = await users.update(
-          { nickname, password, image, phone_number, address },
-          { where: { email: userInfo.email } },
-        )
-        console.log('updateUserInfo:', updateUserInfo)
-        return res
-          .status(200)
-          .json({ updateUserInfo, message: 'success update user info' })
+          { password, image, phone_number, address },
+          { where: { id: userInfo.id } }
+        );
+        console.log('check')
+        // 닉네임 중복 체크
+        const checkNickname = await users.findOne({
+          where: { nickname: nickname },
+        })
+        if (req.body.nickname === userInfo.nickname) {
+          // 데이터 수정
+          const updateUserInfo = await users.update(
+            { nickname, password, image, phone_number },
+            { where: { email: user.dataValues.email } }
+          )
+          return res
+            .status(200)
+            .json({ updateUserInfo, message: "success update user info" })
+        } else if (checkNickname) {
+          return res.status(409).send("nickname already exists sign up")
+        } else {
+          // 데이터 수정
+          const updateUserInfo = await users.update(
+            { nickname, password, image, phone_number },
+            { where: { email: user.dataValues.email } }
+          )
+          return res
+            .status(200)
+            .json({ updateUserInfo, message: "success update user info" })
+        }
       }
     } catch (err) {
-      return res.status(500).send('Server Error mypage')
+      return res.status(500).send("Server Error mypage")
     }
   },
 
@@ -169,25 +204,25 @@ module.exports = {
     const userInfo = isAuthorized(req)
     try {
       if (!userInfo) {
-        console.log('1')
-        res.status(404).send('bad request mypage')
+        console.log("1")
+        res.status(404).send("bad request mypage")
       } else {
         console.log('2')
         res.status(200).json({ userInfo })
       }
     } catch (err) {
-      console.log('3')
-      res.status(500).send('Server Error mypage')
+      console.log("3")
+      res.status(500).send("Server Error mypage")
     }
   },
 
   // 생성한 파티, 가입한 파티 조회(완료)
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req)
-    console.log('userInfo', userInfo)
+    console.log("userInfo", userInfo)
     try {
       if (!userInfo) {
-        return res.status(404).send('bad request users/:id')
+        return res.status(404).send("bad request users/:id")
       } else {
         const userParty = await parties.findAll({
           where: { writerUser_id: req.params.id },
@@ -199,7 +234,7 @@ module.exports = {
         return res.status(200).json({ userParty, userJoin })
       }
     } catch (err) {
-      return res.status(500).send('Server Error users/:id')
+      return res.status(500).send("Server Error users/:id")
     }
   },
 
