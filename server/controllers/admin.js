@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  // 회원정보 수정(작업중)
+  // 회원정보 수정(완료)
   updateUser: async (req, res) => {
     const adminInfo = isAuthorized(req)
     const { nickname, password, image, phone_number } = req.body
