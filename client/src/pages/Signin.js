@@ -131,7 +131,7 @@ function Signin() {
           console.log(error);
         },
       );
-      navigator('/');
+      navigate('/');
     } catch (err) {
       console.log(err);
     }
