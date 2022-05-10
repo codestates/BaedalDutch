@@ -13,10 +13,20 @@ const Container = styled.div`
   width: 100%;
   border: 5px solid green;
 `;
+const PartyNumber = styled.div`
+  display: flex;
+  background: white;
+  font-size: 30px;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid purple;
+`;
+
 const Party = styled.div`
   display: flex;
+  height: 20%;
   justify-content: space-around;
-  border: 1px solid red;
+  border: 1px solid grey;
   margin: 20px 0 20px 0;
 `;
 const FoodImg = styled.img``;
@@ -78,9 +88,14 @@ const Contents = () => {
 
   return (
     <Container>
-      {parties.length === 0 ? <div>파티가없습니다</div> : <div>파티목록 : {parties.length}개</div>}
+      <PartyNumber>
+        {parties.length === 0 ? (
+          <div>파티가없습니다</div>
+        ) : (
+          <div>파티목록 : {parties.length}개</div>
+        )}
+      </PartyNumber>
       {parties.map((party, i) => {
-        console.log(party.food_category);
         return (
           <Party
             onClick={() => {
