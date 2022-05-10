@@ -63,6 +63,7 @@ const PartyDetail = () => {
       .then((res) => {
         if (res.status === 200) {
           console.log('삭제성공');
+          dispatch(visibleAction(false));
         }
       })
       .catch((err) => console.log('에러셈'));

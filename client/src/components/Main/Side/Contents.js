@@ -41,38 +41,35 @@ const Fee = styled.div``;
 const Dutch = styled.div``;
 
 const Contents = () => {
-
   const dispatch = useDispatch();
   const partyData = useSelector((state) => state.visible.partyData);
-
 
   const [parties, setParties] = useState([]);
   const getAllData = async () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`);
     setParties(data.data);
-    getMyInfo();
+    // getMyInfo();
   };
 
   //leader === 유저 Id(내 아이디인지아닌지) => 그래야 마감하기/신청하기 혹은 수정/삭제 화면 보이는지 안보이는지 알수있는데 서버에서 막힘
-  const getMyInfo = async () => {
+  // const getMyInfo = async () => {
 
-    console.log('파티정보', parties);
-    const participant = await axios
-      .get(`${process.env.REACT_APP_API_URL}/parties/${parties.id}`)
+  //   console.log('파티정보', parties);
+  //   const participant = await axios
+  //     .get(`${process.env.REACT_APP_API_URL}/parties/${parties.id}`)
 
-      .then((data) => {
-        if (data.leader) {
-        } else if (data.participant) {
-        }
-      });
-    console.log('데이터');
-    console.log(participant);
-  };
+  //     .then((data) => {
+  //       if (data.leader) {
+  //       } else if (data.participant) {
+  //       }
+  //     });
+  //   console.log('데이터');
+  //   console.log(participant);
+  // };
 
   useEffect(() => {
     getAllData();
   }, []);
-
 
   console.log('파티확인', parties);
 
@@ -102,7 +99,6 @@ const Contents = () => {
               SoloParty(party);
             }}
           >
-
             <FoodImg src={`icon/${party.food_category}.png`} alt=""></FoodImg>
             <PartyDetail>
               <StoreName>가게명 : {party.store_name}</StoreName>
