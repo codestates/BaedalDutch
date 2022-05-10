@@ -35,11 +35,13 @@ const ModalView = styled.div`
   font-weight: bold;
 `;
 const MyPageButton = styled.div``;
+const AdminButton = styled.div``;
 const LogOut = styled.button``;
 
 const MyPageModal = () => {
   const navigate = useNavigate();
   const showMyPageModal = useSelector((state) => state.modal.showMyPageModal);
+  const loginUser = useSelector((state) => state.login.loginUser)
   const navDiv = useSelector((state) => state.modal.setNavContainer);
   const dispatch = useDispatch();
 
@@ -47,6 +49,10 @@ const MyPageModal = () => {
     dispatch(showMyPageAction(false));
     navigate('/mypage');
   };
+
+  const moveToAdminPage = () => {
+    navigate('/admin')
+  }
 
   const modalContainer = useRef();
 
@@ -71,6 +77,9 @@ const MyPageModal = () => {
     <ModalContiaer ref={modalContainer} showMyPageModal={showMyPageModal}>
       <ModalView>
         <MyPageButton onClick={moveToMyProfile}>내 설정 페이지</MyPageButton>
+        {loginUser.nickname === 'admin' ?
+        <AdminButton onClick={moveToAdminPage}>어드민 페이지</AdminButton> : null
+        }
         <LogOut
           onClick={() => {
             dispatch(isLoginAction(false));

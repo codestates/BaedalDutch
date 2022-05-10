@@ -89,6 +89,7 @@ function Signin() {
         console.log('login res::', response);
         if (response.data.accessToken) {
           console.log('135', isLogin);
+          //localStorage.setItem('token', response.data.accessToken)
           dispatch(isLoginAction(true));
           dispatch(loginUserAction(response.data.data));
           console.log('response.data.data:', response.data.data);
@@ -126,12 +127,12 @@ function Signin() {
           //           // dispatch(showModalAction(false));
           //           // navigate('/main');
         },
-        (error) => {
-          console.log('에러면여기로');
-          console.log(error);
-        },
+        // (error) => {
+        //   console.log('에러면여기로');
+        //   console.log(error);
+        // },
       );
-      navigator('/');
+      navigate('/');
     } catch (err) {
       console.log(err);
     }
