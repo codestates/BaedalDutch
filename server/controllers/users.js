@@ -1,19 +1,19 @@
 const { users, parties, users_parties } = require("../models")
 const bcrypt = require("bcrypt")
 const saltRounds = 10
-
 const {
   generateAccessToken,
   sendAccessToken,
   isAuthorized,
-} = require("../controllers/tokenfunctions")
+} = require("../controllers/tokenfunctions");
+const axios = require("axios");
+
 
 module.exports = {
   // 회원가입
   signup: async (req, res) => {
     console.log("회원정보확인", req.body)
     const { email, password, nickname, phone_number, image, address } = req.body
-
     if (
       !email ||
       !password ||
@@ -29,20 +29,19 @@ module.exports = {
     // email 중복체크
     const checkEmail = await users.findOne({
       where: { email: email },
-    })
+    });
 
     // nickname 중복체크
     const checkNickname = await users.findOne({
       where: { nickname: nickname },
-    })
+    });
 
     if (checkEmail) {
-      return res.status(409).send("email already exists sign up")
+      return res.status(409).send("email already exists sign up");
     }
-    if (checkNickname) {
-      //Admin 삭제
-      console.log("닉네임에러")
-      return res.status(409).send("nickname already exists sign up")
+
+    if (checkNickname || "admin") {
+      return res.status(409).send("nickname already exists sign up");
     }
 
     const bPassword = await bcrypt.hash(password, saltRounds)
@@ -56,7 +55,7 @@ module.exports = {
         image: image,
         address: address,
       },
-    })
+    });
     if (!created) {
       return res.status(409).send("already exists sign up")
     } else if (data) {
@@ -70,44 +69,109 @@ module.exports = {
 
   // 로그인
   signin: async (req, res) => {
-    const { email, password } = req.body
-    try {
+    console.log(Object.keys(req.body).length);
+    // 일반 로그인
+    if (Object.keys(req.body).length === 2) {
+      const { email, password } = req.body;
       const userInfo = await users.findOne({
-        where: { email: email },
-      })
-      console.log("userInfo:", userInfo)
-      if (
-        !userInfo ||
-        !bcrypt.compareSync(password, userInfo.dataValues.password)
-      ) {
-        console.log("check")
-        return res.status(404).send("bad request sign in")
+        where: { email: email, password: password },
+      });
+      console.log("userInfo:", userInfo);
+      if (!userInfo) {
+        return res.status(404).send("bad request sign in");
       } else {
-        delete userInfo.dataValues.password
-        const accessToken = generateAccessToken(userInfo.dataValues)
-        sendAccessToken(res, accessToken).json({
-          data: {
-            id: userInfo.id,
-            nickname: userInfo.nickname,
-            phone_number: userInfo.phone_number,
-            address: userInfo.address,
-            email: userInfo.email,
-            image: userInfo.image,
-            password: userInfo.password,
-          },
-          accessToken,
-          message: "success sign in",
-        })
+        try {
+          const accessToken = generateAccessToken(userInfo.dataValues);
+          sendAccessToken(res, accessToken).json({
+            data: {
+              id: userInfo.id,
+              nickname: userInfo.nickname,
+              phone_number: userInfo.phone_number,
+              email: userInfo.email,
+              image: userInfo.image,
+            },
+            accessToken,
+            message: "success sign in",
+          });
+        } catch (err) {
+          return res.status(500).send("Server Error sign in");
+        }
       }
-    } catch (err) {
-      return res.status(500).send("Server Error sign in")
+    }
+    // 카카오 로그인
+    else {
+      const { code } = req.body;
+      console.log("code----", code);
+      axios
+        .get("https://kapi.kakao.com/v2/user/me", {
+          headers: {
+            Authorization: `Bearer ${code}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        })
+        .then(async (result) => {
+          const nickname = result.data.kakao_account.profile.nickname;
+          const email = result.data.kakao_account.email;
+          console.log("여기는??????", nickname, email);
+          const oauthUser = await users.findOne({
+            where: {
+              email: email,
+              nickname: nickname,
+            },
+          });
+          console.log("여기??????", oauthUser);
+          // 이미 가입된 유저
+          if (oauthUser) {
+            const accessToken = generateAccessToken(oauthUser.dataValues);
+            sendAccessToken(res, accessToken).json({
+              data: {
+                id: oauthUser.dataValues.id,
+                nickname: oauthUser.dataValues.nickname,
+                phone_number: oauthUser.dataValues.phone_number,
+                email: oauthUser.dataValues.email,
+                image: oauthUser.dataValues.image,
+              },
+              message: "success sign in",
+            });
+          }
+          // 가입하려는 유저
+          else {
+            console.log("여기???");
+            await users.create({
+              nickname: nickname,
+              email: email,
+            });
+            const userInfo = await users.findOne({
+              where: {
+                nickname: nickname,
+                email: email,
+              },
+            });
+            const accessToken = generateAccessToken(userInfo.dataValues);
+            sendAccessToken(res, accessToken).json({
+              data: {
+                id: userInfo.dataValues.id,
+                nickname: userInfo.dataValues.nickname,
+                phone_number: userInfo.dataValues.phone_number,
+                email: userInfo.dataValues.email,
+                image: userInfo.dataValues.image,
+              },
+              message: "success sign in",
+            });
+          }
+        })
+        .catch((err) => {
+          res.status(400).json({
+            message: "Oauth login err",
+          });
+        });
     }
   },
 
   // 로그아웃
   signout: async (req, res) => {
-    const userInfo = isAuthorized(req)
     try {
+      const userInfo = isAuthorized(req);
       if (!userInfo) {
         return res.status(404).send("bad request sign out")
       } else {
@@ -126,9 +190,9 @@ module.exports = {
   },
 
   // 회원탈퇴
-  delUser: async (req, res) => {
-    const userInfo = isAuthorized(req)
-    console.log(userInfo)
+  delUser: (req, res) => {
+    const userInfo = isAuthorized(req);
+    console.log(req.body);
     try {
       if (!userInfo) {
         return res.status(404).send("bad request users/:id")
@@ -194,19 +258,15 @@ module.exports = {
 
   // 회원 정보 조회
   getUserInfo: async (req, res) => {
-    console.log("들어오나")
-    const userInfo = isAuthorized(req)
+    const userInfo = isAuthorized(req);
     try {
       if (!userInfo) {
-        console.log("1")
-        res.status(404).send("bad request mypage")
+        res.statsu(404).send("bad request mypage");
       } else {
-        console.log("2")
-        res.status(200).json({ userInfo })
+        res.status(200).json({ userInfo });
       }
     } catch (err) {
-      console.log("3")
-      res.status(500).send("Server Error mypage")
+      res.status(500).send("Server Error mypage");
     }
   },
 

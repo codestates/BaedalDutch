@@ -12,7 +12,6 @@ const usersRouter = require("./routes/users");
 const partiesRouter = require("./routes/parties");
 const ordersRouter = require("./routes/orders");
 const adminRouter = require("./routes/admin")
-const oauthRouter = require("./routes/oauth");
 
 app.use(express.json());
 app.use(helmet());
@@ -33,12 +32,12 @@ app.use(
     origin: true,
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
     credentials: true,
-    cookie: {
-      maxAge: 24 * 6 * 60 * 10000,
-      httpOnly: false,
-      secure: true,
-      sameSite: "None",
-    },
+    // cookie: {
+    //   maxAge: 24 * 6 * 60 * 10000,
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: "None",
+    // },
   })
 );
 app.use(cookieParser());
@@ -50,7 +49,6 @@ app.use("/parties", partiesRouter);
 app.use("/orders", ordersRouter);
 app.use("/admin", adminRouter)
 
-app.use("/oauth", oauthRouter);
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
