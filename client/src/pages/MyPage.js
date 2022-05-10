@@ -1,11 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { isLoginAction, loginUserAction } from '../store/login';
 import DaumPostcode from 'react-daum-postcode';
 // import ProfileImage from './ProfileImage';
+import test from '../assets/test.png';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import AWS from 'aws-sdk';
+import '../styled/Mypage.css';
+const S3_BUCKET = 'baedaldutch-profile';
+const REGION = 'ap-northeast-2';
+const ACCESS_KEY = process.env.REACT_APP_ACCESS_KEY;
+const SECRET_ACCESS_KEY = process.env.REACT_APP_SECRET_ACCESS_KEY;
+
+AWS.config.update({
+  accessKeyId: ACCESS_KEY,
+  secretAccessKey: SECRET_ACCESS_KEY,
+});
+const myBucket = new AWS.S3({
+  params: { Bucket: S3_BUCKET },
+  region: REGION,
+});
 
 const { kakao } = window;
 
@@ -18,6 +35,9 @@ function MyPage() {
   // 회원탈퇴 테스트
   const dispatch = useDispatch();
   const loginUser = useSelector((state) => state.login.loginUser);
+  const isLogin = useSelector((state) => state.login.isLogin);
+  const lat = useSelector((state) => state.location.lat);
+  const lng = useSelector((state) => state.location.lng);
 
   const navigate = useNavigate();
   const nicknameRegExp = /^[a-zA-Zㄱ-힣0-9]*$/;
@@ -133,10 +153,49 @@ function MyPage() {
         setMessage({ ...message, errorMessage: '모든 항목은 필수입니다' });
         setValidation({ ...validation, errorValidation: true });
       } else if (message.nicknameMessage === '이미 존재하는 닉네임입니다') {
-        setMessage({ ...message, errorMessage: '다시 확인 해주세요' });
+        setMessage({ ...message, errorMessage: '다시 입력해주세요' });
         setValidation({ ...validation, errorValidation: true });
       } else {
-        // dispatch(axiosUserEdit(settingUserinfo));
+        dispatch(loginUserAction(settingUserinfo));
+        axios
+          .patch(
+            `${process.env.REACT_APP_API_URL}/users/mypage`,
+            {
+              id: settingUserinfo.id,
+              image: settingUserinfo.image,
+              nickname: settingUserinfo.nickname,
+              phone_number: settingUserinfo.phone_number,
+              address: settingUserinfo.address,
+              password: settingUserinfo.password,
+              passwordCheck: settingUserinfo.passwordCheck,
+            },
+            { withCredentials: true },
+          )
+          .then((data) => {
+            if (data.status === 200) {
+              const userInfoNewSearchAddress = () => {
+                const geocoder = new kakao.maps.services.Geocoder();
+
+                let callback = function (result, status) {
+                  if (status === 'OK') {
+                    const newAddSearch = result[0];
+                    // console.log('newAddSearch',newAddSearch)
+                    const newAddSearchLng = newAddSearch.x;
+                    const newAddSearchLat = newAddSearch.y;
+                    dispatch(lat(newAddSearchLat));
+                    dispatch(lng(newAddSearchLng));
+                  }
+                };
+                geocoder.addressSearch(`${data.data.data.address}`, callback);
+              };
+              userInfoNewSearchAddress();
+              dispatch(loginUser(data.data.data));
+            } else {
+              console.log('err');
+            }
+          })
+          .catch((err) => console.log(err));
+
         setMessage({ ...message, errorMessage: '' });
         Swal.fire({
           title: '수정 완료',
@@ -157,11 +216,12 @@ function MyPage() {
   const handleOnBlurNickName = (e) => {
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/users/checkNickname`,
+        `${process.env.REACT_APP_API_URL}/users/checkNickName`,
         { nickname: e.target.value },
         { withCredentials: true },
       )
       .then((res) => {
+        console.log('res:', res);
         if (loginUser.nickname === e.target.value) {
           setValidation({ ...validation, nicknameValidation: false });
           setMessage({ ...message, nicknameMessage: '' });
@@ -175,12 +235,12 @@ function MyPage() {
             nicknameMessage: '2~10자 한글, 영어 , 숫자만 사용 가능 합니다',
           });
           setValidation({ ...validation, nicknameValidation: true });
-        } else if (res.data.message === 'already nickname exist') {
-          setMessage({ ...message, nicknameMessage: '이미 존재하는 닉네임입니다' });
+        } else if (res.data.message === '이미 사용중인 닉네임입니다.') {
+          setMessage({ ...message, nicknameMessage: '이미 사용중인 닉네임입니다.' });
           setValidation({ ...validation, nicknameValidation: true });
         } else {
           setValidation({ ...validation, nicknameValidation: false });
-          setMessage({ ...message, nicknameMessage: '' });
+          setMessage({ ...message, nicknameMessage: '사용 가능한 닉네임입니다.' });
         }
       })
       .catch((err) => {
@@ -201,6 +261,11 @@ function MyPage() {
     }).then((result) => {
       if (result.value) {
         // dispatch(axiosUserDelete());
+        console.log(document.cookie);
+        axios.delete(`${process.env.REACT_APP_API_URL}/users/${loginUser.id}`, {
+          withCredentials: true,
+        });
+        dispatch(isLoginAction(false));
         navigate('/');
       } else {
       }
@@ -239,17 +304,125 @@ function MyPage() {
   };
   console.log(settingUserinfo);
 
-  // 프로필사진
-  const updateImages = (newImages) => {
-    setImages(newImages);
+  // 프로필 이미지 로직 시작
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileImage, setFileImage] = useState('');
+  const [isLoad, setIsLoad] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const fileInput = useRef(null);
+  /* 프로필 편집 버튼 눌렀을 때 S3 업로드, 서버 요청 */
+  const handleUpload = (file) => {
+    console.log('file:', file);
+    if (!file) console.log('이미지 없음');
+    else {
+      setIsLoad(true);
+      setPreview(!preview);
+
+      const params = {
+        ACL: 'public-read',
+        Body: file,
+        Bucket: S3_BUCKET,
+        Key: file.name,
+        ContentType: 'image/png, image/jpeg, image/gif',
+      };
+
+      myBucket.putObject(params, (err, data) => {
+        console.log('params:', params);
+        const imageSrc = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${file.name}`;
+        console.log('imageSrc:', imageSrc);
+        setSettingUserinfo({
+          id: loginUser.id,
+          image: imageSrc,
+          nickname: loginUser.nickname,
+          phone_number: loginUser.phone_number,
+          address: loginUser.address,
+          password: loginUser.password,
+          passwordCheck: loginUser.passwordCheck,
+        });
+        console.log('loginUser:', loginUser);
+        console.log('data:', data);
+        console.log('err:', err);
+
+        setTimeout(() => {
+          setIsLoad(false);
+          saveProfile(imageSrc);
+        }, 1000);
+      });
+    }
   };
+  /* 프로필 이미지 저장 요청 */
+  const saveProfile = (src) => {
+    console.log('프로필 이미지 저장 진입');
+    console.log('src:', src);
+    try {
+      axios.patch(
+        `${process.env.REACT_APP_API_URL}/users/mypage`,
+        {
+          image: src,
+        },
+        { withCredentials: true },
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  /* 프로필 이미지 변경값 저장 */
+  const handleImage = (e) => {
+    if (e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+      setFileImage(URL.createObjectURL(e.target.files[0]));
+      setPreview(!preview);
+    } else return;
+  };
+
+  // 프로필 이미지 로직 끝
 
   return (
     <div>
       <Wrapper>
         <MapDiv>
           <MyPageDiv>
-            {/* <ProfileImage updateImages={updateImages} /> */}
+            <div className="mypage-edit">
+              <div className="edit-title">Edit Profile</div>
+              <div className="profile-box">
+                {preview ? (
+                  <img src={fileImage} className="img-box" alt="preview" />
+                ) : !isLoad ? (
+                  <img
+                    src={settingUserinfo.image}
+                    alt="profile"
+                    className="img-box"
+                    onClick={() => {
+                      fileInput.current.click();
+                    }}
+                  />
+                ) : (
+                  <img alt="loading" className="img-box" id="loading" />
+                )}
+              </div>
+              <input type="file" id="image" accept="img/*" onChange={handleImage} ref={fileInput} />
+              <div className="edit-button">
+                <button
+                  className="edit-profile"
+                  onClick={() => {
+                    fileInput.current.click();
+                    handleUpload(selectedFile);
+                  }}
+                >
+                  이미지 선택
+                </button>
+                <button
+                  className="edit-profile"
+                  onClick={() => {
+                    // 진행중
+                    setFileImage(test);
+                    setSettingUserinfo({ image: test });
+                  }}
+                >
+                  이미지 삭제
+                </button>
+              </div>
+            </div>
             {changeInfoBtn ? (
               // 회원정보 수정
               <MyPageForm onSubmit={(e) => e.preventDefault()}>

@@ -1,9 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { showWriteAction } from '../../../store/modal';
 import Contents from './Contents';
+import PartyDetail from './PartyDetail';
 
 const Container = styled.div`
   background-color: #e3ecf1;
@@ -59,13 +58,9 @@ const SidebarContent = styled.div`
   width: 100%;
   height: 100%;
 `;
-const WriteButton = styled.button``;
-
-const ChattingButton = styled.button``;
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
-  const showWriteModal = useSelector((state) => state.modal.showWriteModal);
+  const showDetail = useSelector((state) => state.visible.showDetail);
 
   return (
     <Container>
@@ -74,9 +69,7 @@ const Sidebar = () => {
           <NearParty>가까운 파티</NearParty>
           <MyParty>내 파티</MyParty>
         </Parties>
-        <SidebarContent>
-          <Contents />
-        </SidebarContent>
+        <SidebarContent>{showDetail ? <PartyDetail /> : <Contents />}</SidebarContent>
       </Sidebarbox>
     </Container>
   );
