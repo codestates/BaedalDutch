@@ -14,11 +14,12 @@ module.exports = {
   },
 
   isAuthorized: req => {
-    let authorization = req.headers.authorization
+    //let authorization = req.headers.authorization
+    let authorization = req.headers.cookie
     if (!authorization) {
       return null
     }
-    let token = authorization.split(' ')[1]
+    let token = authorization.split('=')[1]
     console.log(authorization)
 
     try {
