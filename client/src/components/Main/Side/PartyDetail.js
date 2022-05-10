@@ -59,7 +59,11 @@ const PartyDetail = () => {
     console.log(id);
 
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/parties/${id}`, { parties_id: id })
+      .delete(
+        `${process.env.REACT_APP_API_URL}/parties/${id}`,
+        { parties_id: id },
+        { withCredentials: true },
+      )
       .then((res) => {
         if (res.status === 200) {
           console.log('삭제성공');
@@ -72,7 +76,11 @@ const PartyDetail = () => {
   const ClosePartyStatus = () => {
     return () => {
       axios
-        .patch(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { data: partyData.id })
+        .patch(
+          `${process.env.REACT_APP_API_URL}/parties/${partyData.id}`,
+          { data: partyData.id },
+          { withCredentials: true },
+        )
         .then((res) => {
           if (res.status === 200) {
             console.log('수정성공');
@@ -93,7 +101,10 @@ const PartyDetail = () => {
         <FoodImg src={`icon/${partyData.food_category}.png`} alt=""></FoodImg>
         <StoreInformation>
           <StoreName>가게명 : {partyData.store_name}</StoreName>
-          <PartyMember> 더치인원 : {partyData.member_num} 명</PartyMember>
+          <PartyMember>
+            {' '}
+            더치인원 : {partyData.total_num} / {partyData.member_num} 명
+          </PartyMember>
           <Fee>배달료 : {partyData.fee} 원</Fee>
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)} 원</Dutch>
         </StoreInformation>
