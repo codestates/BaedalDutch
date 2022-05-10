@@ -59,36 +59,29 @@ module.exports = {
       },
     })
     if (!created) {
-      return res.status(409).send("already exists sign up")
-    }
-    try {
-      const accessToken = generateAccessToken(data.dataValues)
-      sendAccessToken(res, accessToken).json({
-        data: data.dataValues.email,
-        message: "created your id!!",
-      })
-    } catch (err) {
-      return res.status(500).send("Server Error sign up")
+      return res.status(409).send('already exists sign up')
+    } else if(data){
+      return res.status(200).json({data: data.dataValues.email, message: 'created your id!!'})
+    } else {
+      return res.status(500).send('Server Error sign up')
     }
   },
 
   // 로그인
   signin: async (req, res) => {
     const { email, password } = req.body
-    console.log("서버체크", email, password)
     
-    const userInfo = await users.findOne({
-      where: { email: email, password: password },
-    })
+    try {
+      const userInfo = await users.findOne({
+        where: { email: email }
+      })
 
     console.log("userInfo:", userInfo)
     if (!userInfo || !bcrypt.compareSync(password, userInfo.dataValues.password)) {
       console.log('check')
       return res.status(404).send("bad request sign in")
     } else {
-      try {
         delete userInfo.dataValues.password
-        console.log("userInfo.password", userInfo.dataValues.password)
         const accessToken = generateAccessToken(userInfo.dataValues)
         sendAccessToken(res, accessToken).json({
           data: {
@@ -103,10 +96,9 @@ module.exports = {
           accessToken,
           message: "success sign in",
         })
+
       } catch (err) {
         return res.status(500).send("Server Error sign in")
-      }
-    }
   },
 
   // 로그아웃
@@ -116,14 +108,7 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send("bad request sign out")
       } else {
-        return res
-          .status(200)
-          .clearCookie('jwt', {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-          })
-          .send({ message: "success sign out" })
+        return res.status(200).clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'none'}).send({ message: 'success sign out' })
       }
     } catch (err) {
       return res.status(500).send("Server Error sign out")
@@ -147,7 +132,6 @@ module.exports = {
   },
 
   // 회원정보 수정(작업중)
-  // 닉네임을 안바꾸고 다른 항목 수정하면 닉네임 중복으로 수정 안됨
   updateUser: async (req, res) => {
     console.log('회원정보 수정 진입')
     const userInfo = isAuthorized(req)

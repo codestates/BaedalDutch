@@ -15,8 +15,8 @@ module.exports = {
 
 
   isAuthorized: req => {
-    // let authorization = req.headers.authorization
-    let authorization = req.headers.cookie
+    let authorization = req.headers.authorization
+    //let authorization = req.headers.cookie
     console.log('req.headers:', req.headers)
     console.log('req.cookie:', req.cookie)
     console.log('req.cookies:', req.cookies)
@@ -26,7 +26,7 @@ module.exports = {
     if (!authorization) {
       return null
     }
-    let token = authorization.split('=')[1]
+    let token = authorization.split(' ')[1]
     console.log(authorization)
 
 
