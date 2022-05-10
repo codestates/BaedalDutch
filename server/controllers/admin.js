@@ -72,18 +72,17 @@ module.exports = {
 
   // 전체 회원 정보 조회(완료)
   getAllUserInfo: async (req, res) => {
-    //const adminInfo = isAuthorized(req)
+    const adminInfo = isAuthorized(req)
     const userInfo = await users.findAll({ where: { nickname: { [Op.ne]: "admin" } }})
     console.log(userInfo)
     //console.log('adminInfo::', adminInfo)
     try{
-      res.status(200).json({ userInfo })
-      // if(adminInfo.nickname === "admin") {
-      //   console.log(adminInfo)
-      //   res.status(200).json({ userInfo })
-      // } else {
-      //   res.statsu(404).send('bad request alluserinfo')
-      // }
+      //res.status(200).json({ userInfo })
+      if(adminInfo.nickname === "admin") {
+        res.status(200).json({ userInfo })
+      } else {
+        res.status(404).send('bad request alluserinfo')
+      }
     } catch(err){
       res.status(500).send('Server Error alluserinfo')
     }
