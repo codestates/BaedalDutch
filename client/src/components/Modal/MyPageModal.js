@@ -6,6 +6,7 @@ import { showMyPageAction } from '../../store/modal';
 import { useSelector } from 'react-redux';
 import { isLoginAction } from '../../store/login';
 import { useRef } from 'react';
+import axios from 'axios';
 
 const ModalContiaer = styled.div`
   position: fixed;
@@ -42,7 +43,6 @@ const MyPageModal = () => {
   const showMyPageModal = useSelector((state) => state.modal.showMyPageModal);
   const navDiv = useSelector((state) => state.modal.setNavContainer);
   const dispatch = useDispatch();
-  console.log('모달', showMyPageModal);
 
   const moveToMyProfile = () => {
     dispatch(showMyPageAction(false));
@@ -61,6 +61,13 @@ const MyPageModal = () => {
     }
   };
 
+  const handleLogoutClick = (e) => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/users/logout`, {}, { withCredentials: true })
+      .then((res) => {})
+      .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
     window.addEventListener('click', handleCloseModal);
     return () => {
@@ -77,6 +84,7 @@ const MyPageModal = () => {
             dispatch(isLoginAction(false));
             dispatch(showMyPageAction(false));
             navigate('/');
+            handleLogoutClick();
           }}
         >
           로그아웃

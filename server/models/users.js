@@ -1,7 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+'use strict'
+const { Model } = require('sequelize')
+
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
     /**
@@ -15,24 +14,31 @@ module.exports = (sequelize, DataTypes) => {
       //   foreignKey: "users_id"
       // });
       models.users.hasMany(models.parties, {
-        foreignKey: "writerUser_id",
-        sourceKey: "id",
-      });
+        foreignKey: 'leader',
+        sourceKey: 'id',
+        onDelete: 'CASCADE',
+      })
       models.users.hasMany(models.users_parties, {
-        foreignKey: "users_id",
-        sourceKey: "id",
-      });
+        foreignKey: 'users_id',
+        sourceKey: 'id',
+        onDelete: 'CASCADE',
+      })
     }
   }
-  users.init({
-    email: DataTypes.STRING,
-    nickname: DataTypes.STRING,
-    password: DataTypes.STRING,
-    image: DataTypes.STRING,
-    phone_number: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'users',
-  });
-  return users;
-};
+  users.init(
+    {
+      email: DataTypes.STRING,
+      nickname: DataTypes.STRING,
+      password: DataTypes.STRING,
+      image: DataTypes.STRING,
+      phone_number: DataTypes.STRING,
+      address: DataTypes.STRING
+    },
+    {
+      sequelize,
+
+      modelName: 'users',
+    },
+  )
+  return users
+}

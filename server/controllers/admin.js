@@ -25,12 +25,12 @@ module.exports = {
     }
   },
 
-  // 회원삭제(작업중)
+  // 회원삭제(완료)
   deleteUser: async (req, res) => {
     const adminInfo = isAuthorized(req)
     try{
       if(adminInfo.nickname === 'admin') {
-        await users.destroy({ where: { id: req.params.id}})
+        await users.destroy({ where: { id: req.params.id }})
         return res.status(200).send('successfully delete user deleteUser')
       }
     } catch(err){
@@ -38,30 +38,35 @@ module.exports = {
     }
   },
 
-  // 회원정보 수정(작업중)
+  // 회원정보 수정(완료)
   updateUser: async (req, res) => {
     const adminInfo = isAuthorized(req)
+    const { nickname, password, image, phone_number } = req.body
+    console.log('adminInfo', adminInfo)
     try{
-      if(adminInfo.nickname === "admin") {
-        const user = await users.findOne({ where: { id: req.params.id }})
-
-        // 닉네임 중복 체크
-        const checkNickname = await users.findOne({
-          where: { nickname: nickname },
-        });
-        if (checkNickname) {
-          return res.status(409).send("nickname already exists sign up");
-        }
-
+      const user = await users.findOne({ where: { id: req.params.id }})
+      //console.log(user)
+      if(adminInfo.nickname === "admin") {    
+        console.log('check')
+        // 닉네임 중복 체크        
+        // const nicknameCheck = await users.findOne({
+        //   where: { nickname: nickname },
+        // });
+        // if (nicknameCheck) {
+        //   return res.status(409).send("nickname already exists sign up");
+        // }
+        
         // 데이터 수정
         const updateUser = await user.update(
           { nickname, password, image, phone_number },
-          { where: { id: users.params.id }}
+          { where: { id: user.id }}
         )
-        return res.statsu(200).json({ updateuser, message: 'success update user info'})
+        return res.status(200).json({ updateUser, message: 'success update user info'})
+      } else {
+        return res.ststus(400).send('Bad request admin user update')
       }
     } catch(err){
-      return res.status(500).send('Server Error mypage')
+      return res.status(500).send('Server Error admin update')
     }
   },
 
@@ -94,6 +99,20 @@ module.exports = {
       }
     } catch(err){
       return res.status(500).send('Server Error allpartyinfo')
+    }
+  },
+  // 파티삭제(완료)
+  deleteParty: async (req, res) => {
+    const adminInfo = isAuthorized(req)
+    try{
+      if(adminInfo.nickname === 'admin') {
+        await parties.destroy({ where: { id: req.params.id }})
+        return res.status(200).send('successfully delete admin parties')
+      } else {
+        res.status(404).send('Bad request delete admin parties')
+      }
+    } catch(err){
+      return res.status(500).send('Server Error delete admin parties')
     }
   },
 };

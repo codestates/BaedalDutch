@@ -2,10 +2,59 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Container, ErrorMessage, Form, Input, Label } from '../styled/signup';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import DaumPostcode from 'react-daum-postcode';
+import { useState } from 'react';
+import styled from 'styled-components';
+
+const { kakao } = window;
+
+const AddressDiv = styled.div`
+  display: flex;
+`;
+
+const CloseBtn = styled.button`
+  display: block;
+  position: absolute;
+  top: 70px;
+  right: 15px;
+  z-index: 100;
+  padding: 7px;
+  width: 100px;
+  color: white;
+  background-color: #b51d29;
+  border: none;
+  border-radius: 6px;
+`;
+
+const AddressInputDiv = styled.div`
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin: 20px;
+  width: 100%;
+  border: none;
+  text-decoration: none;
+  border-bottom: ${(props) => (props.error ? '2px solid red' : '2px solid rgba(0, 0, 0, 0.2)')};
+  &:focus {
+    outline: none;
+  }
+`;
+
+const addressStyle = {
+  display: 'block',
+  position: 'absolute',
+  top: '97px',
+  left: '20px',
+  zIndex: '100',
+  padding: '7px',
+  width: '90%',
+  height: '80%',
+};
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [visible, setVisible] = useState(false);
 
   const {
     register,
@@ -15,10 +64,51 @@ const Signup = () => {
   } = useForm({
     mode: 'onChange',
   });
-  
+
+  const [writeInfo, setWriteInfo] = useState({
+    food_category: '',
+    member_num: '',
+    address: '',
+    lat: '',
+    lng: '',
+  });
+
+  const handleComplete = (data) => {
+    console.log('데이터확인', data);
+    console.log('작동확인');
+    let fullAddress = data.address;
+    let extraAddress = '';
+    if (data.addressType === 'R') {
+      if (data.bname !== '') {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== '') {
+        extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+    }
+
+    setWriteInfo({ ...writeInfo, address: fullAddress });
+    console.log('첫번째 어드레스', writeInfo.address);
+  };
+
+  const test = () => {
+    console.log('늦게하더라도 늦게찍힘?');
+    console.log('비동기???', writeInfo.address);
+    const geocoder = new kakao.maps.services.Geocoder();
+
+    let callback = function (result, status) {
+      console.log('상태?', status);
+      if (status === 'OK') {
+        const newAddSearch = result[0];
+        setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
+      }
+    };
+    geocoder.addressSearch(`${writeInfo.address}`, callback);
+  };
+
   const onSubmit = () => {
-    const { nickname, email, password, phone_number, image } = getValues();
-    console.log(nickname, email, password, phone_number, image);
+    const { nickname, email, password, phone_number } = getValues();
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/users/signup`,
@@ -28,13 +118,15 @@ const Signup = () => {
           nickname,
           phone_number,
           image: '12',
+          address: writeInfo.address,
         },
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         },
-      ).then((res) => {
-        navigate('/')
+      )
+      .then((res) => {
+        navigate('/');
       });
   };
   // if (res.accessToken) {
@@ -62,6 +154,7 @@ const Signup = () => {
     message: '휴대전화 번호를 입력해 주세요',
   };
 
+  console.log('방금 클릭한값', writeInfo.address);
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -129,7 +222,28 @@ const Signup = () => {
           id="phone_number"
         ></Input>
         <ErrorMessage>{errors.phone_number?.message}</ErrorMessage>
+        <Label for="address">주소</Label>
+        <AddressDiv>
+          {visible ? (
+            <div>
+              <CloseBtn onClick={() => setVisible(false)}>닫기</CloseBtn>
+              <DaumPostcode
+                onComplete={handleComplete}
+                onSuccess={test}
+                style={addressStyle}
+                height={700}
+              />
+            </div>
+          ) : null}
 
+          {writeInfo.address === '' ? (
+            <AddressInputDiv onClick={() => setVisible(true)} placeholder="주소를 검색 해주세요">
+              주소를 검색 해주세요
+            </AddressInputDiv>
+          ) : (
+            <AddressInputDiv onClick={() => setVisible(true)}>{writeInfo.address}</AddressInputDiv>
+          )}
+        </AddressDiv>
         <Button type="submit">가입신청</Button>
       </Form>
     </Container>

@@ -1,0 +1,97 @@
+div.mypage-center > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20vh;
+}
+.mypage-container {
+  display: flex;
+  position: absolute;
+  width: 85%;
+  height: 90%;
+  border-radius: 28px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px,
+    rgba(17, 17, 26, 0.1) 0px 24px 80px;
+}
+.mypage-left {
+  background: rgb(84, 87, 166);
+  flex: 2;
+  border-radius: 20px 0 0 20px;
+}
+.mypage-center {
+  flex: 6;
+  background-color: rgb(189, 189, 221);
+  overflow: hidden;
+}
+.mypage-right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 20px 20px 0;
+  background-color: rgb(84, 87, 166);
+}
+.mypage-edit {
+  width: 80%;
+  height: 50vh;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  background-color: #fff;
+}
+.edit-title {
+  font-size: 1.5em;
+  color: #fff;
+  background-color: rgb(84, 87, 166);
+  border-radius: 20px 20px 0 0;
+  padding-top: 5%;
+  padding-bottom: 5%;
+}
+.profile-box {
+  text-align: center;
+  border-radius: 20px;
+  background-color: #fff;
+}
+.img-box {
+  width: 100px;
+  height: 100px;
+  border-radius: 70%;
+  padding: 30px 0px 30px 0px;
+  margin: 0 auto;
+}
+.edit-button {
+  margin-top: 2vw;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+.edit-profile,
+.edit-info {
+  margin-left: 1.5vw;
+  margin-right: 1.5vw;
+}
+#word {
+  width: 60%;
+  height: 10vh;
+  border: 4px dashed #a9d4ff;
+  border: none;
+  border-radius: 20px;
+  background: #ddd;
+  text-align: center;
+}
+#image {
+  display: none;
+}
+.edit-delete {
+  margin-top: 5vw;
+}
+
+#loading {
+  animation: spin infinite 5s linear;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

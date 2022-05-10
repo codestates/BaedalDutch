@@ -8,8 +8,6 @@ const LoginModal = () => {
   const showModal = useSelector((state) => state.modal.showModal);
   const dispatch = useDispatch();
 
-  console.log('snowmodal상태', showModal);
-
   return (
     <ModalContainer showModal={showModal}>
       <ModalBackdrop>

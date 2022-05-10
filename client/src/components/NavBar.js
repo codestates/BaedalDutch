@@ -55,7 +55,6 @@ const Navbar = () => {
   const isLogin = useSelector((state) => state.login.isLogin);
   const myPage = useSelector((state) => state.modal.showMyPageModal);
   const navContainer = useRef();
-  console.log('로그인체크', isLogin);
 
   useEffect(() => {
     dispatch(setMyNavDivAction(navContainer));

@@ -11,6 +11,7 @@ const app = express();
 const usersRouter = require("./routes/users");
 const partiesRouter = require("./routes/parties");
 const ordersRouter = require("./routes/orders");
+const adminRouter = require("./routes/admin")
 
 app.use(express.json());
 app.use(helmet());
@@ -46,6 +47,8 @@ app.use(cookieParser());
 app.use("/users", usersRouter);
 app.use("/parties", partiesRouter);
 app.use("/orders", ordersRouter);
+app.use("/admin", adminRouter)
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
