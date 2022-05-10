@@ -35,6 +35,7 @@ function MyPage() {
   // 회원탈퇴 테스트
   const dispatch = useDispatch();
   const loginUser = useSelector((state) => state.login.loginUser);
+  const isLogin = useSelector((state) => state.login.isLogin);
   const lat = useSelector((state) => state.location.lat);
   const lng = useSelector((state) => state.location.lng);
 
@@ -260,6 +261,11 @@ function MyPage() {
     }).then((result) => {
       if (result.value) {
         // dispatch(axiosUserDelete());
+        console.log(document.cookie);
+        axios.delete(`${process.env.REACT_APP_API_URL}/users/${loginUser.id}`, {
+          withCredentials: true,
+        });
+        dispatch(isLoginAction(false));
         navigate('/');
       } else {
       }
@@ -349,9 +355,13 @@ function MyPage() {
     console.log('프로필 이미지 저장 진입');
     console.log('src:', src);
     try {
-      axios.patch(`${process.env.REACT_APP_API_URL}/users/mypage`, {
-        image: src,
-      });
+      axios.patch(
+        `${process.env.REACT_APP_API_URL}/users/mypage`,
+        {
+          image: src,
+        },
+        { withCredentials: true },
+      );
     } catch (e) {
       console.log(e);
     }
