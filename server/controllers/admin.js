@@ -75,16 +75,16 @@ module.exports = {
     const adminInfo = isAuthorized(req)
     const userInfo = await users.findAll({ where: { nickname: { [Op.ne]: "admin" } }})
     console.log(userInfo)
-    //console.log('adminInfo::', adminInfo)
+    console.log('adminInfo::', adminInfo)
     try{
       //res.status(200).json({ userInfo })
       if(adminInfo.nickname === "admin") {
-        res.status(200).json({ userInfo })
+        return res.status(200).json({ userInfo })
       } else {
-        res.status(404).send('bad request alluserinfo')
+        return res.status(404).send('bad request alluserinfo')
       }
     } catch(err){
-      res.status(500).send('Server Error alluserinfo')
+      return res.status(500).send('Server Error alluserinfo')
     }
   },
 
