@@ -45,6 +45,7 @@ const Contents = () => {
   const partyData = useSelector((state) => state.visible.partyData);
 
   const [parties, setParties] = useState([]);
+
   const getAllData = async () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`);
     setParties(data.data);
