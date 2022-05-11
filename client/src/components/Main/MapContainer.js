@@ -60,28 +60,28 @@ const MapContainer = () => {
         clickable: true,
       });
 
-      window.kakao.maps.event.addListener(marker, 'mouseover', () => {
+      window.kakao.maps.event.addListener(marker, 'click', () => {
         alert('하이');
       });
     }
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        let lat = position.coords.latitude;
-        let lon = position.coords.longitude;
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(function (position) {
+    //     let lat = position.coords.latitude;
+    //     let lon = position.coords.longitude;
 
-        let locPosition = new kakao.maps.LatLng(lat, lon); //좌표 (위도+경도)
-        let message = '<div style="padding:5px;">당신의 위치</div>'; // 인포윈도우에 표시될 내용입니다
+    //     let locPosition = new kakao.maps.LatLng(lat, lon); //좌표 (위도+경도)
+    //     let message = '<div style="padding:5px;">당신의 위치</div>'; // 인포윈도우에 표시될 내용입니다
 
-        // 마커와 인포윈도우를 표시합니다
-        displayMarker(locPosition, message);
-      });
-    } else {
-      let locPosition = new kakao.maps.LatLng(33.450701, 126.570667); //위치 나중에 서울 중심으로 바꾸기
-      let message = '위치정보를 켜주세요';
+    //     // 마커와 인포윈도우를 표시합니다
+    //     displayMarker(locPosition, message);
+    //   });
+    // } else {
+    //   let locPosition = new kakao.maps.LatLng(33.450701, 126.570667); //위치 나중에 서울 중심으로 바꾸기
+    //   let message = '위치정보를 켜주세요';
 
-      displayMarker(locPosition, message);
-    }
+    //   displayMarker(locPosition, message);
+    // }
 
     function displayMarker(locPosition, message) {
       let marker = new kakao.maps.Marker({
@@ -102,7 +102,7 @@ const MapContainer = () => {
       infowindow.open(map, marker);
 
       // 지도 중심좌표를 접속위치로 변경합니다
-      map.setCenter(locPosition);
+      // map.setCenter(locPosition);
 
       kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
         var latlng = mouseEvent.latLng;
@@ -116,7 +116,7 @@ const MapContainer = () => {
     let bounds = new kakao.maps.LatLngBounds();
     if (searchPlace) {
       ps.keywordSearch(searchPlace, placesSearchCB, {
-        radius: 2000,
+        // radius: 2000,
         location: new kakao.maps.LatLng(currentLat, currentLng),
       });
 
