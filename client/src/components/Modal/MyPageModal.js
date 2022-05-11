@@ -52,6 +52,7 @@ const MyPageModal = () => {
   };
 
   const moveToAdminPage = () => {
+    dispatch(showMyPageAction(false));
     navigate('/admin')
   }
 
