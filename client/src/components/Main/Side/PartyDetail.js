@@ -154,7 +154,7 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-              <span>{partyData.member_num}</span>
+              <span>{` ${partyData.total_num} / ${partyData.member_num}`}</span>
             )}
             명
           </PartyMember>
