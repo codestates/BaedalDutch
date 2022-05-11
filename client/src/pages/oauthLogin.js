@@ -26,7 +26,7 @@ const OAuth2RedirectHandler = () => {
           // result에 카카오 서버가 준 액세스 토큰이 담겨옴, BaedalDutch 서버로 액세스 토큰을 전달
           axios
             .post(
-              `${process.env.REACT_APP_API_URL}/oauth/kakao`,
+              `${process.env.REACT_APP_API_URL}/users/signin`,
               {
                 code: result.data.access_token,
               },
@@ -35,7 +35,8 @@ const OAuth2RedirectHandler = () => {
               }
             )
             .then((res) => {
-              // loginUserAction이 뭐지..?
+              console.log(res.data);
+              dispatch(loginUserAction(res.data.data));
               dispatch(isLoginAction(true));
               navigate('/');
             })

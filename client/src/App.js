@@ -24,7 +24,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/main" element={<Main />} />
-        <Route path="/oauth/kakao" element={<OAuth2RedirectHandler />} />
+        <Route path="/users/signin" element={<OAuth2RedirectHandler />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/mypage" element={<MyPage />} />
       </Routes>

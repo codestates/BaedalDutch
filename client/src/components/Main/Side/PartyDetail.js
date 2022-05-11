@@ -62,7 +62,11 @@ const PartyDetail = () => {
     console.log(id);
 
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/parties/${id}`, { parties_id: id })
+      .delete(
+        `${process.env.REACT_APP_API_URL}/parties/${id}`,
+        { parties_id: id },
+        { withCredentials: true },
+      )
       .then((res) => {
         if (res.status === 200) {
           console.log('삭제성공');
@@ -105,7 +109,6 @@ const PartyDetail = () => {
           withCredentials: true,
         },
       )
-
       .then((res) => {
         if (res.status === 200) {
           console.log('업데이트성공');

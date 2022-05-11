@@ -1,5 +1,5 @@
-"use strict"
-const { Model } = require("sequelize")
+'use strict'
+const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class parties extends Model {
     /**
@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
       // });
       models.parties.belongsTo(models.users, {
 
-
         foreignKey: 'leader',
         targetKey: 'id',
         onDelete: 'CASCADE',
@@ -24,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'id',
         onDelete: 'CASCADE',
 
-
       })
     }
   }
@@ -33,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       store_name: DataTypes.STRING,
       food_category: DataTypes.STRING,
       member_num: DataTypes.INTEGER,
+      total_num: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1
+      },
       content: DataTypes.STRING,
       fee: DataTypes.INTEGER,
       address: DataTypes.STRING,
@@ -46,8 +48,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "parties",
-    }
+      modelName: 'parties',
+    },
   )
   return parties
 }
