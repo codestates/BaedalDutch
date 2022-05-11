@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
 import { useSelector } from 'react-redux';
+import { setPartiesAction } from '../../../store/partyData';
 
 const Container = styled.div`
   display: flex;
@@ -42,13 +43,13 @@ const Dutch = styled.div``;
 
 const Contents = () => {
   const dispatch = useDispatch();
-  const partyData = useSelector((state) => state.visible.partyData);
-
   const [parties, setParties] = useState([]);
 
   const getAllData = async () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`);
     setParties(data.data);
+    dispatch(setPartiesAction(data.data));
+    console.log('여기에찍으면?');
     // getMyInfo();
   };
 

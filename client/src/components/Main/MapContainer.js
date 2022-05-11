@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { saveSearchListAction } from '../../store/search';
 
@@ -13,6 +14,7 @@ const TopContainer = styled.div`
 
 const MapContainer = () => {
   const dispatch = useDispatch();
+  const partyData = useSelector((state) => state.partyData.parties);
   const searchPlace = useSelector((state) => state.search?.defaultInput);
   const currentLat = useSelector((state) => state.location.lat);
   const currentLng = useSelector((state) => state.location.lng);
@@ -28,6 +30,40 @@ const MapContainer = () => {
       level: 3,
     };
     const map = new kakao.maps.Map(container, options);
+
+    const positions = partyData.map((party, i) => {
+      return {
+        title: party.store_name,
+        food_category: party.food_category,
+        latlng: new kakao.maps.LatLng(party.lat, party.lng),
+      };
+    });
+
+    console.log('카테고리나오게', positions.food_category);
+
+    for (var i = 0; i < positions.length; i++) {
+      // 마커 이미지의 이미지 크기 입니다
+      var imageSize = new kakao.maps.Size(50, 50);
+
+      // 마커 이미지를 생성합니다
+      var markerImage = new kakao.maps.MarkerImage(
+        `icon/${positions[i].food_category}.png`,
+        imageSize,
+      );
+
+      // 마커를 생성합니다
+      var marker = new kakao.maps.Marker({
+        map: map, // 마커를 표시할 지도
+        position: positions[i].latlng, // 마커를 표시할 위치
+        title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+        image: markerImage, // 마커 이미지
+        clickable: true,
+      });
+
+      window.kakao.maps.event.addListener(marker, 'mouseover', () => {
+        alert('하이');
+      });
+    }
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
