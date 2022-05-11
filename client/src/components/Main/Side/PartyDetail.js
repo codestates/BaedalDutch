@@ -3,7 +3,8 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { visibleAction } from '../../../store/visible';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -34,11 +35,13 @@ const FoodImg = styled.img`
 const PartyMember = styled.div``;
 const Fee = styled.div``;
 const Dutch = styled.div``;
-const CreatedDate = styled.div``;
+const UpdatedAt = styled.div``;
 const Introduce = styled.div`
   border: 2px solid rgba(0, 0, 0, 0.2);
 `;
 const SubmitButton = styled.button``;
+
+const StoreAddress = styled.div``;
 
 const formatDate = (date) => {
   let d = new Date(date),
@@ -53,9 +56,28 @@ const formatDate = (date) => {
 };
 
 const PartyDetail = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const partyData = useSelector((state) => state.visible.partyData);
   const loginId = useSelector((state) => state.login.loginUser);
+  const [isParticipant, setIsParticipant] = useState('');
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
+      .then((data) => {
+        console.log('data:', data);
+        console.log('data.data1:', Object.keys(data.data)[0]);
+        // leader면 true!!!!!
+        if (Object.keys(data.data)[0] === 'leader') {
+          setIsParticipant('leader');
+        } else if (Object.keys(data.data)[0] === 'participant') {
+          setIsParticipant('participant');
+        } else {
+          setIsParticipant('newbie');
+        }
+      });
+  }, [partyData.total_num]);
 
   const showPostUserDelete = (id) => {
     console.log('삭제클릭');
@@ -132,6 +154,43 @@ const PartyDetail = () => {
   //     .catch((err) => console.log('에러셈'));
   // };
 
+  // 신청하기
+  const handleNewbie = () => {
+    console.log('파티데이터 id:', partyData.id);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/orders/${partyData.id}`,
+        { id: partyData.id },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        },
+      )
+      .then((data) => {
+        console.log('data신청', data);
+      });
+    setIsParticipant('participant');
+    dispatch(visibleAction(false));
+    // navigate('/main');
+    window.location.replace('/main');
+  };
+
+  // 신청취소
+  const handleParticipate = () => {
+    axios.delete(`${process.env.REACT_APP_API_URL}/orders/${partyData.id}`, {
+      withCredentials: true,
+    });
+    setIsParticipant('newbie');
+    dispatch(visibleAction(false));
+    window.location.replace('/main');
+  };
+  // 마감하기
+  const handleLeader = () => {
+    axios.patch(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, {
+      withCredentials: true,
+    });
+  };
+
   return (
     <Container>
       <ButtonMenu>
@@ -158,7 +217,7 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-              <span>{partyData.store_name}</span>
+              <span> {partyData.store_name}</span>
             )}
           </StoreName>
           <PartyMember>
@@ -171,9 +230,8 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-              <span>{` ${partyData.total_num} / ${partyData.member_num}`}</span>
+              <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
             )}
-            명
           </PartyMember>
           <Fee>
             배달료 :
@@ -189,10 +247,11 @@ const PartyDetail = () => {
             )}
             원
           </Fee>
-          <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)} 원</Dutch>
+          <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
         </StoreInformation>
       </Store>
-      <CreatedDate>{formatDate(partyData.updatedAt)}</CreatedDate>
+      <UpdatedAt>{formatDate(partyData.updatedAt)}</UpdatedAt>
+      <StoreAddress>주소 : {partyData.address}</StoreAddress>
       <Introduce>
         {changePost ? (
           <textarea
@@ -206,7 +265,24 @@ const PartyDetail = () => {
         )}
       </Introduce>
       <SubmitButton>
-        {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>}
+        {(function () {
+          if (!partyData) {
+            return null;
+          } else if (isParticipant === 'leader') {
+            return <button onClick={handleLeader}> 마감하기 </button>;
+          } else if (isParticipant === 'newbie') {
+            return <button onClick={handleNewbie}> 신청하기 </button>;
+          } else if (isParticipant === 'participant') {
+            return <button onClick={handleParticipate}> 신청취소 </button>;
+          } else if (partyData.closed === true) {
+            console.log('closed칸1', partyData.closed);
+            return <button> 신청마감되었습니다 </button>;
+          } else if (partyData.total_num === partyData.member_num) {
+            console.log('closed칸2', partyData.closed);
+            return <button> 신청마감되었습니다 </button>;
+          }
+        })()}
+        {/* {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>} */}
       </SubmitButton>
     </Container>
   );

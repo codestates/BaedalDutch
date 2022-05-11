@@ -109,10 +109,10 @@ const Contents = () => {
               {/* {party.leader === //id ? <div>수정/삭베</div> : null} */}
               <PartyMember>
                 {' '}
-                더치인원 : {party.total_num}/{party.member_num} 명
+                더치인원 : {party.total_num}명 / {party.member_num}명
               </PartyMember>
-              <Fee>배달료 : {party.fee} 원</Fee>
-              <Dutch>더치비용 : {parseInt(party.fee / party.member_num)} 원</Dutch>
+              <Fee>배달료 : {party.fee}원</Fee>
+              <Dutch>더치비용 : {parseInt(party.fee / party.member_num)}원</Dutch>
               {/* {parties.leader === id ? <button>수정하기</button> : <button onClci = {count}>신청학리</button>} */}
             </PartyDetail>
           </Party>

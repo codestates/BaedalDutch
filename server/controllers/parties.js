@@ -54,6 +54,10 @@ module.exports = {
         message: 'token none',
       })
     }
+    const participant = await users_parties.findOne({
+      where: { users_id: userInfo.id, parties_id: oneParty.id },
+    })
+    console.log('participant!!!!!!', participant)
     try {
       // 4. 토큰을 가진 유저인 경우 1-1. 유저 id와 조회한 파티의 leader가 같다면 파티(작성자)를 client에 보내주기\
       if (userInfo.id === oneParty.leader) {
@@ -62,7 +66,12 @@ module.exports = {
           .json({ leader: oneParty, message: 'success get parties of leader' })
       }
       // 5. 토큰을 가진 유저인 경우 1-2. 유저 id와 조회한 파티의 leader와 다르다면 파티(참가자)를 client에 보내주기
-      else {
+      else if (!participant) {
+        res.status(200).json({
+          newbie: oneParty,
+          message: 'success get parties of newbie',
+        })
+      } else if (participant) {
         res.status(200).json({
           participant: oneParty,
           message: 'success get parties of participant',
