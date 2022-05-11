@@ -40,8 +40,8 @@ module.exports = {
       return res.status(409).send("email already exists sign up");
     }
 
-    if (checkNickname || "admin") {
-      return res.status(409).send("nickname already exists sign up");
+    if (checkNickname) {
+      return res.status(409).send('nickname already exists sign up')
     }
 
     const bPassword = await bcrypt.hash(password, saltRounds);
@@ -74,11 +74,14 @@ module.exports = {
     if (Object.keys(req.body).length === 2) {
       const { email, password } = req.body;
       const userInfo = await users.findOne({
-        where: { email: email, password: password },
-      });
-      console.log("userInfo:", userInfo);
-      if (!userInfo) {
-        return res.status(404).send("bad request sign in");
+        where: { email: email },
+      })
+      console.log('userInfo:', userInfo)
+      if (
+        !userInfo ||
+        !bcrypt.compareSync(password, userInfo.dataValues.password)
+      ) {
+        return res.status(404).send('bad request sign in')
       } else {
         try {
           const accessToken = generateAccessToken(userInfo.dataValues);
@@ -89,6 +92,7 @@ module.exports = {
               phone_number: userInfo.phone_number,
               email: userInfo.email,
               image: userInfo.image,
+              address: userInfo.address,
             },
             accessToken,
             message: "success sign in",
