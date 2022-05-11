@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import Landing from './pages/Landing';
+import Signup from './pages/Signup';
+import Main from './pages/Main';
+import Navbar from './components/NavBar';
+import LoginModal from './components/Modal/LoginModal';
+import GlobalStyle from './styled/Globalstyles';
+import OAuth2RedirectHandler from './pages/oauthLogin';
+import WriteModal from './components/Modal/WriteModal/WriteModal';
+import Admin from './pages/admin';
+import MyPageModal from './components/Modal/MyPageModal';
+import MyPage from './pages/MyPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <GlobalStyle></GlobalStyle>
+      <Navbar />
+      <LoginModal />
+      <WriteModal />
+      <MyPageModal />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/main" element={<Main />} />
+        <Route path="/users/signin" element={<OAuth2RedirectHandler />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/mypage" element={<MyPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
 export default App;

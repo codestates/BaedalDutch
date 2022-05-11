@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
+    "aws-sdk": "^2.1130.0",
     "axios": "^0.26.1",
+    "babel-eslint": "^10.1.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -18,9 +21,21 @@
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
     "react": "^18.0.0",
+    "react-awesome-reveal": "^3.8.1",
+    "react-daum-postcode": "^3.0.1",
     "react-dom": "^18.0.0",
+    "react-hook-form": "^7.30.0",
+    "react-redux": "^8.0.1",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-select": "^5.3.1",
+    "reactstrap": "^9.0.2",
+    "redux-persist": "^6.0.0",
     "sequelize": "^6.19.0",
+    "socket.io-client": "^4.5.0",
+    "styled-component": "^2.8.0",
+    "styled-reset": "^4.3.4",
+    "sweetalert2": "^11.4.10",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -30,6 +45,11 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
+    "parserOptions": {
+      "parser": "babel-eslint",
+      "sourceType": "module",
+      "allowImportExportEverywhere": true
+    },
     "extends": [
       "react-app",
       "react-app/jest"
