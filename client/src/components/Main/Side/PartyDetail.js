@@ -80,18 +80,7 @@ const PartyDetail = () => {
   const [changeDutchMem, setChangeDutchMem] = useState(partyData.member_num);
   const [changeFee, setChangeFee] = useState(partyData.fee);
   const [changeContent, setChangeContent] = useState(partyData.content);
-  // const ClosePartyStatus = () => {
-  //   return () => {
-  //     axios
-  //       .patch(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { data: partyData.id })
-  //       .then((res) => {
-  //         if (res.status === 200) {
-  //           console.log('수정성공');
-  //         }
-  //       })
-  //       .catch((err) => console.log(err));
-  //   };
-  // };
+
   const ChangePostDetail = () => {
     axios
       .put(
@@ -118,15 +107,43 @@ const PartyDetail = () => {
       })
       .catch((err) => console.log('에러셈'));
   };
+  // const ClosePartyStatus = () => {
+  //   axios
+  //     .patch(
+  //       `${process.env.REACT_APP_API_URL}/parties/${partyData.id}`,
+  //       {
+  //         store_name: changeStoreName,
+  //         food_category: partyData.food_category,
+  //         member_num: changeDutchMem,
+  //         content: changeContent,
+  //         fee: changeFee,
+  //         address: partyData.address,
+  //       },
+  //       {
+  //         headers: { 'Content-Type': 'application/json' },
+  //         withCredentials: true,
+  //       },
+  //     )
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         dispatch(visibleAction(false));
+  //       }
+  //     })
+  //     .catch((err) => console.log('에러셈'));
+  // };
 
   return (
     <Container>
       <ButtonMenu>
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>뒤로가기</ReturnButton>
-        <ReWriteButton onClick={() => setChangePost(!changePost)}>
-          {changePost ? <div onClick={ChangePostDetail}>수정완료</div> : '수정하기'}
-        </ReWriteButton>
-        <DeleteButton onClick={() => showPostUserDelete(partyData.id)}>삭제하기</DeleteButton>
+        {loginId.id === partyData.leader ? (
+          <>
+            <ReWriteButton onClick={() => setChangePost(!changePost)}>
+              {changePost ? <div onClick={ChangePostDetail}>수정완료</div> : '수정하기'}
+            </ReWriteButton>
+            <DeleteButton onClick={() => showPostUserDelete(partyData.id)}>삭제하기</DeleteButton>
+          </>
+        ) : null}
       </ButtonMenu>
       <Store>
         <FoodImg src={`icon/${partyData.food_category}.png`} alt=""></FoodImg>
@@ -168,7 +185,7 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-              <span>{partyData.fee}</span>
+              <span>{` ${partyData.fee}`}</span>
             )}
             원
           </Fee>
