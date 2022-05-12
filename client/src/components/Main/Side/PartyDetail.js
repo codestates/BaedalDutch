@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { visibleAction } from '../../../store/visible';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -56,7 +55,6 @@ const formatDate = (date) => {
 };
 
 const PartyDetail = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const partyData = useSelector((state) => state.visible.partyData);
   const loginId = useSelector((state) => state.login.loginUser);
@@ -68,7 +66,7 @@ const PartyDetail = () => {
       .then((data) => {
         console.log('data:', data);
         console.log('data.data1:', Object.keys(data.data)[0]);
-        // leader면 true!!!!!
+        // 각각 상태로 분기
         if (Object.keys(data.data)[0] === 'leader') {
           setIsParticipant('leader');
         } else if (Object.keys(data.data)[0] === 'participant') {
@@ -93,6 +91,7 @@ const PartyDetail = () => {
         if (res.status === 200) {
           console.log('삭제성공');
           dispatch(visibleAction(false));
+          window.location.reload('/main');
         }
       })
       .catch((err) => console.log('에러셈'));
@@ -125,6 +124,7 @@ const PartyDetail = () => {
           console.log('업데이트성공');
           console.log(changeStoreName);
           dispatch(visibleAction(false));
+          window.location.replace('/main');
         }
       })
       .catch((err) => console.log('에러셈'));
@@ -171,7 +171,6 @@ const PartyDetail = () => {
       });
     setIsParticipant('participant');
     dispatch(visibleAction(false));
-    // navigate('/main');
     window.location.replace('/main');
   };
 
