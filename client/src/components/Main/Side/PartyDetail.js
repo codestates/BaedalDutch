@@ -9,7 +9,6 @@ const Container = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
-  border: 5px solid green;
   flex-direction: column;
 `;
 const ButtonMenu = styled.div``;
@@ -19,7 +18,7 @@ const DeleteButton = styled.button``;
 const Store = styled.div`
   display: flex;
   justify-content: space-around;
-  border: 1px solid red;
+
   margin: 20px 0 20px 0;
 `;
 const StoreInformation = styled.div`
@@ -91,7 +90,11 @@ const PartyDetail = () => {
         if (res.status === 200) {
           console.log('삭제성공');
           dispatch(visibleAction(false));
+<<<<<<< HEAD
           window.location.reload('/main');
+=======
+          window.location.replace('/main');
+>>>>>>> 684f6a5 (fix:update)
         }
       })
       .catch((err) => console.log('에러셈'));
@@ -154,6 +157,7 @@ const PartyDetail = () => {
   //     .catch((err) => console.log('에러셈'));
   // };
 
+<<<<<<< HEAD
   // 신청하기
   const handleNewbie = () => {
     console.log('파티데이터 id:', partyData.id);
@@ -189,6 +193,9 @@ const PartyDetail = () => {
       withCredentials: true,
     });
   };
+=======
+  console.log('파티데이타', partyData);
+>>>>>>> 684f6a5 (fix:update)
 
   return (
     <Container>
@@ -264,6 +271,7 @@ const PartyDetail = () => {
         )}
       </Introduce>
       <SubmitButton>
+<<<<<<< HEAD
         {(function () {
           if (!partyData) {
             return null;
@@ -282,6 +290,24 @@ const PartyDetail = () => {
           }
         })()}
         {/* {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>} */}
+=======
+        {/* {(function () {
+          if (!partyData) {
+            return null;
+          } else if (partyData.closed === true) {
+            return <button> 신청마감 </button>;
+          } else if (partyData.total_num + 1 === partyData.member_num) {
+            return <button> 신청마감 </button>;
+          } else if (loginId.id === partyData.leader) {
+            return <button onClick={}> 마감하기 </button>;
+          } else if (loginId.id !== partyData.leader) {
+            return <button onClick={}> 신청하기 </button>;
+          } else if (list.rel === '신청자') {
+            return <button onClick={handlePostCancelRecruitment}> 신청취소 </button>;
+          }
+        })()} */}
+        {loginId.id === partyData.leader ? <div>마감하기</div> : <div>신청하기</div>}
+>>>>>>> 684f6a5 (fix:update)
       </SubmitButton>
     </Container>
   );

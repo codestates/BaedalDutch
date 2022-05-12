@@ -12,7 +12,6 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  border: 5px solid green;
 `;
 const PartyNumber = styled.div`
   display: flex;
@@ -20,7 +19,7 @@ const PartyNumber = styled.div`
   font-size: 30px;
   justify-content: center;
   align-items: center;
-  border: 2px solid purple;
+  margin-top: 10px;
 `;
 
 const Party = styled.div`

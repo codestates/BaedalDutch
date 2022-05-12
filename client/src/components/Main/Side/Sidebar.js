@@ -16,7 +16,6 @@ const Sidebarbox = styled.div`
   flex-direction: column;
   margin-top: 100px;
   background-color: white;
-  border-left: 4px solid #202020;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -28,36 +27,37 @@ const Sidebarbox = styled.div`
   z-index: 99;
 `;
 
-const Parties = styled.div`
-  display: flex;
-  width: 100%;
-  height: 10%;
-`;
+// const Parties = styled.div`
+//   display: flex;
+//   width: 100%;
+//   height: 10%;
+// `;
 
-const NearParty = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid black;
-  height: 100%;
-  width: 100%;
-  text-align: center;
-`;
+// const NearParty = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   border: 2px solid black;
+//   height: 100%;
+//   width: 100%;
+//   text-align: center;
+// `;
 
-const MyParty = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid black;
-  height: 100%;
-  width: 100%;
-`;
+// const MyParty = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   border: 2px solid black;
+//   height: 100%;
+//   width: 100%;
+// `;
 
 const SidebarContent = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
 `;
 
 const Sidebar = () => {
@@ -66,10 +66,10 @@ const Sidebar = () => {
   return (
     <Container>
       <Sidebarbox>
-        <Parties>
+        {/* <Parties>
           <NearParty>가까운 파티</NearParty>
           <MyParty>내 파티</MyParty>
-        </Parties>
+        </Parties> */}
         <SidebarContent>{showDetail ? <PartyDetail /> : <Contents />}</SidebarContent>
       </Sidebarbox>
     </Container>
