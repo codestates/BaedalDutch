@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
 import { useSelector } from 'react-redux';
+import { setPartiesAction } from '../../../store/partyData';
 
 const Container = styled.div`
   display: flex;
@@ -42,8 +43,6 @@ const Dutch = styled.div``;
 
 const Contents = () => {
   const dispatch = useDispatch();
-  const partyData = useSelector((state) => state.visible.partyData);
-
   const [parties, setParties] = useState([]);
 
   const getAllData = async () => {
@@ -51,6 +50,8 @@ const Contents = () => {
       withCredentials: true,
     });
     setParties(data.data);
+    dispatch(setPartiesAction(data.data));
+    console.log('여기에찍으면?');
     // getMyInfo();
   };
 
@@ -108,10 +109,10 @@ const Contents = () => {
               {/* {party.leader === //id ? <div>수정/삭베</div> : null} */}
               <PartyMember>
                 {' '}
-                더치인원 : {party.total_num}/{party.member_num} 명
+                더치인원 : {party.total_num}명 / {party.member_num}명
               </PartyMember>
-              <Fee>배달료 : {party.fee} 원</Fee>
-              <Dutch>더치비용 : {parseInt(party.fee / party.member_num)} 원</Dutch>
+              <Fee>배달료 : {party.fee}원</Fee>
+              <Dutch>더치비용 : {parseInt(party.fee / party.member_num)}원</Dutch>
               {/* {parties.leader === id ? <button>수정하기</button> : <button onClci = {count}>신청학리</button>} */}
             </PartyDetail>
           </Party>
