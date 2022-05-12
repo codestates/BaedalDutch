@@ -153,14 +153,14 @@ module.exports = {
   deleteParty: async (req, res) => {
     console.log('deleteParty 진입')
     // 1. 유저가 토큰을 가지고 있는지 검증
-    const userInfo = isAuthorized(req)
-    console.log('userInfo:', userInfo)
+    // const userInfo = isAuthorized(req)
+    // console.log('userInfo:', userInfo)
     // 2. 유저가 토큰을 가지고 있지 않는 경우
-    if (!userInfo) {
-      res.status(404).json({
-        message: 'token none',
-      })
-    }
+    // if (!userInfo) {
+    //   return res.status(404).json({
+    //     message: 'token none',
+    //   })
+    // }
     try {
       // 3. req.params.id DB에서 확인하고 삭제
       console.log('req.params.id', req.params.id)
@@ -169,11 +169,11 @@ module.exports = {
           id: req.params.id,
         },
       })
-      res.status(200).json({
+      return res.status(200).json({
         message: 'delete party delete parties',
       })
     } catch (err) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Server Error delete parties',
       })
     }
@@ -183,14 +183,14 @@ module.exports = {
   updateParty: async (req, res) => {
     console.log('updateParty 진입')
     // 1. 유저가 토큰을 가지고 있는지 검증
-    const userInfo = isAuthorized(req)
-    console.log('userInfo:', userInfo)
+    // const userInfo = isAuthorized(req)
+    // console.log('userInfo:', userInfo)
     // 2. 유저가 토큰을 가지고 있지 않는 경우
-    if (!userInfo) {
-      res.status(404).json({
-        message: 'token none',
-      })
-    }
+    // if (!userInfo) {
+    //   res.status(404).json({
+    //     message: 'token none',
+    //   })
+    // }
     // 3. req.body가 제대로 들어왔는지 확인
     const { store_name, food_category, member_num, content, fee, address } =
       req.body
@@ -236,14 +236,14 @@ module.exports = {
   closeParty: async (req, res) => {
     console.log('closeParty 진입')
     // 1. 유저가 토큰을 가지고 있는지 검증
-    const userInfo = isAuthorized(req)
-    console.log('userInfo:', userInfo)
+    // const userInfo = isAuthorized(req)
+    // console.log('userInfo:', userInfo)
     // 2. 유저가 토큰을 가지고 있지 않는 경우
-    if (!userInfo) {
-      res.status(404).json({
-        message: 'token none',
-      })
-    }
+    // if (!userInfo) {
+    //   res.status(404).json({
+    //     message: 'token none',
+    //   })
+    // }
     try {
       console.log('req.params.id:', req.params.id)
       const partyInfo = await parties.update(
