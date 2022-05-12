@@ -6,7 +6,6 @@ module.exports = {
     // 파티에 참가
     const userInfo = isAuthorized(req)
     console.log('userinfo-------', userInfo)
-    console.log('aaaaaaa')
     if (!userInfo) {
       console.log('bbbbbbbb')
       res.status(404).send({
@@ -20,7 +19,7 @@ module.exports = {
           parties_id: req.params.id,
         })
         .then(() => {
-          parties.findOne({ where: { id: req.params.id } }).then(result => {
+          parties.findOne({ where: { id: req.params.id } }).then((result) => {
             parties.update(
               { total_num: result.dataValues.total_num + 1 },
               { where: { id: req.params.id } },
@@ -49,7 +48,7 @@ module.exports = {
           },
         })
         .then(() => {
-          parties.findOne({ where: { id: req.params.id } }).then(result => {
+          parties.findOne({ where: { id: req.params.id } }).then((result) => {
             parties.update(
               { total_num: result.dataValues.total_num - 1 },
               { where: { id: req.params.id } },

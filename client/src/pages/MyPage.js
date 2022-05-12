@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isLoginAction, loginUserAction } from '../store/login';
 import DaumPostcode from 'react-daum-postcode';
-// import ProfileImage from './ProfileImage';
-import test from '../assets/test.png';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 import '../styled/Mypage.css';
+import defaultImage from '../assets/people.png';
 const S3_BUCKET = 'baedaldutch-profile';
 const REGION = 'ap-northeast-2';
 const ACCESS_KEY = process.env.REACT_APP_ACCESS_KEY;
@@ -140,10 +139,14 @@ function MyPage() {
   };
 
   // 마이페이지 수정
-  const handleUserEdit = () => {
+  const handleUserEdit = (selectedFile) => {
+    console.log('0');
+    console.log('selectedFile', selectedFile);
     const { nickname, phone_number, address, password, passwordCheck } = settingUserinfo;
+    console.log('1');
     setChangeInfoBtn(true);
     if (changeInfoBtn) {
+      console.log('2');
       if (
         !nickname ||
         !phone_number ||
@@ -153,16 +156,19 @@ function MyPage() {
         setMessage({ ...message, errorMessage: '모든 항목은 필수입니다' });
         setValidation({ ...validation, errorValidation: true });
       } else if (message.nicknameMessage === '이미 존재하는 닉네임입니다') {
+        console.log('3');
         setMessage({ ...message, errorMessage: '다시 입력해주세요' });
         setValidation({ ...validation, errorValidation: true });
       } else {
+        console.log('4');
         dispatch(loginUserAction(settingUserinfo));
+        console.log('settingUserinfo:', settingUserinfo);
         axios
           .patch(
             `${process.env.REACT_APP_API_URL}/users/mypage`,
             {
               id: settingUserinfo.id,
-              image: settingUserinfo.image,
+              image: selectedFile,
               nickname: settingUserinfo.nickname,
               phone_number: settingUserinfo.phone_number,
               address: settingUserinfo.address,
@@ -248,7 +254,6 @@ function MyPage() {
       });
   };
 
-  //회원탈퇴 테스트
   const handleUserDelete = () => {
     Swal.fire({
       title: '탈퇴하시겠습니까?',
@@ -302,7 +307,6 @@ function MyPage() {
     };
     geocoder.addressSearch(`${settingUserinfo.address}`, callback);
   };
-  console.log(settingUserinfo);
 
   // 프로필 이미지 로직 시작
   const [selectedFile, setSelectedFile] = useState(null);
@@ -310,7 +314,7 @@ function MyPage() {
   const [isLoad, setIsLoad] = useState(false);
   const [preview, setPreview] = useState(false);
   const fileInput = useRef(null);
-  /* 프로필 편집 버튼 눌렀을 때 S3 업로드, 서버 요청 */
+  /* 이미지 저장 버튼 눌렀을 때 S3 업로드, 서버 요청 */
   const handleUpload = (file) => {
     console.log('file:', file);
     if (!file) console.log('이미지 없음');
@@ -339,6 +343,7 @@ function MyPage() {
           password: loginUser.password,
           passwordCheck: loginUser.passwordCheck,
         });
+        console.log('settingUserinfo', settingUserinfo);
         console.log('loginUser:', loginUser);
         console.log('data:', data);
         console.log('err:', err);
@@ -405,22 +410,25 @@ function MyPage() {
                 <button
                   className="edit-profile"
                   onClick={() => {
-                    fileInput.current.click();
                     handleUpload(selectedFile);
                   }}
                 >
-                  이미지 선택
+                  이미지 저장
                 </button>
-                <button
+                {/* <button
                   className="edit-profile"
+                  onChange={handleImage}
                   onClick={() => {
-                    // 진행중
-                    setFileImage(test);
-                    setSettingUserinfo({ image: test });
+                    setSettingUserinfo({
+                      image: defaultImage,
+                    });
+                    saveProfile(
+                      'https://baedaldutch-profile.s3.ap-northeast-2.amazonaws.com/people.png',
+                    );
                   }}
                 >
-                  이미지 삭제
-                </button>
+                  기본 이미지
+                </button> */}
               </div>
             </div>
             {changeInfoBtn ? (
@@ -481,7 +489,14 @@ function MyPage() {
                 ) : null}
                 <SignUpToLogin onClick={handleUserDelete}>회원탈퇴</SignUpToLogin>
                 <Err>{message.errorMessage}</Err>
-                <EditButton onClick={handleUserEdit}>수정완료</EditButton>
+                <EditButton
+                  onClick={() => {
+                    handleUpload(selectedFile);
+                    handleUserEdit();
+                  }}
+                >
+                  수정완료
+                </EditButton>
               </MyPageForm>
             ) : (
               // 기존의 회원정보
@@ -497,7 +512,13 @@ function MyPage() {
                 <InputTitle>비밀번호확인</InputTitle>
                 <InputFieldPassWord />
                 <SignUpToLogin onClick={handleUserDelete}>회원탈퇴</SignUpToLogin>
-                <EditButton onClick={handleUserEdit}>수정하기</EditButton>
+                <EditButton
+                  onClick={() => {
+                    handleUserEdit();
+                  }}
+                >
+                  수정하기
+                </EditButton>
               </MyPageForm>
             )}
           </MyPageDiv>

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { visibleAction } from '../../../store/visible';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 
 const Container = styled.div`
   display: flex;
@@ -54,13 +55,19 @@ const formatDate = (date) => {
   }:${minute < 10 ? `0${minute}` : minute}`;
 };
 
+let socket;
+
 const PartyDetail = () => {
   const dispatch = useDispatch();
   const partyData = useSelector((state) => state.visible.partyData);
-  const loginId = useSelector((state) => state.login.loginUser);
+  const loginUser = useSelector((state) => state.login.loginUser);
   const [isParticipant, setIsParticipant] = useState('');
 
   useEffect(() => {
+    socket = io(`${process.env.REACT_APP_API_URL}`, {
+      transports: ['websocket', 'polling'],
+    });
+
     axios
       .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
       .then((data) => {
@@ -75,11 +82,25 @@ const PartyDetail = () => {
           setIsParticipant('newbie');
         }
       });
+    if (loginUser) {
+      let nickname = loginUser.nickname;
+      let roomId = partyData.id;
+      console.log('파티디테일 useEffect-socket쪽 진입');
+      socket.emit('joinServer', { nickname, roomId });
+
+      return () => {
+        socket.off();
+      };
+    }
   }, [partyData.total_num]);
 
+  // 삭제하기
   const showPostUserDelete = (id) => {
     console.log('삭제클릭');
     console.log(id);
+
+    let nickname = loginUser.nickname;
+    socket.emit('leaveRoom', { id, nickname });
 
     axios
       .delete(
@@ -91,7 +112,7 @@ const PartyDetail = () => {
         if (res.status === 200) {
           console.log('삭제성공');
           dispatch(visibleAction(false));
-          window.location.reload('/main');
+          window.location.replace('/main');
         }
       })
       .catch((err) => console.log('에러셈'));
@@ -102,6 +123,7 @@ const PartyDetail = () => {
   const [changeFee, setChangeFee] = useState(partyData.fee);
   const [changeContent, setChangeContent] = useState(partyData.content);
 
+  // 수정하기
   const ChangePostDetail = () => {
     axios
       .put(
@@ -157,6 +179,20 @@ const PartyDetail = () => {
   // 신청하기
   const handleNewbie = () => {
     console.log('파티데이터 id:', partyData.id);
+
+    let id = partyData.id;
+    let nickname = loginUser.nickname;
+    let roomName = partyData.store_name;
+    let categoryFood = partyData.food_category;
+    console.log('신청 내용', id, nickname, roomName, categoryFood);
+    socket.emit(
+      'joinRoom',
+      { id, nickname, roomName, categoryFood },
+      {
+        transports: ['websocket', 'polling'],
+      },
+    );
+
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/orders/${partyData.id}`,
@@ -176,6 +212,16 @@ const PartyDetail = () => {
 
   // 신청취소
   const handleParticipate = () => {
+    let roomId = partyData.id;
+    let nickname = loginUser.nickname;
+
+    socket.emit(
+      'leaveRoom',
+      { roomId, nickname },
+      {
+        transports: ['websocket', 'polling'],
+      },
+    );
     axios.delete(`${process.env.REACT_APP_API_URL}/orders/${partyData.id}`, {
       withCredentials: true,
     });
@@ -188,13 +234,14 @@ const PartyDetail = () => {
     axios.patch(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, {
       withCredentials: true,
     });
+    window.location.replace('/main');
   };
 
   return (
     <Container>
       <ButtonMenu>
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>뒤로가기</ReturnButton>
-        {loginId.id === partyData.leader ? (
+        {loginUser.id === partyData.leader ? (
           <>
             <ReWriteButton onClick={() => setChangePost(!changePost)}>
               {changePost ? <div onClick={ChangePostDetail}>수정완료</div> : '수정하기'}
@@ -281,7 +328,6 @@ const PartyDetail = () => {
             return <button> 신청마감되었습니다 </button>;
           }
         })()}
-        {/* {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>} */}
       </SubmitButton>
     </Container>
   );

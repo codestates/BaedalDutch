@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import './chatting.css';
 import io from 'socket.io-client';
-// import './chatting.css';
 
-const socket = io(`${process.env.REACT_APP_API_URL}`);
+let socket;
 
 function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
   const navigate = useNavigate();
@@ -27,6 +27,9 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
   const [roomChatLog, setRoomChatLog] = useState([]);
 
   useEffect(() => {
+    socket = io.connect(`${process.env.REACT_APP_API_URL}}`, {
+      transports: ['websocket', 'polling'],
+    });
     // room 채팅 기록 받기
     let nickname = loginUser.nickname;
     let roomId = newRoomName.chatId;
@@ -146,15 +149,6 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
                   </ChattingMyListDiv>
                 );
               })}
-
-              {/* {roomChatLog.map( ({ nickname, message }, index) => {
-          return (
-            <ChattingListDiv key={index}>
-              <ChattingListText>{nickname}</ChattingListText>
-              <ChattingContents>{message}</ChattingContents>
-            </ChattingListDiv>
-          )
-        })}      */}
             </ChattingWrapper>
             <ChattingSendDiv>
               <InputField
@@ -163,7 +157,6 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
                 value={roomMessageInfo.message}
                 onKeyUp={enterKey('roomMessage')}
               />
-              {/* <InputField placeholder="메세지를 입력해주세요" onChange={handleInputValue('roomMessage')} value={roomMessageInfo.message} onKeyPress={enterKey('roomMessage')} /> */}
               <Button onClick={sendRoomMessage}>전송</Button>
             </ChattingSendDiv>
           </LoginForm>
@@ -172,12 +165,6 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
     </>
   );
 }
-
-// const PostingWriteTitle = styled.div`
-//   font-size: 20px;
-//   margin-top: 25px;
-//   margin-bottom: 25px;
-// `;
 
 const PostingWriteTitle = styled.div`
   display: flex;
