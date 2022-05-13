@@ -112,7 +112,7 @@ module.exports = {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         })
-        .then(async result => {
+        .then(async (result) => {
           const nickname = result.data.kakao_account.profile.nickname
           const email = result.data.kakao_account.email
           console.log('여기는??????', nickname, email)
@@ -163,7 +163,7 @@ module.exports = {
             })
           }
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(400).json({
             message: 'Oauth login err',
           })
@@ -226,35 +226,32 @@ module.exports = {
 
         // 데이터 수정
         const updateUserInfo = await users.update(
-          { password, image, phone_number, address },
-          { where: { id: userInfo.id } },
+          { nickname, password, image, phone_number },
+          { where: { email: user.dataValues.email } },
         )
+        return res
+          .status(200)
+          .json({ updateUserInfo, message: 'success update user info' })
         console.log('check')
         // 닉네임 중복 체크
-        const checkNickname = await users.findOne({
-          where: { nickname: nickname },
-        })
-        if (req.body.nickname === userInfo.nickname) {
-          // 데이터 수정
-          const updateUserInfo = await users.update(
-            { nickname, password, image, phone_number },
-            { where: { email: user.dataValues.email } },
-          )
-          return res
-            .status(200)
-            .json({ updateUserInfo, message: 'success update user info' })
-        } else if (checkNickname) {
-          return res.status(409).send('nickname already exists sign up')
-        } else {
-          // 데이터 수정
-          const updateUserInfo = await users.update(
-            { nickname, password, image, phone_number },
-            { where: { email: user.dataValues.email } },
-          )
-          return res
-            .status(200)
-            .json({ updateUserInfo, message: 'success update user info' })
-        }
+        // const checkNickname = await users.findOne({
+        //   where: { nickname: nickname },
+        // })
+        // if (req.body.nickname === userInfo.nickname) {
+        //   // 데이터 수정
+        //   const updateUserInfo = await users.update(
+        //     { nickname, password, image, phone_number },
+        //     { where: { email: user.dataValues.email } },
+        //   )
+        //   return res
+        //     .status(200)
+        //     .json({ updateUserInfo, message: 'success update user info' })
+        // }
+        // else if (checkNickname) {
+        //   return res.status(409).send('이미 사용중인 닉네임입니다.')
+        // }
+        // else {
+        // }
       }
     } catch (err) {
       return res.status(500).send('Server Error mypage')
@@ -305,14 +302,14 @@ module.exports = {
           nickname: req.body.nickname,
         },
       })
-      .then(data => {
+      .then((data) => {
         if (!data) {
           return res.send({ message: '사용 가능한 닉네임입니다.' })
         } else {
           res.send({ message: '이미 사용중인 닉네임입니다.' })
         }
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(500).send({ message: 'Server error checkNickName' })
       })
   },
