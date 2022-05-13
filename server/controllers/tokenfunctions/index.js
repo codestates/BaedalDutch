@@ -7,9 +7,9 @@ module.exports = {
   },
   sendAccessToken: (res, accessToken) => {
     return res.status(200).cookie("jwt", accessToken, {
-      // httpOnly: true,
-      // secure: true,
-      // sameSite: "none",
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
       domain: ".baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com",
     });
   },
