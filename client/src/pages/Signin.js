@@ -72,6 +72,7 @@ function Signin() {
   };
 
   const login = (email, password) => {
+    console.log("여기 들어오니???????");
     return axios
       .post(
         `${process.env.REACT_APP_API_URL}/users/signin`,
