@@ -10,7 +10,7 @@ module.exports = {
       // httpOnly: true,
       // secure: true,
       // sameSite: "none",
-      domain: "http://baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com",
+      domain: "baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com",
     });
   },
 
