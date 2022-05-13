@@ -49,7 +49,7 @@ app.use("/admin", adminRouter);
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
-const PORT = 4000;
+const PORT = 80;
 
 server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 const io = require("socket.io")(server, {
