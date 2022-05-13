@@ -24,7 +24,7 @@ const MapContainer = () => {
   const myMap = useRef(null);
   useEffect(() => {
     const container = myMap.current;
-    const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+    // const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
     const options = {
       center: new kakao.maps.LatLng(33.450701, 126.570667),
       level: 3,
