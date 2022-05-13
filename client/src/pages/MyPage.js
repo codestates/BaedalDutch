@@ -142,6 +142,7 @@ function MyPage() {
   // 마이페이지 수정
   const handleUserEdit = () => {
     const { nickname, phone_number, address, password, passwordCheck } = settingUserinfo;
+    console.log("??????????", settingUserinfo)
     setChangeInfoBtn(true);
     if (changeInfoBtn) {
       if (
