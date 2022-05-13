@@ -69,7 +69,7 @@ const MyPageModal = () => {
 
   const handleLogoutClick = (e) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/users/logout`, {}, { withCredentials: true })
+      .post(`${process.env.REACT_APP_API_URL}/users/signout`, {}, { withCredentials: true })
       .then((res) => {})
       .catch((err) => console.log(err));
   };
