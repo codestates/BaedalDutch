@@ -27,9 +27,12 @@ const Input = styled.input`
 `;
 
 const InputButton = styled.button`
+  position: absolute;
+  left: 265px;
   font-size: 28px;
   border: none;
   background-color: white;
+  cursor: pointer;
 `;
 const PlaceList = styled.div`
   display: flex;
@@ -38,6 +41,14 @@ const PlaceList = styled.div`
 `;
 
 const PlaceName = styled.div`
+  opacity: 80%;
+  border-bottom: 1px solid grey;
+  background-color: white;
+  padding: 10px;
+  font-weight: bold;
+`;
+
+const PlaceAddress = styled.div`
   opacity: 80%;
   border-bottom: 1px solid grey;
   background-color: white;
@@ -74,7 +85,7 @@ const SearchBar = () => {
           }}
           type="submit"
         >
-          검색
+          <i class="fa-solid fa-magnifying-glass-location"></i>
         </InputButton>
         {isOpen ? (
           <PlaceList>
@@ -91,7 +102,7 @@ const SearchBar = () => {
                   >
                     {search.place_name}
                   </PlaceName>
-                  <PlaceName>{search.address_name}</PlaceName>
+                  <PlaceAddress>ㄴ{search.address_name}</PlaceAddress>
                 </>
               );
             })}

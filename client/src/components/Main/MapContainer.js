@@ -132,7 +132,6 @@ const MapContainer = () => {
       }
     }
   }, [searchPlace]);
-  console.log('재랜더링?');
 
   return <TopContainer ref={myMap} />;
 };

@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
-import { useSelector } from 'react-redux';
 import { setPartiesAction } from '../../../store/partyData';
 
 const Container = styled.div`
@@ -12,7 +11,6 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  border: 5px solid green;
 `;
 const PartyNumber = styled.div`
   display: flex;
@@ -20,7 +18,8 @@ const PartyNumber = styled.div`
   font-size: 30px;
   justify-content: center;
   align-items: center;
-  border: 2px solid purple;
+  margin-top: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const Party = styled.div`

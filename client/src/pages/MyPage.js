@@ -387,7 +387,7 @@ function MyPage() {
       <Wrapper>
         <MapDiv>
           <MyPageDiv>
-            <div className="mypage-edit">
+            {/* <div className="mypage-edit">
               <div className="edit-title">Edit Profile</div>
               <div className="profile-box">
                 {preview ? (
@@ -430,7 +430,7 @@ function MyPage() {
                   기본 이미지
                 </button> */}
               </div>
-            </div>
+            </div> */}
             {changeInfoBtn ? (
               // 회원정보 수정
               <MyPageForm onSubmit={(e) => e.preventDefault()}>
@@ -501,6 +501,51 @@ function MyPage() {
             ) : (
               // 기존의 회원정보
               <MyPageForm onSubmit={(e) => e.preventDefault()}>
+                <InputTitle>프로필 수정</InputTitle>
+                <Div>
+                  <ProfileImg>
+                    {preview ? (
+                      <img src={fileImage} className="img-box" alt="preview" />
+                    ) : !isLoad ? (
+                      <img
+                        src={settingUserinfo.image}
+                        alt="profile"
+                        className="img-box"
+                        onClick={() => {
+                          fileInput.current.click();
+                        }}
+                      />
+                    ) : (
+                      <img alt="loading" className="img-box" id="loading" />
+                    )}
+                  </ProfileImg>
+                  <input
+                    type="file"
+                    id="image"
+                    accept="img/*"
+                    onChange={handleImage}
+                    ref={fileInput}
+                  />
+                  <WrapButton>
+                    <UploadButton
+                      onClick={() => {
+                        fileInput.current.click();
+                        handleUpload(selectedFile);
+                      }}
+                    >
+                      이미지 선택
+                    </UploadButton>
+                    <DeleteButton
+                      onClick={() => {
+                        // 진행중
+                        setFileImage(test);
+                        setSettingUserinfo({ image: test });
+                      }}
+                    >
+                      이미지 삭제
+                    </DeleteButton>
+                  </WrapButton>
+                </Div>
                 <InputTitle>닉네임</InputTitle>
                 <Div>{loginUser.nickname}</Div>
                 <InputTitle>전화번호</InputTitle>
@@ -556,13 +601,13 @@ const MapDiv = styled.div`
   background-color: #ffffff;
   width: 100%;
   border: 1px solid pink;
-  @media (max-width: 576px) {
+  /* @media (max-width: 576px) {
     display: ${(props) => (props.openPost ? 'none' : 'block')};
     visibility: visible;
     margin-right: 0px;
     padding-right: 0px;
     width: 576px;
-  }
+  } */
 `;
 
 const MyPageDiv = styled.div`
@@ -570,7 +615,7 @@ const MyPageDiv = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  width: 95%;
+  max-width: auto;
 `;
 
 const HomeButton = styled.button`
@@ -793,5 +838,18 @@ const AddressInputDiv = styled.div`
     font-size: 16px;
   }
 `;
+
+const ProfileImg = styled.div`
+  position: absolute;
+  top: 150px;
+`;
+
+const WrapButton = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const DeleteButton = styled.button``;
+const UploadButton = styled.button``;
 
 export default MyPage;
