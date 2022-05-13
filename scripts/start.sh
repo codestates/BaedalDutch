@@ -7,5 +7,6 @@ export DATABASE_NAME=$(aws ssm get-parameters --region us-east-1 --names DATABAS
 export DATABASE_HOST=$(aws ssm get-parameters --region us-east-1 --names DATABASE_HOST --query Parameters[0].Value | sed 's/"//g')
 export DATABASE_PORT=$(aws ssm get-parameters --region us-east-1 --names DATABASE_PORT --query Parameters[0].Value | sed 's/"//g')
 export ACCESS_SECRET=$(aws ssm get-parameters --region us-east-1 --names ACCESS_SECRET --query Parameters[0].Value | sed 's/"//g')
-
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
 pm2 start index.js
