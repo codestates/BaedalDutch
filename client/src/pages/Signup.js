@@ -127,7 +127,10 @@ const Signup = () => {
       )
       .then((res) => {
         navigate('/');
-      });
+      })
+      .catch((err) => {
+        alert(err);
+      })
   };
   // if (res.accessToken) {
   //   console.log('체크');
