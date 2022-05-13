@@ -38,7 +38,7 @@ const MapContainer = () => {
         latlng: new kakao.maps.LatLng(party.lat, party.lng),
       };
     });
-
+    console.log("???????", positions);
     for (var i = 0; i < positions.length; i++) {
       // 마커 이미지의 이미지 크기 입니다
       var imageSize = new kakao.maps.Size(50, 50);
