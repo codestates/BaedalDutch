@@ -22,7 +22,10 @@ app.use(express.urlencoded({ extended: false }));
 let server = http.createServer(app);
 app.use(
   cors({
-    origin: ["http://baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com"],
+    origin: [
+      "http://baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com",
+      "https://d3mirxyqmg28z6.cloudfront.net",
+    ],
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
     credentials: true,
     // cookie: {
