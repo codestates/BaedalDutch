@@ -5,6 +5,11 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
 import { setPartiesAction } from '../../../store/partyData';
+import io from 'socket.io-client';
+
+let socket = io(`${process.env.REACT_APP_API_URL}`, {
+  transports: ['websocket', 'polling'],
+});
 
 const Container = styled.div`
   display: flex;

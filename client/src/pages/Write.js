@@ -334,17 +334,17 @@ const Write = () => {
           console.log('axios요청 성공');
           if (data.status === 201) {
             console.log('partyData:', partyData);
-            let id = partyData.id;
-            let roomName = partyData.store_name;
+            let id = data.data.data.id;
+            let roomName = data.data.data.store_name;
             let nickname = loginUser.nickname;
-            let categoryFood = partyData.food_category;
+            let categoryFood = data.data.data.food_category;
             console.log('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ', id, roomName, nickname, categoryFood);
 
             socket.emit('createRoom', { id, nickname, roomName, categoryFood });
             console.log('createRoom 끝');
           }
           dispatch(showWriteAction(false));
-          // window.location.replace('/main');
+          window.location.replace('/main');
         });
     }
   };

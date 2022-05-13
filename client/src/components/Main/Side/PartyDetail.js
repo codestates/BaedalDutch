@@ -146,6 +146,8 @@ const PartyDetail = () => {
       let nickname = loginUser.nickname;
       let roomId = partyData.id;
       console.log('파티디테일 useEffect-socket쪽 진입');
+      console.log('nickname:', nickname);
+      console.log('roomId:', roomId);
       socket.emit('joinServer', { nickname, roomId });
 
       return () => {
@@ -245,13 +247,7 @@ const PartyDetail = () => {
     let roomName = partyData.store_name;
     let categoryFood = partyData.food_category;
     console.log('신청 내용', id, nickname, roomName, categoryFood);
-    socket.emit(
-      'joinRoom',
-      { id, nickname, roomName, categoryFood },
-      {
-        transports: ['websocket', 'polling'],
-      },
-    );
+    socket.emit('joinRoom', { id, nickname, roomName, categoryFood });
 
     axios
       .post(
@@ -275,13 +271,7 @@ const PartyDetail = () => {
     let roomId = partyData.id;
     let nickname = loginUser.nickname;
 
-    socket.emit(
-      'leaveRoom',
-      { roomId, nickname },
-      {
-        transports: ['websocket', 'polling'],
-      },
-    );
+    socket.emit('leaveRoom', { roomId, nickname });
     axios.delete(`${process.env.REACT_APP_API_URL}/orders/${partyData.id}`, {
       withCredentials: true,
     });

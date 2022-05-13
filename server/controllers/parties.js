@@ -7,7 +7,7 @@ module.exports = {
     console.log('getAllParties 진입')
     // 1. closed가 false인 파티만 찾는다.
     const allParty = await parties.findAll({ where: { closed: false } })
-    console.log('allParty:', allParty)
+    // console.log('allParty:', allParty)
     // 2. 파티가 없는 경우
     if (!allParty)
       res.status(404).json({
@@ -57,7 +57,7 @@ module.exports = {
     const participant = await users_parties.findOne({
       where: { users_id: userInfo.id, parties_id: oneParty.id },
     })
-    console.log('participant!!!!!!', participant)
+    console.log('participant.dataValues!!!!!!', participant)
     try {
       // 4. 토큰을 가진 유저인 경우 1-1. 유저 id와 조회한 파티의 leader가 같다면 파티(작성자)를 client에 보내주기\
       if (userInfo.id === oneParty.leader) {
