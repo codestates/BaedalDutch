@@ -429,7 +429,7 @@ function MyPage() {
                 >
                   기본 이미지
                 </button> */}
-              </div>
+            {/* </div>
             </div> */}
             {changeInfoBtn ? (
               // 회원정보 수정
@@ -529,13 +529,12 @@ function MyPage() {
                   <WrapButton>
                     <UploadButton
                       onClick={() => {
-                        fileInput.current.click();
                         handleUpload(selectedFile);
                       }}
                     >
-                      이미지 선택
+                      이미지 저장
                     </UploadButton>
-                    <DeleteButton
+                    {/* <DeleteButton
                       onClick={() => {
                         // 진행중
                         setFileImage(test);
@@ -543,7 +542,7 @@ function MyPage() {
                       }}
                     >
                       이미지 삭제
-                    </DeleteButton>
+                    </DeleteButton> */}
                   </WrapButton>
                 </Div>
                 <InputTitle>닉네임</InputTitle>
