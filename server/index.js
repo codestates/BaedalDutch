@@ -39,6 +39,7 @@ app.use(
 app.use(cookieParser());
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/public/index.html"));
+  res.send("hihihihihihihihihi");
 });
 app.use("/users", usersRouter);
 app.use("/parties", partiesRouter);
