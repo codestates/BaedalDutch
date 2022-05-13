@@ -30,7 +30,7 @@ const MapContainer = () => {
       level: 3,
     };
     const map = new kakao.maps.Map(container, options);
-    console.log("?????", typeof map)
+    
     const positions = partyData && partyData.map((party, i) => {
       return {
         title: party.store_name,
@@ -38,8 +38,6 @@ const MapContainer = () => {
         latlng: new kakao.maps.LatLng(party.lat, party.lng),
       };
     });
-
-    console.log('카테고리나오게', positions.food_category);
 
     for (var i = 0; i < positions.length; i++) {
       // 마커 이미지의 이미지 크기 입니다
