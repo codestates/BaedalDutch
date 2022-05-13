@@ -5,10 +5,11 @@ import { food, dutchPerson } from '../components/SelectorList';
 import styled from 'styled-components';
 import DaumPostcode from 'react-daum-postcode';
 import Select from 'react-select';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { showWriteAction } from '../store/modal';
 import { currentLocationAction } from '../store/location';
+import io from 'socket.io-client';
 
 const { kakao } = window;
 
@@ -207,8 +208,12 @@ const addressStyle = {
   height: '80%',
 };
 
+let socket;
+
 const Write = () => {
   const dispatch = useDispatch();
+  const loginUser = useSelector((state) => state.login.loginUser);
+  const partyData = useSelector((state) => state.visible.partyData);
 
   const {
     register,
@@ -227,6 +232,21 @@ const Write = () => {
     lng: '',
   });
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    socket = io.connect(`${process.env.REACT_APP_API_URL}`, {
+      transports: ['websocket', 'polling'],
+    });
+    let nickname = loginUser.nickname;
+    console.log('write 소켓 닉네임', nickname);
+
+    // setNewSearchAddress();
+    socket.emit('joinServer', { nickname });
+
+    return () => {
+      socket.off();
+    };
+  }, [visible, writeInfo.address]);
 
   const handleSelectPerson = (e) => {
     setWriteInfo({ ...writeInfo, member_num: e.value });
@@ -285,38 +305,49 @@ const Write = () => {
       console.log('writeInfo.lat', typeof writeInfo.lat);
     };
     geocoder.addressSearch(`${writeInfo.address}`, callback);
+    if (writeInfo.lat !== '') {
+      dispatch(currentLocationAction({ lat: writeInfo.lat, lng: writeInfo.lng }));
+      const { store_name, content, fee } = getValues();
+
+      console.log('axios요청', writeInfo.food_category);
+
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/parties`,
+          {
+            store_name,
+            food_category: writeInfo.food_category,
+            member_num: writeInfo.member_num,
+            content,
+            fee,
+            address: writeInfo.address,
+            lat: writeInfo.lat,
+            lng: writeInfo.lng,
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+          },
+        )
+        .then((data) => {
+          console.log('data:', data);
+          console.log('axios요청 성공');
+          if (data.status === 201) {
+            console.log('partyData:', partyData);
+            let id = partyData.id;
+            let roomName = partyData.store_name;
+            let nickname = loginUser.nickname;
+            let categoryFood = partyData.food_category;
+            console.log('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ', id, roomName, nickname, categoryFood);
+
+            socket.emit('createRoom', { id, nickname, roomName, categoryFood });
+            console.log('createRoom 끝');
+          }
+          dispatch(showWriteAction(false));
+          // window.location.replace('/main');
+        });
+    }
   };
-
-  if (writeInfo.lat !== '') {
-    dispatch(currentLocationAction({ lat: writeInfo.lat, lng: writeInfo.lng }));
-    const { store_name, content, fee } = getValues();
-
-    console.log('axios요청', writeInfo.food_category);
-
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/parties`,
-        {
-          store_name,
-          food_category: writeInfo.food_category,
-          member_num: writeInfo.member_num,
-          content,
-          fee,
-          address: writeInfo.address,
-          lat: writeInfo.lat,
-          lng: writeInfo.lng,
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        },
-      )
-      .then((res) => {
-        console.log('axios요청 성공');
-        dispatch(showWriteAction(false));
-        window.location.replace('/main');
-      });
-  }
 
   const feePattern = {
     value: /^[|0-9|]+$/,
@@ -405,8 +436,8 @@ const Write = () => {
           id="content"
         ></ContentArea>
 
-        <WriteButton type="submit" onClick={() => dispatch(showWriteAction(false))}>
-          가입신청
+        <WriteButton type="submit" onClick={() => onSubmit}>
+          파티 만들기
         </WriteButton>
       </WriteForm>
     </WriteContainer>
