@@ -303,7 +303,7 @@ const PartyDetail = () => {
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>
           <i class="fa-solid fa-circle-arrow-left"></i>
         </ReturnButton>
-        {loginId.id === partyData.leader ? (
+        {loginUser.id === partyData.leader ? (
           <>
             <ReWriteButton onClick={() => setChangePost(!changePost)}>
               {changePost ? <div onClick={ChangePostDetail}>수정완료</div> : '수정하기'}
