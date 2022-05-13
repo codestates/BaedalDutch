@@ -30,7 +30,7 @@ const MapContainer = () => {
       level: 3,
     };
     const map = new kakao.maps.Map(container, options);
-
+    console.log("?????", typeof map)
     const positions = partyData && partyData.map((party, i) => {
       return {
         title: party.store_name,
