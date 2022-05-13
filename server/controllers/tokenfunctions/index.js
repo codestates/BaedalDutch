@@ -2,7 +2,7 @@ require('dotenv').config()
 const { sign, verify } = require('jsonwebtoken')
 
 module.exports = {
-  generateAccessToken: data => {
+  generateAccessToken: (data) => {
     return sign(data, process.env.ACCESS_SECRET, { expiresIn: '1d' })
   },
   sendAccessToken: (res, accessToken) => {
@@ -17,10 +17,9 @@ module.exports = {
     )
   },
 
-  isAuthorized: req => {
+  isAuthorized: (req) => {
     // let authorization = req.headers.authorization
     let authorization = req.headers.cookie
-    console.log('req.headers:', req.headers)
     console.log('req.cookies:', req.cookies)
     console.log('req.headers.authorization:', req.headers.authorization)
     console.log('req.headers.cookie:', req.headers.cookie)

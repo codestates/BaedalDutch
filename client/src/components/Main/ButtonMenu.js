@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { showWriteAction } from '../../store/modal';
 import ChatModal from '../Modal/ChatModal';
 import { useState } from 'react';
+import { ShowSideBarAction } from '../../store/side';
 
 const ButtonWrap = styled.div`
   display: flex;
@@ -19,10 +20,18 @@ const Button = styled.button`
   font-size: 30px;
   padding: 20px;
   border: none;
+  cursor: pointer;
+`;
+
+const ShowListButton = styled(Button)`
+  background-color: white;
+  @media screen and (min-width: 800px) {
+    display: none;
+  }
 `;
 
 const WriteButton = styled(Button)`
-  background-color: #fff;
+  background-color: white;
 `;
 
 const ChattingButton = styled(Button)`
@@ -32,6 +41,7 @@ const ChattingButton = styled(Button)`
 const ButtonMenu = () => {
   const dispatch = useDispatch();
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
+  const showSideBar = useSelector((state) => state.side.showSideBar);
 
   const [ChattingModal, setChattingModal] = useState(false);
 
@@ -41,6 +51,10 @@ const ButtonMenu = () => {
 
   return (
     <ButtonWrap>
+      <ShowListButton onClick={() => dispatch(ShowSideBarAction(!showSideBar))}>
+        <i class="fa-solid fa-list"></i>
+      </ShowListButton>
+
       <WriteButton onClick={() => dispatch(showWriteAction(true))}>
         <i className="fa-solid fa-pen-to-square" />
       </WriteButton>

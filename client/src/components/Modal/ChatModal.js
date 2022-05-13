@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import io from 'socket.io-client';
 import styled from 'styled-components';
 import ChattingDetail from '../../pages/ChattingDetail';
+import io from 'socket.io-client';
 
-const socket = io(`${process.env.REACT_APP_API_URL}}`);
+const socket = io.connect(`${process.env.REACT_APP_API_URL}}`, {
+  transports: ['websocket', 'polling'],
+});
 
 const ChatModal = ({ setChattingModal }) => {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
   const loginUser = useSelector((state) => state.login.loginUser);
-  const isChat = useSelector((state) => state.chat.isChat);
 
   const closeChattingModal = () => {
     setChattingModal(false);
@@ -24,15 +25,21 @@ const ChatModal = ({ setChattingModal }) => {
 
   useEffect(() => {
     // rooms 정보(roomName, roomUser) 받기
-    // let nickname = data.nickname;
-    let nickname = isChat.nickname;
+    let nickname = loginUser.nickname;
 
-    socket.emit('join', { nickname });
+    console.log('닉네임', nickname);
+
+    socket.emit('joinServer', { nickname });
+    console.log('check1');
     socket.on('myRoomList', ({ userRoom, userNickName }) => {
-      if (userNickName === isChat.nickname) {
+      console.log('!!!!!!:', userRoom);
+      console.log('??????:', userNickName);
+      console.log('check2');
+      if (userNickName === loginUser.nickname) {
         setRoomList(userRoom);
       }
     });
+    console.log('roomList:', roomList);
 
     return () => {
       socket.off();

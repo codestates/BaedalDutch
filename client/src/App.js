@@ -11,6 +11,9 @@ import WriteModal from './components/Modal/WriteModal/WriteModal';
 import Admin from './pages/admin';
 import MyPageModal from './components/Modal/MyPageModal';
 import MyPage from './pages/MyPage';
+// import io from 'socket.io-client';
+
+// const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
 
 function App() {
   return (

@@ -4,22 +4,55 @@ import styled from 'styled-components';
 import { visibleAction } from '../../../store/visible';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 
 const Container = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
-  border: 5px solid green;
   flex-direction: column;
 `;
-const ButtonMenu = styled.div``;
-const ReturnButton = styled.button``;
-const ReWriteButton = styled.button``;
-const DeleteButton = styled.button``;
+const ButtonMenu = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+`;
+const ReturnButton = styled.div`
+  cursor: pointer;
+  font-size: 30px;
+`;
+const ReWriteButton = styled.button`
+  position: relative;
+  align-items: center;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: grey;
+  left: 120px;
+`;
+const DeleteButton = styled.button`
+  position: relative;
+  align-items: center;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: grey;
+  left: 10px;
+`;
 const Store = styled.div`
   display: flex;
   justify-content: space-around;
-  border: 1px solid red;
   margin: 20px 0 20px 0;
 `;
 const StoreInformation = styled.div`
@@ -34,13 +67,41 @@ const FoodImg = styled.img`
 const PartyMember = styled.div``;
 const Fee = styled.div``;
 const Dutch = styled.div``;
-const UpdatedAt = styled.div``;
+const UpdatedAt = styled.div`
+  display: flex;
+  padding: 20px;
+`;
 const Introduce = styled.div`
   border: 2px solid rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  height: 20%;
+  margin: 20px;
 `;
-const SubmitButton = styled.button``;
+const Submit = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: skyblue;
+  margin: 10px;
+`;
 
-const StoreAddress = styled.div``;
+const SubmitButton = styled.div`
+  padding: 20px;
+`;
+
+const StoreAddress = styled.div`
+  display: flex;
+  padding: 20px;
+`;
 
 const formatDate = (date) => {
   let d = new Date(date),
@@ -54,13 +115,19 @@ const formatDate = (date) => {
   }:${minute < 10 ? `0${minute}` : minute}`;
 };
 
+let socket;
+
 const PartyDetail = () => {
   const dispatch = useDispatch();
   const partyData = useSelector((state) => state.visible.partyData);
-  const loginId = useSelector((state) => state.login.loginUser);
+  const loginUser = useSelector((state) => state.login.loginUser);
   const [isParticipant, setIsParticipant] = useState('');
 
   useEffect(() => {
+    socket = io(`${process.env.REACT_APP_API_URL}`, {
+      transports: ['websocket', 'polling'],
+    });
+
     axios
       .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
       .then((data) => {
@@ -75,11 +142,25 @@ const PartyDetail = () => {
           setIsParticipant('newbie');
         }
       });
+    if (loginUser) {
+      let nickname = loginUser.nickname;
+      let roomId = partyData.id;
+      console.log('파티디테일 useEffect-socket쪽 진입');
+      socket.emit('joinServer', { nickname, roomId });
+
+      return () => {
+        socket.off();
+      };
+    }
   }, [partyData.total_num]);
 
+  // 삭제하기
   const showPostUserDelete = (id) => {
     console.log('삭제클릭');
     console.log(id);
+
+    let nickname = loginUser.nickname;
+    socket.emit('leaveRoom', { id, nickname });
 
     axios
       .delete(
@@ -91,7 +172,7 @@ const PartyDetail = () => {
         if (res.status === 200) {
           console.log('삭제성공');
           dispatch(visibleAction(false));
-          window.location.reload('/main');
+          window.location.replace('/main');
         }
       })
       .catch((err) => console.log('에러셈'));
@@ -102,6 +183,7 @@ const PartyDetail = () => {
   const [changeFee, setChangeFee] = useState(partyData.fee);
   const [changeContent, setChangeContent] = useState(partyData.content);
 
+  // 수정하기
   const ChangePostDetail = () => {
     axios
       .put(
@@ -157,6 +239,20 @@ const PartyDetail = () => {
   // 신청하기
   const handleNewbie = () => {
     console.log('파티데이터 id:', partyData.id);
+
+    let id = partyData.id;
+    let nickname = loginUser.nickname;
+    let roomName = partyData.store_name;
+    let categoryFood = partyData.food_category;
+    console.log('신청 내용', id, nickname, roomName, categoryFood);
+    socket.emit(
+      'joinRoom',
+      { id, nickname, roomName, categoryFood },
+      {
+        transports: ['websocket', 'polling'],
+      },
+    );
+
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/orders/${partyData.id}`,
@@ -176,6 +272,16 @@ const PartyDetail = () => {
 
   // 신청취소
   const handleParticipate = () => {
+    let roomId = partyData.id;
+    let nickname = loginUser.nickname;
+
+    socket.emit(
+      'leaveRoom',
+      { roomId, nickname },
+      {
+        transports: ['websocket', 'polling'],
+      },
+    );
     axios.delete(`${process.env.REACT_APP_API_URL}/orders/${partyData.id}`, {
       withCredentials: true,
     });
@@ -188,13 +294,16 @@ const PartyDetail = () => {
     axios.patch(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, {
       withCredentials: true,
     });
+    window.location.replace('/main');
   };
 
   return (
     <Container>
       <ButtonMenu>
-        <ReturnButton onClick={() => dispatch(visibleAction(false))}>뒤로가기</ReturnButton>
-        {loginId.id === partyData.leader ? (
+        <ReturnButton onClick={() => dispatch(visibleAction(false))}>
+          <i class="fa-solid fa-circle-arrow-left"></i>
+        </ReturnButton>
+        {loginUser.id === partyData.leader ? (
           <>
             <ReWriteButton onClick={() => setChangePost(!changePost)}>
               {changePost ? <div onClick={ChangePostDetail}>수정완료</div> : '수정하기'}
@@ -249,7 +358,7 @@ const PartyDetail = () => {
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
         </StoreInformation>
       </Store>
-      <UpdatedAt>{formatDate(partyData.updatedAt)}</UpdatedAt>
+      <UpdatedAt>작성시간 : {formatDate(partyData.updatedAt)}</UpdatedAt>
       <StoreAddress>주소 : {partyData.address}</StoreAddress>
       <Introduce>
         {changePost ? (
@@ -263,26 +372,25 @@ const PartyDetail = () => {
           <div>{partyData.content}</div>
         )}
       </Introduce>
-      <SubmitButton>
+      <Submit>
         {(function () {
           if (!partyData) {
             return null;
           } else if (isParticipant === 'leader') {
-            return <button onClick={handleLeader}> 마감하기 </button>;
+            return <SubmitButton onClick={handleLeader}> 마감하기 </SubmitButton>;
           } else if (isParticipant === 'newbie') {
-            return <button onClick={handleNewbie}> 신청하기 </button>;
+            return <SubmitButton onClick={handleNewbie}> 신청하기 </SubmitButton>;
           } else if (isParticipant === 'participant') {
-            return <button onClick={handleParticipate}> 신청취소 </button>;
+            return <SubmitButton onClick={handleParticipate}> 신청취소 </SubmitButton>;
           } else if (partyData.closed === true) {
             console.log('closed칸1', partyData.closed);
-            return <button> 신청마감되었습니다 </button>;
+            return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           } else if (partyData.total_num === partyData.member_num) {
             console.log('closed칸2', partyData.closed);
-            return <button> 신청마감되었습니다 </button>;
+            return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           }
         })()}
-        {/* {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>} */}
-      </SubmitButton>
+      </Submit>
     </Container>
   );
 };
