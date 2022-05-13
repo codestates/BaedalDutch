@@ -15,7 +15,7 @@ const Nav = styled.nav`
   top: 0;
   z-index: 500;
   width: 100%;
-  background-color: yellow;
+  background-color: #f1f0ec;
   box-shadow: 0px 1px 7px 0px rgba(0, 0, 0, 0.1);
   height: 99px;
 `;
@@ -30,7 +30,7 @@ const LogoWrap = styled(Link)`
 `;
 
 const Logo = styled.img`
-  width: 100%;
+  width: 250px;
   height: 100%;
 `;
 

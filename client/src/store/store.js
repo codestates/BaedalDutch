@@ -6,6 +6,7 @@ import searchReducer from './search';
 import locationReducer from './location';
 import visibleReducer from './visible';
 import partyDataReducer from './partyData';
+import sideBarReducer from './side';
 import { persistReducer } from 'redux-persist';
 import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
@@ -18,6 +19,7 @@ export const reducers = combineReducers({
   location: locationReducer,
   visible: visibleReducer,
   partyData: partyDataReducer,
+  side: sideBarReducer,
 });
 
 const persistConfig = { key: 'root', storage };

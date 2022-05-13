@@ -1,15 +1,16 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Contents from './Contents';
 import PartyDetail from './PartyDetail';
+import { useMediaQuery } from 'react-responsive';
+import { ShowSideBarAction } from '../../../store/side';
 
 const Container = styled.div`
   background-color: #e3ecf1;
-  @media screen and (max-width: 500px) {
-    display: none;
-  }
+  display: ${(props) => (props.showSideBar ? 'block' : 'none')};
+  z-index: 999;
 `;
 const Sidebarbox = styled.div`
   display: flex;
@@ -61,10 +62,16 @@ const SidebarContent = styled.div`
 `;
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
   const showDetail = useSelector((state) => state.visible.showDetail);
+  const showSideBar = useSelector((state) => state.side.showSideBar);
+  const isMobile = useMediaQuery({ query: '(max-width: 800px)' }, undefined);
+  // if (isMobile) {
+  //   dispatch(ShowSideBarAction(false));
+  // }
 
   return (
-    <Container>
+    <Container showSideBar={showSideBar}>
       <Sidebarbox>
         {/* <Parties>
           <NearParty>가까운 파티</NearParty>

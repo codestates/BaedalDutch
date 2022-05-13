@@ -80,11 +80,7 @@ const MapContainer = () => {
     //   let locPosition = new kakao.maps.LatLng(33.450701, 126.570667); //위치 나중에 서울 중심으로 바꾸기
     //   let message = '위치정보를 켜주세요';
 
-<<<<<<< HEAD
     //   displayMarker(locPosition, message);
-=======
-    // displayMarker(locPosition, message);
->>>>>>> 684f6a5 (fix:update)
     // }
 
     function displayMarker(locPosition, message) {
@@ -105,11 +101,7 @@ const MapContainer = () => {
       // 인포윈도우를 마커위에 표시합니다
       infowindow.open(map, marker);
 
-<<<<<<< HEAD
       // 지도 중심좌표를 접속위치로 변경합니다
-=======
-      // // 지도 중심좌표를 접속위치로 변경합니다
->>>>>>> 684f6a5 (fix:update)
       // map.setCenter(locPosition);
 
       kakao.maps.event.addListener(map, 'click', function (mouseEvent) {

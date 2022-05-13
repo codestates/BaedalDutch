@@ -117,7 +117,7 @@ const Signup = () => {
           password,
           nickname,
           phone_number,
-          image: '12',
+          image: '../assets/test.png',
           address: writeInfo.address,
         },
         {

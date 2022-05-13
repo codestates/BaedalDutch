@@ -314,11 +314,7 @@ const Write = () => {
       .then((res) => {
         console.log('axios요청 성공');
         dispatch(showWriteAction(false));
-<<<<<<< HEAD
         window.location.replace('/main');
-=======
-        window.location.reload();
->>>>>>> 684f6a5 (fix:update)
       });
   }
 

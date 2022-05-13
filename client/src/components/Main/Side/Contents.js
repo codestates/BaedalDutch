@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
-import { useSelector } from 'react-redux';
 import { setPartiesAction } from '../../../store/partyData';
 
 const Container = styled.div`
@@ -20,6 +19,7 @@ const PartyNumber = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const Party = styled.div`

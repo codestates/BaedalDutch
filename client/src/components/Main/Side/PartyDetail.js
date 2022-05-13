@@ -11,14 +11,47 @@ const Container = styled.div`
   width: 100%;
   flex-direction: column;
 `;
-const ButtonMenu = styled.div``;
-const ReturnButton = styled.button``;
-const ReWriteButton = styled.button``;
-const DeleteButton = styled.button``;
+const ButtonMenu = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+`;
+const ReturnButton = styled.div`
+  cursor: pointer;
+  font-size: 30px;
+`;
+const ReWriteButton = styled.button`
+  position: relative;
+  align-items: center;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: grey;
+  left: 120px;
+`;
+const DeleteButton = styled.button`
+  position: relative;
+  align-items: center;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: grey;
+  left: 10px;
+`;
 const Store = styled.div`
   display: flex;
   justify-content: space-around;
-
   margin: 20px 0 20px 0;
 `;
 const StoreInformation = styled.div`
@@ -33,13 +66,41 @@ const FoodImg = styled.img`
 const PartyMember = styled.div``;
 const Fee = styled.div``;
 const Dutch = styled.div``;
-const UpdatedAt = styled.div``;
+const UpdatedAt = styled.div`
+  display: flex;
+  padding: 20px;
+`;
 const Introduce = styled.div`
   border: 2px solid rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  height: 20%;
+  margin: 20px;
 `;
-const SubmitButton = styled.button``;
+const Submit = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: skyblue;
+  margin: 10px;
+`;
 
-const StoreAddress = styled.div``;
+const SubmitButton = styled.div`
+  padding: 20px;
+`;
+
+const StoreAddress = styled.div`
+  display: flex;
+  padding: 20px;
+`;
 
 const formatDate = (date) => {
   let d = new Date(date),
@@ -90,11 +151,7 @@ const PartyDetail = () => {
         if (res.status === 200) {
           console.log('삭제성공');
           dispatch(visibleAction(false));
-<<<<<<< HEAD
-          window.location.reload('/main');
-=======
           window.location.replace('/main');
->>>>>>> 684f6a5 (fix:update)
         }
       })
       .catch((err) => console.log('에러셈'));
@@ -157,7 +214,6 @@ const PartyDetail = () => {
   //     .catch((err) => console.log('에러셈'));
   // };
 
-<<<<<<< HEAD
   // 신청하기
   const handleNewbie = () => {
     console.log('파티데이터 id:', partyData.id);
@@ -193,14 +249,13 @@ const PartyDetail = () => {
       withCredentials: true,
     });
   };
-=======
-  console.log('파티데이타', partyData);
->>>>>>> 684f6a5 (fix:update)
 
   return (
     <Container>
       <ButtonMenu>
-        <ReturnButton onClick={() => dispatch(visibleAction(false))}>뒤로가기</ReturnButton>
+        <ReturnButton onClick={() => dispatch(visibleAction(false))}>
+          <i class="fa-solid fa-circle-arrow-left"></i>
+        </ReturnButton>
         {loginId.id === partyData.leader ? (
           <>
             <ReWriteButton onClick={() => setChangePost(!changePost)}>
@@ -256,7 +311,7 @@ const PartyDetail = () => {
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
         </StoreInformation>
       </Store>
-      <UpdatedAt>{formatDate(partyData.updatedAt)}</UpdatedAt>
+      <UpdatedAt>작성시간 : {formatDate(partyData.updatedAt)}</UpdatedAt>
       <StoreAddress>주소 : {partyData.address}</StoreAddress>
       <Introduce>
         {changePost ? (
@@ -270,45 +325,25 @@ const PartyDetail = () => {
           <div>{partyData.content}</div>
         )}
       </Introduce>
-      <SubmitButton>
-<<<<<<< HEAD
+      <Submit>
         {(function () {
           if (!partyData) {
             return null;
           } else if (isParticipant === 'leader') {
-            return <button onClick={handleLeader}> 마감하기 </button>;
+            return <SubmitButton onClick={handleLeader}> 마감하기 </SubmitButton>;
           } else if (isParticipant === 'newbie') {
-            return <button onClick={handleNewbie}> 신청하기 </button>;
+            return <SubmitButton onClick={handleNewbie}> 신청하기 </SubmitButton>;
           } else if (isParticipant === 'participant') {
-            return <button onClick={handleParticipate}> 신청취소 </button>;
+            return <SubmitButton onClick={handleParticipate}> 신청취소 </SubmitButton>;
           } else if (partyData.closed === true) {
             console.log('closed칸1', partyData.closed);
-            return <button> 신청마감되었습니다 </button>;
+            return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           } else if (partyData.total_num === partyData.member_num) {
             console.log('closed칸2', partyData.closed);
-            return <button> 신청마감되었습니다 </button>;
+            return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           }
         })()}
-        {/* {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>} */}
-=======
-        {/* {(function () {
-          if (!partyData) {
-            return null;
-          } else if (partyData.closed === true) {
-            return <button> 신청마감 </button>;
-          } else if (partyData.total_num + 1 === partyData.member_num) {
-            return <button> 신청마감 </button>;
-          } else if (loginId.id === partyData.leader) {
-            return <button onClick={}> 마감하기 </button>;
-          } else if (loginId.id !== partyData.leader) {
-            return <button onClick={}> 신청하기 </button>;
-          } else if (list.rel === '신청자') {
-            return <button onClick={handlePostCancelRecruitment}> 신청취소 </button>;
-          }
-        })()} */}
-        {loginId.id === partyData.leader ? <div>마감하기</div> : <div>신청하기</div>}
->>>>>>> 684f6a5 (fix:update)
-      </SubmitButton>
+      </Submit>
     </Container>
   );
 };
