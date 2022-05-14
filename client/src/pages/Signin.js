@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { showModalAction } from '../store/modal';
 import { isLoginAction, loginUserAction } from '../store/login';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 // import { postSignIn } from "../../Api";
 // import { usegate } from "react-rNaviouter-dom";
@@ -126,14 +127,25 @@ function Signin() {
           //           // dispatch(showModalAction(false));
           //           // navigate('/main');
         },
-        (error) => {
-          console.log('에러면여기로');
-          console.log(error);
-        },
+        // (error) => {
+        //   console.log('에러면여기로');
+        //   console.log(error);
+        // },
       );
-      navigate('/');
     } catch (err) {
       console.log(err);
+      Swal.fire({
+        title: '잘못된 정보입니다.',
+        width: 400,
+        padding: '3em',
+        confirmButtonColor: '#B51D29',
+        color: 'black',
+        background: '#fff ',
+        backdrop: ` 
+        rgba(0,0,0,0.4)
+      `,
+      });
+      navigate('/');
     }
   };
 

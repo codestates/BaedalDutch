@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { visibleAction } from '../../../store/visible';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { showModalAction } from '../../../store/modal';
 import io from 'socket.io-client';
 
 const Container = styled.div`
@@ -121,6 +122,7 @@ const PartyDetail = () => {
   const dispatch = useDispatch();
   const partyData = useSelector((state) => state.visible.partyData);
   const loginUser = useSelector((state) => state.login.loginUser);
+  const isLogin = useSelector((state) => state.login.isLogin);
   const [isParticipant, setIsParticipant] = useState('');
 
   useEffect(() => {
@@ -364,7 +366,11 @@ const PartyDetail = () => {
       </Introduce>
       <Submit>
         {(function () {
-          if (!partyData) {
+          if (isLogin === false) {
+            return (
+              <SubmitButton onClick={() => dispatch(showModalAction(true))}>신청하기</SubmitButton>
+            );
+          } else if (!partyData) {
             return null;
           } else if (isParticipant === 'leader') {
             return <SubmitButton onClick={handleLeader}> 마감하기 </SubmitButton>;
