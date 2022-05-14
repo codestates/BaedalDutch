@@ -59,6 +59,7 @@ const MapContainer = () => {
         image: markerImage, // 마커 이미지
         clickable: true,
 <<<<<<< HEAD
+<<<<<<< HEAD
       });
 
       window.kakao.maps.event.addListener(marker, 'mouseover', () => {
@@ -76,6 +77,8 @@ const MapContainer = () => {
 
         // 마커와 인포윈도우를 표시합니다
         displayMarker(locPosition, message);
+=======
+>>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 =======
 >>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
       });
