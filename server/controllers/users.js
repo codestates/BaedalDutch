@@ -113,10 +113,10 @@ module.exports = {
             "Content-Type": "application/x-www-form-urlencoded",
           },
         })
-        .then(async (result) => {
-          const nickname = result.data.kakao_account.profile.nickname;
-          const email = result.data.kakao_account.email;
-          console.log("여기는??????", nickname, email);
+        .then(async result => {
+          const nickname = result.data.kakao_account.profile.nickname
+          const email = result.data.kakao_account.email
+          console.log('여기는??????', nickname, email)
           const oauthUser = await users.findOne({
             where: {
               email: email,
@@ -164,7 +164,7 @@ module.exports = {
             });
           }
         })
-        .catch((err) => {
+        .catch(err => {
           res.status(400).json({
             message: "Oauth login err",
           });
@@ -303,15 +303,15 @@ module.exports = {
           nickname: req.body.nickname,
         },
       })
-      .then((data) => {
+      .then(data => {
         if (!data) {
           return res.send({ message: "사용 가능한 닉네임입니다." });
         } else {
           res.send({ message: "이미 사용중인 닉네임입니다." });
         }
       })
-      .catch((err) => {
-        res.status(500).send({ message: "Server error checkNickName" });
-      });
+      .catch(err => {
+        res.status(500).send({ message: 'Server error checkNickName' })
+      })
   },
 };
