@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isLoginAction, loginUserAction } from '../store/login';
 import DaumPostcode from 'react-daum-postcode';
-// import ProfileImage from './ProfileImage';
-import test from '../assets/test.png';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 import '../styled/Mypage.css';
+import defaultImage from '../assets/people.png';
+import loading from '../assets/loading.gif';
 const S3_BUCKET = 'baedaldutch-profile';
 const REGION = 'ap-northeast-2';
 const ACCESS_KEY = process.env.REACT_APP_ACCESS_KEY;
@@ -140,10 +140,14 @@ function MyPage() {
   };
 
   // 마이페이지 수정
-  const handleUserEdit = () => {
+  const handleUserEdit = (selectedFile) => {
+    console.log('0');
+    console.log('selectedFile', selectedFile);
     const { nickname, phone_number, address, password, passwordCheck } = settingUserinfo;
+    console.log('1');
     setChangeInfoBtn(true);
     if (changeInfoBtn) {
+      console.log('2');
       if (
         !nickname ||
         !phone_number ||
@@ -153,16 +157,19 @@ function MyPage() {
         setMessage({ ...message, errorMessage: '모든 항목은 필수입니다' });
         setValidation({ ...validation, errorValidation: true });
       } else if (message.nicknameMessage === '이미 존재하는 닉네임입니다') {
+        console.log('3');
         setMessage({ ...message, errorMessage: '다시 입력해주세요' });
         setValidation({ ...validation, errorValidation: true });
       } else {
+        console.log('4');
         dispatch(loginUserAction(settingUserinfo));
+        console.log('settingUserinfo:', settingUserinfo);
         axios
           .patch(
             `${process.env.REACT_APP_API_URL}/users/mypage`,
             {
               id: settingUserinfo.id,
-              image: settingUserinfo.image,
+              image: selectedFile,
               nickname: settingUserinfo.nickname,
               phone_number: settingUserinfo.phone_number,
               address: settingUserinfo.address,
@@ -248,7 +255,6 @@ function MyPage() {
       });
   };
 
-  //회원탈퇴 테스트
   const handleUserDelete = () => {
     Swal.fire({
       title: '탈퇴하시겠습니까?',
@@ -302,7 +308,6 @@ function MyPage() {
     };
     geocoder.addressSearch(`${settingUserinfo.address}`, callback);
   };
-  console.log(settingUserinfo);
 
   // 프로필 이미지 로직 시작
   const [selectedFile, setSelectedFile] = useState(null);
@@ -310,7 +315,7 @@ function MyPage() {
   const [isLoad, setIsLoad] = useState(false);
   const [preview, setPreview] = useState(false);
   const fileInput = useRef(null);
-  /* 프로필 편집 버튼 눌렀을 때 S3 업로드, 서버 요청 */
+  /* 이미지 저장 버튼 눌렀을 때 S3 업로드, 서버 요청 */
   const handleUpload = (file) => {
     console.log('file:', file);
     if (!file) console.log('이미지 없음');
@@ -339,6 +344,7 @@ function MyPage() {
           password: loginUser.password,
           passwordCheck: loginUser.passwordCheck,
         });
+        console.log('settingUserinfo', settingUserinfo);
         console.log('loginUser:', loginUser);
         console.log('data:', data);
         console.log('err:', err);
@@ -382,7 +388,7 @@ function MyPage() {
       <Wrapper>
         <MapDiv>
           <MyPageDiv>
-            <div className="mypage-edit">
+            {/* <div className="mypage-edit">
               <div className="edit-title">Edit Profile</div>
               <div className="profile-box">
                 {preview ? (
@@ -405,24 +411,27 @@ function MyPage() {
                 <button
                   className="edit-profile"
                   onClick={() => {
-                    fileInput.current.click();
                     handleUpload(selectedFile);
                   }}
                 >
-                  이미지 선택
+                  이미지 저장
                 </button>
-                <button
+                {/* <button
                   className="edit-profile"
+                  onChange={handleImage}
                   onClick={() => {
-                    // 진행중
-                    setFileImage(test);
-                    setSettingUserinfo({ image: test });
+                    setSettingUserinfo({
+                      image: defaultImage,
+                    });
+                    saveProfile(
+                      'https://baedaldutch-profile.s3.ap-northeast-2.amazonaws.com/people.png',
+                    );
                   }}
                 >
-                  이미지 삭제
-                </button>
-              </div>
-            </div>
+                  기본 이미지
+                </button> */}
+            {/* </div>
+            </div> */}
             {changeInfoBtn ? (
               // 회원정보 수정
               <MyPageForm onSubmit={(e) => e.preventDefault()}>
@@ -481,11 +490,62 @@ function MyPage() {
                 ) : null}
                 <SignUpToLogin onClick={handleUserDelete}>회원탈퇴</SignUpToLogin>
                 <Err>{message.errorMessage}</Err>
-                <EditButton onClick={handleUserEdit}>수정완료</EditButton>
+                <EditButton
+                  onClick={() => {
+                    handleUpload(selectedFile);
+                    handleUserEdit();
+                  }}
+                >
+                  수정완료
+                </EditButton>
               </MyPageForm>
             ) : (
               // 기존의 회원정보
               <MyPageForm onSubmit={(e) => e.preventDefault()}>
+                <InputTitle>프로필 수정</InputTitle>
+                <Div>
+                  <ProfileImg>
+                    {preview ? (
+                      <img src={fileImage} className="img-box" alt="preview" />
+                    ) : !isLoad ? (
+                      <img
+                        src={settingUserinfo.image}
+                        alt="profile"
+                        className="img-box"
+                        onClick={() => {
+                          fileInput.current.click();
+                        }}
+                      />
+                    ) : (
+                      <img src={loading} alt="loading" className="img-box" id="loading" />
+                    )}
+                  </ProfileImg>
+                  <input
+                    type="file"
+                    id="image"
+                    accept="img/*"
+                    onChange={handleImage}
+                    ref={fileInput}
+                  />
+                  <WrapButton>
+                    <UploadButton
+                      onClick={() => {
+                        handleUpload(selectedFile);
+                      }}
+                    >
+                      이미지 저장
+                    </UploadButton>
+                    {/* <DeleteButton
+                      onClick={() => {
+                        // 진행중
+                        setFileImage(test);
+                        setSettingUserinfo({ image: test });
+                      }}
+                    >
+                      이미지 삭제
+                    </DeleteButton> */}
+                  </WrapButton>
+                </Div>
                 <InputTitle>닉네임</InputTitle>
                 <Div>{loginUser.nickname}</Div>
                 <InputTitle>전화번호</InputTitle>
@@ -497,7 +557,13 @@ function MyPage() {
                 <InputTitle>비밀번호확인</InputTitle>
                 <InputFieldPassWord />
                 <SignUpToLogin onClick={handleUserDelete}>회원탈퇴</SignUpToLogin>
-                <EditButton onClick={handleUserEdit}>수정하기</EditButton>
+                <EditButton
+                  onClick={() => {
+                    handleUserEdit();
+                  }}
+                >
+                  수정하기
+                </EditButton>
               </MyPageForm>
             )}
           </MyPageDiv>
@@ -535,13 +601,13 @@ const MapDiv = styled.div`
   background-color: #ffffff;
   width: 100%;
   border: 1px solid pink;
-  @media (max-width: 576px) {
+  /* @media (max-width: 576px) {
     display: ${(props) => (props.openPost ? 'none' : 'block')};
     visibility: visible;
     margin-right: 0px;
     padding-right: 0px;
     width: 576px;
-  }
+  } */
 `;
 
 const MyPageDiv = styled.div`
@@ -549,7 +615,7 @@ const MyPageDiv = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  width: 95%;
+  max-width: auto;
 `;
 
 const HomeButton = styled.button`
@@ -772,5 +838,18 @@ const AddressInputDiv = styled.div`
     font-size: 16px;
   }
 `;
+
+const ProfileImg = styled.div`
+  position: absolute;
+  top: 150px;
+`;
+
+const WrapButton = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const DeleteButton = styled.button``;
+const UploadButton = styled.button``;
 
 export default MyPage;

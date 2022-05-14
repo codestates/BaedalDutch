@@ -4,14 +4,23 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
+<<<<<<< HEAD
 import { useSelector } from 'react-redux';
+import { setPartiesAction } from '../../../store/partyData';
+=======
+import { setPartiesAction } from '../../../store/partyData';
+import io from 'socket.io-client';
+
+let socket = io(`${process.env.REACT_APP_API_URL}`, {
+  transports: ['websocket', 'polling'],
+});
+>>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  border: 5px solid green;
 `;
 const PartyNumber = styled.div`
   display: flex;
@@ -19,7 +28,8 @@ const PartyNumber = styled.div`
   font-size: 30px;
   justify-content: center;
   align-items: center;
-  border: 2px solid purple;
+  margin-top: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const Party = styled.div`
@@ -42,14 +52,15 @@ const Dutch = styled.div``;
 
 const Contents = () => {
   const dispatch = useDispatch();
-  const partyData = useSelector((state) => state.visible.partyData);
-
   const [parties, setParties] = useState([]);
+
   const getAllData = async () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`, {
       withCredentials: true,
     });
     setParties(data.data);
+    dispatch(setPartiesAction(data.data));
+    console.log('여기에찍으면?');
     // getMyInfo();
   };
 
@@ -107,10 +118,10 @@ const Contents = () => {
               {/* {party.leader === //id ? <div>수정/삭베</div> : null} */}
               <PartyMember>
                 {' '}
-                더치인원 : {party.total_num}/{party.member_num} 명
+                더치인원 : {party.total_num}명 / {party.member_num}명
               </PartyMember>
-              <Fee>배달료 : {party.fee} 원</Fee>
-              <Dutch>더치비용 : {parseInt(party.fee / party.member_num)} 원</Dutch>
+              <Fee>배달료 : {party.fee}원</Fee>
+              <Dutch>더치비용 : {parseInt(party.fee / party.member_num)}원</Dutch>
               {/* {parties.leader === id ? <button>수정하기</button> : <button onClci = {count}>신청학리</button>} */}
             </PartyDetail>
           </Party>

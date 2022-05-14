@@ -1,0 +1,27 @@
+.board-table {
+  width: 80vw;
+  border: 3px solid;
+  border-radius: 10px;
+  justify-content: center;
+  margin: 0 auto;
+  /* padding: 20px; */
+}
+.qboard-thead {
+  font-size: 20px;
+  box-shadow: 0px 3px #646464;
+  margin-bottom: 20px;
+}
+.qboard-tbody {
+  font-size: 20px;
+  margin: 10px;
+  text-align: center;
+}
+.qboard-tbody tr :nth-child(2) {
+  cursor: pointer;
+}
+.qboard-thead tr th {
+  padding-bottom: 20px;
+}
+.qboard-tbody tr :nth-child(2) {
+  padding: 10px;
+}

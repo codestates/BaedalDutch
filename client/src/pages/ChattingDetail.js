@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import './chatting.css';
 import io from 'socket.io-client';
-// import './chatting.css';
 
-const socket = io(`${process.env.REACT_APP_API_URL}`);
+let socket;
 
 function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
   const navigate = useNavigate();
-  const loginUser = useSelector((state) => state.loginReducer.loginUser);
+  const loginUser = useSelector((state) => state.login.loginUser);
 
   const closeChattingModal = () => {
     setChattingModal(false);
@@ -27,6 +27,9 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
   const [roomChatLog, setRoomChatLog] = useState([]);
 
   useEffect(() => {
+    socket = io(`${process.env.REACT_APP_API_URL}`, {
+      transports: ['websocket', 'polling'],
+    });
     // room 채팅 기록 받기
     let nickname = loginUser.nickname;
     let roomId = newRoomName.chatId;
@@ -92,7 +95,7 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
                 <svg
                   onClick={handleBack}
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
+                  width="15"
                   height="20"
                   viewBox="0 0 24 24"
                 >
@@ -109,7 +112,7 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="userSvg"
-                    width="24"
+                    width="18"
                     height="24"
                     stroke="#ffffff"
                     viewBox="0 0 24 24"
@@ -125,7 +128,7 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
                 <nav ref={dropdownRef} className={`loginMenu ${isActive ? 'active' : 'inactive'}`}>
                   <ul>
                     <li onClick={leaveRoom}>
-                      <a>채팅방 나가기</a>
+                      <a>채팅 나가기</a>
                     </li>
                   </ul>
                 </nav>
@@ -146,15 +149,6 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
                   </ChattingMyListDiv>
                 );
               })}
-
-              {/* {roomChatLog.map( ({ nickname, message }, index) => {
-          return (
-            <ChattingListDiv key={index}>
-              <ChattingListText>{nickname}</ChattingListText>
-              <ChattingContents>{message}</ChattingContents>
-            </ChattingListDiv>
-          )
-        })}      */}
             </ChattingWrapper>
             <ChattingSendDiv>
               <InputField
@@ -163,8 +157,7 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
                 value={roomMessageInfo.message}
                 onKeyUp={enterKey('roomMessage')}
               />
-              {/* <InputField placeholder="메세지를 입력해주세요" onChange={handleInputValue('roomMessage')} value={roomMessageInfo.message} onKeyPress={enterKey('roomMessage')} /> */}
-              <Button onClick={sendRoomMessage}>전송</Button>
+              <Button onClick={sendRoomMessage}>보내기</Button>
             </ChattingSendDiv>
           </LoginForm>
         </Wrapper>
@@ -173,19 +166,11 @@ function ChattingDetail({ newRoomName, click, setClick, setChattingModal }) {
   );
 }
 
-// const PostingWriteTitle = styled.div`
-//   font-size: 20px;
-//   margin-top: 25px;
-//   margin-bottom: 25px;
-// `;
-
 const PostingWriteTitle = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: 20px;
   height: 70px;
-  /* margin-top: 25px;
-  margin-bottom: 25px; */
 `;
 
 const PostSpan = styled.span`
@@ -198,7 +183,7 @@ const PostSpan = styled.span`
 const PostNameDiv = styled.div`
   font-family: var(--main-font);
   margin-top: 22px;
-  font-size: 22px;
+  font-size: 18px;
   margin-left: 5px;
   font-weight: bold;
 `;
@@ -224,12 +209,10 @@ const ChattingMyListText = styled.div`
 `;
 
 const ChattingMyContents = styled.div`
-  /* display: flex; */
-  width: 200px;
+  width: 180px;
   padding: 15px;
   border-radius: 10px;
-  background-color: #cea163;
-  /* margin-left: 120px; */
+  background-color: #90caf9;
   word-break: break-all;
 `;
 
@@ -248,8 +231,6 @@ const ModalBackdrop = styled.div`
 const Wrapper = styled.div`
   text-align: center;
   overflow: hidden;
-  /* width: 320px;
-    height: 568px; */
   width: 376px;
   height: 667px;
   display: flex;
@@ -284,9 +265,6 @@ const ChattingWrapper = styled.div`
   background-color: #f4f4f4;
   overflow: auto;
   border: 1px solid #a3a3a3;
-  /* flex-wrap: wrap; */
-  /* display: flex; */
-  /* flex-direction: column; */
 `;
 
 const ChattingListImg = styled.img`
@@ -300,15 +278,14 @@ const ChattingListImg = styled.img`
 
 const ChattingContents = styled.div`
   width: 200px;
-  padding: 15px;
+  padding: 10px;
   border-radius: 10px;
-  background-color: #d5b483;
-  margin-left: 10px;
+  background-color: #93cf96;
+  margin-left: 15px;
   word-break: break-all;
 `;
 
 const ChattingListText = styled.div`
-  /* margin-top: 25px; */
   margin-left: 10px;
 `;
 
@@ -324,8 +301,8 @@ const ChattingSendDiv = styled.div`
 
 const InputField = styled.input`
   width: 300px;
-  height: 56px;
-  font-size: 18px;
+  height: 50px;
+  font-size: 16px;
   margin-top: 25px;
   margin-left: 10px;
   border-radius: 6px;
@@ -340,7 +317,7 @@ const InputField = styled.input`
 const Button = styled.button`
   margin-top: 25px;
   width: 50px;
-  height: 56px;
+  height: 50px;
   margin-left: 5px;
   border: none;
   background-color: #d5b483;

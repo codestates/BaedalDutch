@@ -69,7 +69,10 @@ module.exports = {
         where: { email: email },
       })
       console.log('userInfo:', userInfo)
-      if (!userInfo || !bcrypt.compareSync(password, userInfo.dataValues.password)) {
+      if (
+        !userInfo ||
+        !bcrypt.compareSync(password, userInfo.dataValues.password)
+      ) {
         return res.status(404).send('bad request sign in')
       } else {
         try {
@@ -81,6 +84,7 @@ module.exports = {
               phone_number: userInfo.phone_number,
               email: userInfo.email,
               image: userInfo.image,
+              address: userInfo.address,
             },
             accessToken,
             message: 'success sign in',
@@ -189,7 +193,9 @@ module.exports = {
       if (!userInfo) {
         return res.status(404).send('bad request users/:id')
       } else {
-        const deleteUser = await users.destroy({ where: { id: req.params.id } })
+        const deleteUser = await users.destroy({
+          where: { id: req.params.id },
+        })
         return res.status(200).send('successfully delete id')
       }
     } catch (err) {
@@ -213,35 +219,32 @@ module.exports = {
 
         // 데이터 수정
         const updateUserInfo = await users.update(
-          { password, image, phone_number, address },
-          { where: { id: userInfo.id } },
+          { nickname, password, image, phone_number },
+          { where: { email: user.dataValues.email } },
         )
+        return res
+          .status(200)
+          .json({ updateUserInfo, message: 'success update user info' })
         console.log('check')
         // 닉네임 중복 체크
-        const checkNickname = await users.findOne({
-          where: { nickname: nickname },
-        })
-        if (req.body.nickname === userInfo.nickname) {
-          // 데이터 수정
-          const updateUserInfo = await users.update(
-            { nickname, password, image, phone_number },
-            { where: { email: user.dataValues.email } },
-          )
-          return res
-            .status(200)
-            .json({ updateUserInfo, message: 'success update user info' })
-        } else if (checkNickname) {
-          return res.status(409).send('nickname already exists sign up')
-        } else {
-          // 데이터 수정
-          const updateUserInfo = await users.update(
-            { nickname, password, image, phone_number },
-            { where: { email: user.dataValues.email } },
-          )
-          return res
-            .status(200)
-            .json({ updateUserInfo, message: 'success update user info' })
-        }
+        // const checkNickname = await users.findOne({
+        //   where: { nickname: nickname },
+        // })
+        // if (req.body.nickname === userInfo.nickname) {
+        //   // 데이터 수정
+        //   const updateUserInfo = await users.update(
+        //     { nickname, password, image, phone_number },
+        //     { where: { email: user.dataValues.email } },
+        //   )
+        //   return res
+        //     .status(200)
+        //     .json({ updateUserInfo, message: 'success update user info' })
+        // }
+        // else if (checkNickname) {
+        //   return res.status(409).send('이미 사용중인 닉네임입니다.')
+        // }
+        // else {
+        // }
       }
     } catch (err) {
       return res.status(500).send('Server Error mypage')

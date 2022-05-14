@@ -11,6 +11,9 @@ import WriteModal from './components/Modal/WriteModal/WriteModal';
 import Admin from './pages/admin';
 import MyPageModal from './components/Modal/MyPageModal';
 import MyPage from './pages/MyPage';
+// import io from 'socket.io-client';
+
+// const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
 
 function App() {
   return (
@@ -24,7 +27,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/main" element={<Main />} />
-        <Route path="/oauth/kakao" element={<OAuth2RedirectHandler />} />
+        <Route path="/users/signin" element={<OAuth2RedirectHandler />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/mypage" element={<MyPage />} />
       </Routes>

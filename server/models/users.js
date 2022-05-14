@@ -30,9 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       nickname: DataTypes.STRING,
       password: DataTypes.STRING,
-      image: DataTypes.STRING,
+      image: {
+        type: DataTypes.STRING,
+        defaultValue:
+          'https://baedaldutch-profile.s3.ap-northeast-2.amazonaws.com/people.png',
+      },
       phone_number: DataTypes.STRING,
-      address: DataTypes.STRING
+      address: DataTypes.STRING,
     },
     {
       sequelize,

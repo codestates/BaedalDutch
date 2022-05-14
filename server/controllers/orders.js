@@ -1,15 +1,16 @@
-const { parties, users_parties } = require("../models");
-const { isAuthorized } = require("./tokenfunctions");
+const { parties, users_parties } = require('../models')
+const { isAuthorized } = require('./tokenfunctions')
 
 module.exports = {
   participateParty: async (req, res) => {
     // 파티에 참가
-    const userInfo = isAuthorized(req);
-    console.log("userinfo-------", userInfo);
+    const userInfo = isAuthorized(req)
+    console.log('userinfo-------', userInfo)
     if (!userInfo) {
+      console.log('bbbbbbbb')
       res.status(404).send({
-        message: "Bad request update parties",
-      });
+        message: 'Bad request update parties',
+      })
     }
     try {
       users_parties
@@ -21,22 +22,22 @@ module.exports = {
           parties.findOne({ where: { id: req.params.id } }).then((result) => {
             parties.update(
               { total_num: result.dataValues.total_num + 1 },
-              { where: { id: req.params.id } }
-            );
-            res.status(201).send({ message: "success participate parties" });
-          });
-        });
+              { where: { id: req.params.id } },
+            )
+            res.status(201).send({ message: 'success newbie parties' })
+          })
+        })
     } catch (err) {
-      res.end();
+      res.end()
     }
   },
   cancelOrder: async (req, res) => {
     // 파티에서 탈퇴
-    const userInfo = isAuthorized(req);
+    const userInfo = isAuthorized(req)
     if (!userInfo) {
       res.status(404).send({
-        message: "Bad request update parties",
-      });
+        message: 'Bad request update parties',
+      })
     }
     try {
       users_parties
@@ -50,13 +51,13 @@ module.exports = {
           parties.findOne({ where: { id: req.params.id } }).then((result) => {
             parties.update(
               { total_num: result.dataValues.total_num - 1 },
-              { where: { id: req.params.id } }
-            );
-            res.status(201).send({ message: "success delete parties" });
-          });
-        });
+              { where: { id: req.params.id } },
+            )
+            res.status(201).send({ message: 'success delete parties' })
+          })
+        })
     } catch (err) {
-      res.end();
+      res.end()
     }
   },
-};
+}

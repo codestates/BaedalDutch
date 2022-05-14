@@ -117,7 +117,7 @@ const Signup = () => {
           password,
           nickname,
           phone_number,
-          image: '12',
+          image: 'https://baedaldutch-profile.s3.ap-northeast-2.amazonaws.com/people.png',
           address: writeInfo.address,
         },
         {
