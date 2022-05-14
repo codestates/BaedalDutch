@@ -9,6 +9,7 @@ import axios from 'axios';
 import AWS from 'aws-sdk';
 import '../styled/Mypage.css';
 import defaultImage from '../assets/people.png';
+import loading from '../assets/loading.gif';
 const S3_BUCKET = 'baedaldutch-profile';
 const REGION = 'ap-northeast-2';
 const ACCESS_KEY = process.env.REACT_APP_ACCESS_KEY;
@@ -516,7 +517,7 @@ function MyPage() {
                         }}
                       />
                     ) : (
-                      <img alt="loading" className="img-box" id="loading" />
+                      <img src={loading} alt="loading" className="img-box" id="loading" />
                     )}
                   </ProfileImg>
                   <input

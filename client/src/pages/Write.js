@@ -240,7 +240,7 @@ const Write = () => {
     let nickname = loginUser.nickname;
     console.log('write 소켓 닉네임', nickname);
 
-    // setNewSearchAddress();
+    test();
     socket.emit('joinServer', { nickname });
 
     return () => {
@@ -292,7 +292,6 @@ const Write = () => {
   };
 
   const onSubmit = () => {
-    console.log('제출할때', writeInfo);
     const geocoder = new kakao.maps.services.Geocoder();
 
     let callback = function (result, status) {
@@ -302,9 +301,10 @@ const Write = () => {
         console.log(newAddSearch);
         setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
       }
-      console.log('writeInfo.lat', typeof writeInfo.lat);
+      console.log('writeInfo.lat', writeInfo.lat);
     };
     geocoder.addressSearch(`${writeInfo.address}`, callback);
+    console.log('제출할때', writeInfo);
     if (writeInfo.lat !== '') {
       dispatch(currentLocationAction({ lat: writeInfo.lat, lng: writeInfo.lng }));
       const { store_name, content, fee } = getValues();
@@ -332,6 +332,7 @@ const Write = () => {
         .then((data) => {
           console.log('data:', data);
           console.log('axios요청 성공');
+          dispatch(showWriteAction(false));
           if (data.status === 201) {
             console.log('partyData:', partyData);
             let id = data.data.data.id;
@@ -343,10 +344,10 @@ const Write = () => {
             socket.emit('createRoom', { id, nickname, roomName, categoryFood });
             console.log('createRoom 끝');
           }
-          dispatch(showWriteAction(false));
-          window.location.replace('/main');
         });
     }
+    console.log('if문 끝');
+    window.location.replace('/main');
   };
 
   const feePattern = {
