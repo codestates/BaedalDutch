@@ -5,15 +5,21 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useSelector } from 'react-redux';
 import { setPartiesAction } from '../../../store/partyData';
 =======
+=======
+>>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 import { setPartiesAction } from '../../../store/partyData';
 import io from 'socket.io-client';
 
 let socket = io(`${process.env.REACT_APP_API_URL}`, {
   transports: ['websocket', 'polling'],
 });
+<<<<<<< HEAD
+>>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
+=======
 >>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 
 const Container = styled.div`

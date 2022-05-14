@@ -1,6 +1,10 @@
 import React from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useEffect } from 'react';
+=======
+import { useDispatch } from 'react-redux';
+>>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 =======
 import { useDispatch } from 'react-redux';
 >>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
