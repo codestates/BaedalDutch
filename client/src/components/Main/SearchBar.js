@@ -85,7 +85,7 @@ const SearchBar = () => {
           }}
           type="submit"
         >
-          <i class="fa-solid fa-magnifying-glass-location"></i>
+          <i className="fa-solid fa-magnifying-glass-location"></i>
         </InputButton>
         {isOpen ? (
           <PlaceList>
