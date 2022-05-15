@@ -293,7 +293,7 @@ const PartyDetail = () => {
     <Container>
       <ButtonMenu>
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>
-          <i class="fa-solid fa-circle-arrow-left"></i>
+          <i className="fa-solid fa-circle-arrow-left"></i>
         </ReturnButton>
         {loginUser.id === partyData.leader ? (
           <>

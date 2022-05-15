@@ -144,7 +144,7 @@ function MyPage() {
     console.log('0');
     console.log('selectedFile', selectedFile);
     const { nickname, phone_number, address, password, passwordCheck } = settingUserinfo;
-    console.log('1');
+    console.log("??????????", settingUserinfo)
     setChangeInfoBtn(true);
     if (changeInfoBtn) {
       console.log('2');

@@ -17,7 +17,7 @@ function Landing1() {
         <Wrapper>
           <TextDiv>
             <Zoom triggerOnce={false} duration={1500}>
-              <Text data-text="음식값보다 비싼 배달비 ! ">비싸지는 배달비</Text>
+              <Text data-text="음식값보다 비싼 배달비 ! ">비싸지는 배달비hihihihihihihihihi</Text>
               <Text>함께 나눠봐요</Text>
               <Text>BaedalDutch</Text>
             </Zoom>
