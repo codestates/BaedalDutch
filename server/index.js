@@ -26,6 +26,7 @@ app.use(
       "http://baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com",
       "https://d823dlhxcxwnu.cloudfront.net",
       "https://baedaldutch.tk",
+      "http://localhost:3000",
     ],
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
     credentials: true,
