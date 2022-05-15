@@ -2,7 +2,7 @@
 
 ![Logo low pixel](https://user-images.githubusercontent.com/92617810/168429436-d3c1bee3-77b0-452d-9f32-61804a7d64f5.png)
 
-### 🔗  [BaedalDutch](https://google.com)
+### 🔗  [BaedalDutch](https://baedaldutch.tk/)
 <br>
 
 
