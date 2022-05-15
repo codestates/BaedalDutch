@@ -55,7 +55,7 @@ const UserName = styled.span`
   font-family: var(--main-font);
   font-weight: 500;
   font-size: 18px;
-  height: 92px;
+  height: 80px;
   background: #ffffff;
   border-radius: 12px;
   cursor: pointer;
