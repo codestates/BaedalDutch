@@ -3,19 +3,16 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { visibleAction } from '../../../store/visible';
 import axios from 'axios';
-<<<<<<< HEAD
-<<<<<<< HEAD
+import { useEffect, useState } from 'react';
+import { showModalAction } from '../../../store/modal';
+import io from 'socket.io-client';
 import { useState } from 'react';
-=======
 import { useEffect, useState } from 'react';
 import { showModalAction } from '../../../store/modal';
 import io from 'socket.io-client';
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
 import { useEffect, useState } from 'react';
 import { showModalAction } from '../../../store/modal';
 import io from 'socket.io-client';
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 
 const Container = styled.div`
   display: flex;
@@ -78,16 +75,11 @@ const FoodImg = styled.img`
 const PartyMember = styled.div``;
 const Fee = styled.div``;
 const Dutch = styled.div``;
-<<<<<<< HEAD
-<<<<<<< HEAD
 const CreatedDate = styled.div``;
 const Introduce = styled.div`
   border: 2px solid rgba(0, 0, 0, 0.2);
 `;
 const SubmitButton = styled.button``;
-=======
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 const UpdatedAt = styled.div`
   display: flex;
   padding: 20px;
@@ -123,10 +115,6 @@ const StoreAddress = styled.div`
   display: flex;
   padding: 20px;
 `;
-<<<<<<< HEAD
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 
 const formatDate = (date) => {
   let d = new Date(date),
@@ -153,7 +141,6 @@ const PartyDetail = () => {
     socket = io(`${process.env.REACT_APP_API_URL}`, {
       transports: ['websocket', 'polling'],
     });
-<<<<<<< HEAD
 
     axios
       .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
@@ -183,7 +170,6 @@ const PartyDetail = () => {
     }
   }, [partyData.total_num]);
 
-=======
 
     axios
       .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
@@ -213,7 +199,6 @@ const PartyDetail = () => {
     }
   }, [partyData.total_num]);
 
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
   // 삭제하기
   const showPostUserDelete = (id) => {
     console.log('삭제클릭');
@@ -243,14 +228,7 @@ const PartyDetail = () => {
   const [changeFee, setChangeFee] = useState(partyData.fee);
   const [changeContent, setChangeContent] = useState(partyData.content);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
   // 수정하기
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
-  // 수정하기
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
   const ChangePostDetail = () => {
     axios
       .put(
@@ -273,14 +251,9 @@ const PartyDetail = () => {
           console.log('업데이트성공');
           console.log(changeStoreName);
           dispatch(visibleAction(false));
-<<<<<<< HEAD
-<<<<<<< HEAD
         }
       })
       .catch((err) => console.log('에러셈'));
-=======
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
           window.location.replace('/main');
         }
       })
@@ -358,54 +331,17 @@ const PartyDetail = () => {
       withCredentials: true,
     });
     window.location.replace('/main');
-<<<<<<< HEAD
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
   };
-  // const ClosePartyStatus = () => {
-  //   axios
-  //     .patch(
-  //       `${process.env.REACT_APP_API_URL}/parties/${partyData.id}`,
-  //       {
-  //         store_name: changeStoreName,
-  //         food_category: partyData.food_category,
-  //         member_num: changeDutchMem,
-  //         content: changeContent,
-  //         fee: changeFee,
-  //         address: partyData.address,
-  //       },
-  //       {
-  //         headers: { 'Content-Type': 'application/json' },
-  //         withCredentials: true,
-  //       },
-  //     )
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         dispatch(visibleAction(false));
-  //       }
-  //     })
-  //     .catch((err) => console.log('에러셈'));
-  // };
 
   return (
     <Container>
       <ButtonMenu>
-<<<<<<< HEAD
-<<<<<<< HEAD
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>뒤로가기</ReturnButton>
         {loginId.id === partyData.leader ? (
-=======
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>
-          <i class="fa-solid fa-circle-arrow-left"></i>
+          <i className="fa-solid fa-circle-arrow-left"></i>
         </ReturnButton>
         {loginUser.id === partyData.leader ? (
-<<<<<<< HEAD
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
           <>
             <ReWriteButton onClick={() => setChangePost(!changePost)}>
               {changePost ? <div onClick={ChangePostDetail}>수정완료</div> : '수정하기'}
@@ -427,15 +363,6 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-<<<<<<< HEAD
-<<<<<<< HEAD
-              <span>{partyData.store_name}</span>
-=======
-              <span> {partyData.store_name}</span>
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
-              <span> {partyData.store_name}</span>
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
             )}
           </StoreName>
           <PartyMember>
@@ -448,19 +375,15 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-<<<<<<< HEAD
-<<<<<<< HEAD
+              <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
+            )}
               <span>{` ${partyData.total_num} / ${partyData.member_num}`}</span>
             )}
             명
-=======
               <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
             )}
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
               <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
             )}
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
           </PartyMember>
           <Fee>
             배달료 :
@@ -476,26 +399,20 @@ const PartyDetail = () => {
             )}
             원
           </Fee>
-<<<<<<< HEAD
-<<<<<<< HEAD
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)} 원</Dutch>
         </StoreInformation>
       </Store>
       <CreatedDate>{formatDate(partyData.updatedAt)}</CreatedDate>
-=======
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
         </StoreInformation>
       </Store>
       <UpdatedAt>작성시간 : {formatDate(partyData.updatedAt)}</UpdatedAt>
       <StoreAddress>주소 : {partyData.address}</StoreAddress>
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
         </StoreInformation>
       </Store>
       <UpdatedAt>작성시간 : {formatDate(partyData.updatedAt)}</UpdatedAt>
       <StoreAddress>주소 : {partyData.address}</StoreAddress>
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
       <Introduce>
         {changePost ? (
           <textarea
@@ -508,14 +425,10 @@ const PartyDetail = () => {
           <div>{partyData.content}</div>
         )}
       </Introduce>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
       <SubmitButton>
         {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>}
       </SubmitButton>
-=======
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
       <Submit>
         {(function () {
           if (isLogin === false) {
@@ -539,10 +452,6 @@ const PartyDetail = () => {
           }
         })()}
       </Submit>
-<<<<<<< HEAD
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
-=======
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
     </Container>
   );
 };

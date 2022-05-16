@@ -52,7 +52,7 @@ const ButtonMenu = () => {
   return (
     <ButtonWrap>
       <ShowListButton onClick={() => dispatch(ShowSideBarAction(!showSideBar))}>
-        <i class="fa-solid fa-list"></i>
+        <i className="fa-solid fa-list"></i>
       </ShowListButton>
 
       <WriteButton onClick={() => dispatch(showWriteAction(true))}>

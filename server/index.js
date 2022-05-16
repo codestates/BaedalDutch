@@ -1,30 +1,54 @@
-require('dotenv').config()
-const fs = require('fs')
-const http = require('http')
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
-const express = require('express')
+require("dotenv").config();
+const fs = require("fs");
+const http = require("http");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const express = require("express");
 // const morgan = require('morgan')
-const helmet = require('helmet')
-const path = require('path')
-const app = express()
-const usersRouter = require('./routes/users')
-const partiesRouter = require('./routes/parties')
-const ordersRouter = require('./routes/orders')
-const adminRouter = require('./routes/admin')
+const helmet = require("helmet");
+const path = require("path");
+const app = express();
+const usersRouter = require("./routes/users");
+const partiesRouter = require("./routes/parties");
+const ordersRouter = require("./routes/orders");
+const adminRouter = require("./routes/admin");
 
 // app.use(express.static(path.join(__dirname, '../client/public')))
-app.use(express.json())
-app.use(helmet())
+app.use(express.json());
+app.use(helmet());
 // app.use(morgan('tiny'))
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 
-let server = http.createServer(app)
+let server = http.createServer(app);
 app.use(
   cors({
-    origin: true,
-    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
+    origin: [
+      "http://baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com",
+      "https://d823dlhxcxwnu.cloudfront.net",
+      "https://baedaldutch.tk",
+    ],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
     credentials: true,
+    // cookie: {
+    //   maxAge: 24 * 6 * 60 * 10000,
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: "None",
+    // },
+  })
+);
+app.use(cookieParser());
+
+app.use("/users", usersRouter);
+app.use("/parties", partiesRouter);
+app.use("/orders", ordersRouter);
+app.use("/admin", adminRouter);
+
+const PORT = 80;
+
+server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
+const io = require("socket.io")(server, {
+  transports: ["websocket", "polling"],
     cookie: {
       maxAge: 24 * 6 * 60 * 10000,
       httpOnly: false,
@@ -51,24 +75,24 @@ server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
 const io = require('socket.io')(server, {
   transports: ['websocket', 'polling'],
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
+    origin: "*",
+    methods: ["GET", "POST"],
     allowedHeaders: ['*'],
     credentials: true,
   },
-})
+});
 
-let users = []
-let rooms = []
-let roomChatLog = []
+let users = [];
+let rooms = [];
+let roomChatLog = [];
 
-io.on('connection', socket => {
+io.on("connection", (socket) => {
+  console.log("socket connected");
   console.log('socket connected, socket.id:', socket.id)
   console.log('users:', users)
   console.log('rooms:', rooms)
   console.log('roomChatLog:', roomChatLog)
-  socket.on('joinServer', ({ nickname, roomId }) => {
-    console.log('joinServer 진입')
+  socket.on("joinServer", ({ nickname, roomId }) => {
     let user = {
       id: socket.id,
       nickname,
@@ -101,8 +125,8 @@ io.on('connection', socket => {
     }
   })
 
-  socket.on('createRoom', ({ id, roomName, nickname, categoryFood }) => {
-    console.log('createRoom 진입')
+  socket.on("createRoom", ({ id, roomName, nickname, categoryFood }) => {
+    console.log("createRoom 진입");
     let room = {
       id,
       roomName,
@@ -199,12 +223,12 @@ io.on('connection', socket => {
 
         el.roomUsers.splice(index, 1)
       }
-    })
-  })
+    });
+  });
 
-  socket.on('disconnect', () => {
-    console.log('socket disconnected')
-  })
-})
+  socket.on("disconnect", () => {
+    console.log("socket disconnected");
+  });
+});
 
-module.exports = server
+module.exports = server;
