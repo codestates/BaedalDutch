@@ -25,12 +25,12 @@ app.use(
     origin: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     credentials: true,
-    // cookie: {
-    //   maxAge: 24 * 6 * 60 * 10000,
-    //   httpOnly: false,
-    //   secure: true,
-    //   sameSite: "None",
-    // },
+    cookie: {
+      maxAge: 24 * 6 * 60 * 10000,
+      httpOnly: false,
+      secure: true,
+      sameSite: "None",
+    },
   }),
 )
 app.use(cookieParser())
