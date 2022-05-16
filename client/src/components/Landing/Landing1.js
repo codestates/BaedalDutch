@@ -15,7 +15,7 @@ const Landing1 = () => {
             <Rectangle6>
               <Text onClick={handleMain}>둘러보기</Text>
             </Rectangle6>
-            <Title>배달시키실 때 배달비가 많이 부담되시죠?</Title>
+            <Title>배달시키실 때 배달비 많이 부담되시죠?</Title>
             <SubText>이제 함께 나눠서 절약해봐요!</SubText>
             <SubText>
               <Baedal>BaedalDutch</Baedal> 가 함께 할께요

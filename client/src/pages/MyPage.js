@@ -144,7 +144,7 @@ function MyPage() {
     console.log('0');
     console.log('selectedFile', selectedFile);
     const { nickname, phone_number, address, password, passwordCheck } = settingUserinfo;
-    console.log("??????????", settingUserinfo)
+    console.log('??????????', settingUserinfo);
     setChangeInfoBtn(true);
     if (changeInfoBtn) {
       console.log('2');
@@ -552,10 +552,10 @@ function MyPage() {
                 <Div>{loginUser.phone_number}</Div>
                 <InputTitle>주소</InputTitle>
                 <Div>{loginUser.address}</Div>
-                <InputTitle>비밀번호</InputTitle>
+                {/* <InputTitle>비밀번호</InputTitle>
                 <InputFieldPassWord />
                 <InputTitle>비밀번호확인</InputTitle>
-                <InputFieldPassWord />
+                <InputFieldPassWord /> */}
                 <SignUpToLogin onClick={handleUserDelete}>회원탈퇴</SignUpToLogin>
                 <EditButton
                   onClick={() => {
@@ -568,7 +568,9 @@ function MyPage() {
             )}
           </MyPageDiv>
         </MapDiv>
-        <HomeButton onClick={clickHomelBtn}>Home</HomeButton>
+        <HomeButton onClick={clickHomelBtn}>
+          <i className="fa-solid fa-house-chimney"></i>
+        </HomeButton>
       </Wrapper>
     </div>
   );
@@ -620,16 +622,16 @@ const MyPageDiv = styled.div`
 
 const HomeButton = styled.button`
   font-family: var(--main-font);
-  font-size: 12px;
+  font-size: 30px;
   display: ${(props) => (props.openPost ? 'none' : 'block')};
   position: fixed;
   bottom: 60px;
   right: 16px;
   border-radius: 100%;
   border: none;
-  width: 60px;
-  height: 60px;
-  background-color: #111111;
+  width: 80px;
+  height: 80px;
+  background-color: rgba(242, 198, 112);
   color: white;
   &:hover {
     cursor: pointer;
@@ -637,7 +639,7 @@ const HomeButton = styled.button`
   @media (max-width: 576px) {
     width: 70px;
     height: 70px;
-    font-size: 14px;
+    font-size: 30px;
   }
   @media (max-width: 400px) {
     width: 70px;
@@ -654,7 +656,7 @@ const MyPageForm = styled.form`
 
 const InputTitle = styled.div`
   margin-top: 10px;
-  font-size: 18px;
+  font-size: 25px;
   @media (max-width: 576px) {
     margin-top: 3px;
     font-size: 18px;
@@ -745,9 +747,9 @@ const InputFieldPassWord = styled.div`
 const Div = styled.div`
   width: 500px;
   height: 56px;
-  font-size: 16px;
-  color: #525252;
-  margin-top: 10px;
+  font-size: 20px;
+  color: grey;
+  margin-top: 30px;
   @media (max-width: 400px) {
     margin-left: -20px;
     font-size: 16px;
@@ -756,15 +758,15 @@ const Div = styled.div`
 `;
 
 const EditButton = styled.button`
-  float: right;
+  float: center;
   width: 200px;
   height: 56px;
-  background-color: #111111;
+  background-color: black;
   color: white;
   border: none;
   border-radius: 6px;
   margin-top: 30px;
-  font-size: 16px;
+  font-size: 20px;
   &:hover {
     cursor: pointer;
   }
@@ -793,8 +795,8 @@ const EditButton = styled.button`
 
 const SignUpToLogin = styled.div`
   margin-top: 20px;
-  font-size: 12px;
-  color: gray;
+  font-size: 15px;
+  color: red;
   &:hover {
     cursor: pointer;
   }

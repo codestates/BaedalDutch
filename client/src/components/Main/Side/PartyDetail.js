@@ -34,7 +34,7 @@ const ReWriteButton = styled.button`
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: grey;
+  background-color: black;
   left: 120px;
 `;
 const DeleteButton = styled.button`
@@ -48,7 +48,7 @@ const DeleteButton = styled.button`
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: grey;
+  background-color: black;
   left: 10px;
 `;
 const Store = styled.div`
@@ -91,7 +91,7 @@ const Submit = styled.button`
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: skyblue;
+  background-color: rgba(242, 198, 112);
   margin: 10px;
 `;
 
