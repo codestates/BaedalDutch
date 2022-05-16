@@ -7,7 +7,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    font-family: "Helvetica", "Arial", sans-serif;
+    font-family: 'Do Hyeon', sans-serif;
     line-height: 1.5;
   }
 `;
