@@ -158,6 +158,7 @@ const WriteButton = styled.button`
   border: white;
   background-color: #cce8f4;
   border-radius: 6px;
+  cursor: pointer;
 `;
 
 const AddressDiv = styled.div`
