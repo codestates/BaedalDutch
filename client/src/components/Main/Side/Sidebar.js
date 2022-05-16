@@ -25,7 +25,7 @@ const Sidebarbox = styled.div`
   color: #202020;
   width: 500px;
   height: 90%;
-  z-index: 99;
+  z-index: 900;
 `;
 
 // const Parties = styled.div`

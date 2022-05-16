@@ -53,10 +53,8 @@ const Contents = () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`, {
       withCredentials: true,
     });
-    console.log('!!!!!!!!!', data.data);
     setParties(data.data);
     dispatch(setPartiesAction(data.data));
-    console.log('여기에찍으면?');
     // getMyInfo();
   };
 

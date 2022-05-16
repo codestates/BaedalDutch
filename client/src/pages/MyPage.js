@@ -794,6 +794,7 @@ const EditButton = styled.button`
 `;
 
 const SignUpToLogin = styled.div`
+  width: 50px;
   margin-top: 20px;
   font-size: 15px;
   color: red;
