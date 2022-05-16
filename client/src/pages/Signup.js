@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import DaumPostcode from 'react-daum-postcode';
 import { useState } from 'react';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 const { kakao } = window;
 
@@ -126,10 +127,48 @@ const Signup = () => {
         },
       )
       .then((res) => {
+        console.log(res.message)
         navigate('/');
       })
-      .catch((err) => {
-        alert(err);
+      .catch((err, res) => {
+        console.log(err.response.data)
+        if(err.response.data === 'Bad request sign up'){
+          Swal.fire({
+            title: '주소를 입력해 주세요',
+            width: 400,
+            padding: '3em',
+            confirmButtonColor: '#B51D29',
+            color: 'black',
+            background: '#fff ',
+            backdrop: ` 
+            rgba(0,0,0,0.4)
+          `,
+          });
+        } else if(err.response.data === 'email already exists sign up'){
+          Swal.fire({
+            title: '중복된 이메일입니다',
+            width: 400,
+            padding: '3em',
+            confirmButtonColor: '#B51D29',
+            color: 'black',
+            background: '#fff ',
+            backdrop: ` 
+            rgba(0,0,0,0.4)
+          `,
+          });
+        } else if(err.response.data === 'nickname already exists sign up'){
+          Swal.fire({
+            title: '중복된 닉네임입니다',
+            width: 400,
+            padding: '3em',
+            confirmButtonColor: '#B51D29',
+            color: 'black',
+            background: '#fff ',
+            backdrop: ` 
+            rgba(0,0,0,0.4)
+          `,
+          });
+        } 
       })
   };
   // if (res.accessToken) {
