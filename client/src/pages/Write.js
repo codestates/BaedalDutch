@@ -292,18 +292,18 @@ const Write = () => {
   };
 
   const onSubmit = () => {
-    const geocoder = new kakao.maps.services.Geocoder();
+    // const geocoder = new kakao.maps.services.Geocoder();
 
-    let callback = function (result, status) {
-      console.log('상태?', status);
-      if (status === 'OK') {
-        const newAddSearch = result[0];
-        console.log(newAddSearch);
-        setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
-      }
-      console.log('writeInfo.lat', writeInfo.lat);
-    };
-    geocoder.addressSearch(`${writeInfo.address}`, callback);
+    // let callback = function (result, status) {
+    //   console.log('상태?', status);
+    //   if (status === 'OK') {
+    //     const newAddSearch = result[0];
+    //     console.log(newAddSearch);
+    //     setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
+    //   }
+    //   console.log('writeInfo.lat', writeInfo.lat);
+    // };
+    // geocoder.addressSearch(`${writeInfo.address}`, callback);
     console.log('제출할때', writeInfo);
     if (writeInfo.lat !== '') {
       dispatch(currentLocationAction({ lat: writeInfo.lat, lng: writeInfo.lng }));
@@ -329,25 +329,26 @@ const Write = () => {
             withCredentials: true,
           },
         )
-        .then((data) => {
+        .then(async (data) => {
           console.log('data:', data);
           console.log('axios요청 성공');
           dispatch(showWriteAction(false));
           if (data.status === 201) {
             console.log('partyData:', partyData);
-            let id = data.data.data.id;
-            let roomName = data.data.data.store_name;
-            let nickname = loginUser.nickname;
-            let categoryFood = data.data.data.food_category;
+            let id = await data.data.data.id;
+            let roomName = await data.data.data.store_name;
+            let nickname = await loginUser.nickname;
+            let categoryFood = await data.data.data.food_category;
             console.log('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ', id, roomName, nickname, categoryFood);
 
             socket.emit('createRoom', { id, nickname, roomName, categoryFood });
             console.log('createRoom 끝');
+            window.location.replace('/main');
           }
-        });
+        })
     }
     console.log('if문 끝');
-    window.location.replace('/main');
+    
   };
 
   const feePattern = {

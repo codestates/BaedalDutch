@@ -4,17 +4,12 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
-<<<<<<< HEAD
-import { useSelector } from 'react-redux';
-import { setPartiesAction } from '../../../store/partyData';
-=======
 import { setPartiesAction } from '../../../store/partyData';
 import io from 'socket.io-client';
 
 let socket = io(`${process.env.REACT_APP_API_URL}`, {
   transports: ['websocket', 'polling'],
 });
->>>>>>> 47b7b563e5c72c238c61a18b3b55218e99a13228
 
 const Container = styled.div`
   display: flex;
@@ -58,6 +53,7 @@ const Contents = () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`, {
       withCredentials: true,
     });
+    console.log("!!!!!!!!!", data.data)
     setParties(data.data);
     dispatch(setPartiesAction(data.data));
     console.log('여기에찍으면?');
@@ -107,7 +103,7 @@ const Contents = () => {
       </PartyNumber>
       {parties.map((party, i) => {
         return (
-          <Party
+          <Party key={i}
             onClick={() => {
               SoloParty(party);
             }}
