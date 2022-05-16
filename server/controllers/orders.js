@@ -5,9 +5,7 @@ module.exports = {
   participateParty: async (req, res) => {
     // 파티에 참가
     const userInfo = isAuthorized(req)
-    console.log('userinfo-------', userInfo)
     if (!userInfo) {
-      console.log('bbbbbbbb')
       res.status(404).send({
         message: 'Bad request update parties',
       })

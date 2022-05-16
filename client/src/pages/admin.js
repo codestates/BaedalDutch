@@ -11,7 +11,6 @@ const Admin = () => {
       .get(`${process.env.REACT_APP_API_URL}/admin/alluserinfo`, { withCredentials: true })
       .then((res) => {
         setUserInfo(res.data.userInfo);
-        console.log('확인', userInfo);
       });
 
     const getPartyInfo = axios

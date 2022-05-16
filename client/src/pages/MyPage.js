@@ -141,13 +141,9 @@ function MyPage() {
 
   // 마이페이지 수정
   const handleUserEdit = (selectedFile) => {
-    console.log('0');
-    console.log('selectedFile', selectedFile);
     const { nickname, phone_number, address, password, passwordCheck } = settingUserinfo;
-    console.log('??????????', settingUserinfo);
     setChangeInfoBtn(true);
     if (changeInfoBtn) {
-      console.log('2');
       if (
         !nickname ||
         !phone_number ||
@@ -157,13 +153,10 @@ function MyPage() {
         setMessage({ ...message, errorMessage: '모든 항목은 필수입니다' });
         setValidation({ ...validation, errorValidation: true });
       } else if (message.nicknameMessage === '이미 존재하는 닉네임입니다') {
-        console.log('3');
         setMessage({ ...message, errorMessage: '다시 입력해주세요' });
         setValidation({ ...validation, errorValidation: true });
       } else {
-        console.log('4');
         dispatch(loginUserAction(settingUserinfo));
-        console.log('settingUserinfo:', settingUserinfo);
         axios
           .patch(
             `${process.env.REACT_APP_API_URL}/users/mypage`,
@@ -186,7 +179,6 @@ function MyPage() {
                 let callback = function (result, status) {
                   if (status === 'OK') {
                     const newAddSearch = result[0];
-                    // console.log('newAddSearch',newAddSearch)
                     const newAddSearchLng = newAddSearch.x;
                     const newAddSearchLat = newAddSearch.y;
                     dispatch(lat(newAddSearchLat));
@@ -228,7 +220,6 @@ function MyPage() {
         { withCredentials: true },
       )
       .then((res) => {
-        console.log('res:', res);
         if (loginUser.nickname === e.target.value) {
           setValidation({ ...validation, nicknameValidation: false });
           setMessage({ ...message, nicknameMessage: '' });
@@ -266,8 +257,6 @@ function MyPage() {
       cancelButtonText: '취소',
     }).then((result) => {
       if (result.value) {
-        // dispatch(axiosUserDelete());
-        console.log(document.cookie);
         axios.delete(`${process.env.REACT_APP_API_URL}/users/${loginUser.id}`, {
           withCredentials: true,
         });
@@ -317,7 +306,6 @@ function MyPage() {
   const fileInput = useRef(null);
   /* 이미지 저장 버튼 눌렀을 때 S3 업로드, 서버 요청 */
   const handleUpload = (file) => {
-    console.log('file:', file);
     if (!file) console.log('이미지 없음');
     else {
       setIsLoad(true);
@@ -332,9 +320,7 @@ function MyPage() {
       };
 
       myBucket.putObject(params, (err, data) => {
-        console.log('params:', params);
         const imageSrc = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${file.name}`;
-        console.log('imageSrc:', imageSrc);
         setSettingUserinfo({
           id: loginUser.id,
           image: imageSrc,
@@ -344,11 +330,6 @@ function MyPage() {
           password: loginUser.password,
           passwordCheck: loginUser.passwordCheck,
         });
-        console.log('settingUserinfo', settingUserinfo);
-        console.log('loginUser:', loginUser);
-        console.log('data:', data);
-        console.log('err:', err);
-
         setTimeout(() => {
           setIsLoad(false);
           saveProfile(imageSrc);
@@ -358,8 +339,6 @@ function MyPage() {
   };
   /* 프로필 이미지 저장 요청 */
   const saveProfile = (src) => {
-    console.log('프로필 이미지 저장 진입');
-    console.log('src:', src);
     try {
       axios.patch(
         `${process.env.REACT_APP_API_URL}/users/mypage`,

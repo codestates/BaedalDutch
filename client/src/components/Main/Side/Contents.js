@@ -78,8 +78,6 @@ const Contents = () => {
     getAllData();
   }, []);
 
-  console.log('파티확인', parties);
-
   // const handlePostList = (parties.id) => {
   //   setClick(true)
   // }
@@ -87,8 +85,6 @@ const Contents = () => {
     dispatch(visibleAction(true));
     dispatch(partyDataAction(party));
   };
-
-  console.log('파티 걋수', parties.length);
 
   return (
     <Container>

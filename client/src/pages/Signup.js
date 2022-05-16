@@ -75,8 +75,6 @@ const Signup = () => {
   });
 
   const handleComplete = (data) => {
-    console.log('데이터확인', data);
-    console.log('작동확인');
     let fullAddress = data.address;
     let extraAddress = '';
     if (data.addressType === 'R') {
@@ -90,16 +88,12 @@ const Signup = () => {
     }
 
     setWriteInfo({ ...writeInfo, address: fullAddress });
-    console.log('첫번째 어드레스', writeInfo.address);
   };
 
   const test = () => {
-    console.log('늦게하더라도 늦게찍힘?');
-    console.log('비동기???', writeInfo.address);
     const geocoder = new kakao.maps.services.Geocoder();
 
     let callback = function (result, status) {
-      console.log('상태?', status);
       if (status === 'OK') {
         const newAddSearch = result[0];
         setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
@@ -127,11 +121,9 @@ const Signup = () => {
         },
       )
       .then((res) => {
-        console.log(res.message)
         navigate('/');
       })
       .catch((err, res) => {
-        console.log(err.response.data)
         if(err.response.data === 'Bad request sign up'){
           Swal.fire({
             title: '주소를 입력해 주세요',
@@ -171,12 +163,6 @@ const Signup = () => {
         } 
       })
   };
-  // if (res.accessToken) {
-  //   console.log('체크');
-  //   navigate('/');
-  // }
-
-  // return;
 
   const nickPattern = {
     value: /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/,
@@ -196,7 +182,6 @@ const Signup = () => {
     message: '휴대전화 번호를 입력해 주세요',
   };
 
-  console.log('방금 클릭한값', writeInfo.address);
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>

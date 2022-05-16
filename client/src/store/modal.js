@@ -15,7 +15,6 @@ export const modalSlice = createSlice({
       state.showModal = action.payload;
     },
     showWriteAction: (state, action) => {
-      console.log('지금 나오고있는건가가가각가?');
       state.showWriteModal = action.payload;
     },
     showMyPageAction: (state, action) => {
