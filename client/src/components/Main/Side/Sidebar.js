@@ -65,10 +65,14 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const showDetail = useSelector((state) => state.visible.showDetail);
   const showSideBar = useSelector((state) => state.side.showSideBar);
+  const showListButton = useSelector((state) => state.list.showListButton);
   const isMobile = useMediaQuery({ query: '(max-width: 800px)' }, undefined);
-  // if (isMobile) {
-  //   dispatch(ShowSideBarAction(false));
-  // }
+
+  if (isMobile && showListButton === false) {
+    dispatch(ShowSideBarAction(false));
+  } else {
+    dispatch(ShowSideBarAction(true));
+  }
 
   return (
     <Container showSideBar={showSideBar}>

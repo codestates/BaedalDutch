@@ -5,6 +5,8 @@ import { showWriteAction } from '../../store/modal';
 import ChatModal from '../Modal/ChatModal';
 import { useState } from 'react';
 import { ShowSideBarAction } from '../../store/side';
+import { useMediaQuery } from 'react-responsive';
+import { ShowListButtonAction } from '../../store/list';
 
 const ButtonWrap = styled.div`
   display: flex;
@@ -21,27 +23,34 @@ const Button = styled.button`
   padding: 20px;
   border: none;
   cursor: pointer;
-`;
-
-const ShowListButton = styled(Button)`
-  background-color: white;
-  @media screen and (min-width: 800px) {
-    display: none;
+  background-color: rgba(242, 198, 112);
+  color: white;
+  @media screen and (max-width: 800px) {
+    font-size: 20px;
   }
 `;
 
-const WriteButton = styled(Button)`
-  background-color: white;
-`;
+const Listbutton = styled(Button)``;
 
-const ChattingButton = styled(Button)`
-  background-color: white;
-`;
+const WriteButton = styled(Button)``;
+
+const ChattingButton = styled(Button)``;
 
 const ButtonMenu = () => {
   const dispatch = useDispatch();
   const showWriteModal = useSelector((state) => state.modal.showWriteModal);
   const showSideBar = useSelector((state) => state.side.showSideBar);
+  const showListButton = useSelector((state) => state.list.showListButton);
+  const isMobile = useMediaQuery({ query: '(max-width: 800px)' }, undefined);
+  // if (isMobile) {
+  //   dispatch(ShowListButtonAction(true));
+  // } else {
+  //   dispatch(ShowListButtonAction(false));
+  // }
+  const test = () => {
+    dispatch(ShowSideBarAction(!showSideBar));
+    dispatch(ShowListButtonAction(!showListButton));
+  };
 
   const [ChattingModal, setChattingModal] = useState(false);
 
@@ -51,9 +60,11 @@ const ButtonMenu = () => {
 
   return (
     <ButtonWrap>
-      <ShowListButton onClick={() => dispatch(ShowSideBarAction(!showSideBar))}>
-        <i className="fa-solid fa-list"></i>
-      </ShowListButton>
+      {isMobile ? (
+        <Listbutton onClick={test}>
+          <i className="fa-solid fa-list"></i>
+        </Listbutton>
+      ) : null}
 
       <WriteButton onClick={() => dispatch(showWriteAction(true))}>
         <i className="fa-solid fa-pen-to-square" />

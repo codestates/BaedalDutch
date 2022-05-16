@@ -53,7 +53,7 @@ const Contents = () => {
     const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/parties`, {
       withCredentials: true,
     });
-    console.log("!!!!!!!!!", data.data)
+    console.log('!!!!!!!!!', data.data);
     setParties(data.data);
     dispatch(setPartiesAction(data.data));
     console.log('여기에찍으면?');
@@ -96,14 +96,15 @@ const Contents = () => {
     <Container>
       <PartyNumber>
         {parties.length === 0 ? (
-          <div>파티가없습니다</div>
+          <div>파티가 없습니다</div>
         ) : (
           <div>파티목록 : {parties.length}개</div>
         )}
       </PartyNumber>
       {parties.map((party, i) => {
         return (
-          <Party key={i}
+          <Party
+            key={i}
             onClick={() => {
               SoloParty(party);
             }}
