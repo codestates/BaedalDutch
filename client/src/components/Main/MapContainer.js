@@ -30,15 +30,17 @@ const MapContainer = () => {
       level: 5,
     };
     const map = new kakao.maps.Map(container, options);
-    
-    const positions = partyData && partyData.map((party, i) => {
-      return {
-        title: party.store_name,
-        food_category: party.food_category,
-        latlng: new kakao.maps.LatLng(party.lat, party.lng),
-      };
-    });
-    console.log("???????", positions);
+
+    const positions =
+      partyData &&
+      partyData.map((party, i) => {
+        return {
+          title: party.store_name,
+          food_category: party.food_category,
+          latlng: new kakao.maps.LatLng(party.lat, party.lng),
+        };
+      });
+    console.log('???????', positions);
     for (var i = 0; i < positions.length; i++) {
       // 마커 이미지의 이미지 크기 입니다
       var imageSize = new kakao.maps.Size(50, 50);
@@ -58,9 +60,7 @@ const MapContainer = () => {
         clickable: true,
       });
 
-      window.kakao.maps.event.addListener(marker, 'click', () => {
-        alert('하이');
-      });
+      window.kakao.maps.event.addListener(marker, 'click', () => {});
     }
 
     // if (navigator.geolocation) {

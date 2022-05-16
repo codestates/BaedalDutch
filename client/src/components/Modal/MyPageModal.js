@@ -11,7 +11,7 @@ import axios from 'axios';
 const ModalContiaer = styled.div`
   position: fixed;
   display: ${(props) => (props.showMyPageModal ? 'block' : 'none')};
-  z-index: 1;
+  z-index: 100;
   justify-content: flex-end;
   right: 0;
   top: 30px;
