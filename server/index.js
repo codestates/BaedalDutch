@@ -45,7 +45,7 @@ app.use("/parties", partiesRouter)
 app.use("/orders", ordersRouter)
 app.use("/admin", adminRouter)
 
-const PORT = 4000
+const PORT = 80
 
 server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
 const io = require("socket.io")(server, {
