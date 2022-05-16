@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
+import { useSelector } from 'react-redux';
+import { setPartiesAction } from '../../../store/partyData';
 import { setPartiesAction } from '../../../store/partyData';
 import io from 'socket.io-client';
 

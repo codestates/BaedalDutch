@@ -49,6 +49,31 @@ const PORT = 80;
 server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 const io = require("socket.io")(server, {
   transports: ["websocket", "polling"],
+    cookie: {
+      maxAge: 24 * 6 * 60 * 10000,
+      httpOnly: false,
+      secure: true,
+      sameSite: "None",
+    },
+  }),
+)
+app.use(cookieParser())
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/public/index.html'))
+// })
+app.use('/users', usersRouter)
+app.use('/parties', partiesRouter)
+app.use('/orders', ordersRouter)
+app.use('/admin', adminRouter)
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/public/index.html'))
+// })
+const PORT = 4000
+
+server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
+const io = require('socket.io')(server, {
+  transports: ['websocket', 'polling'],
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -86,7 +111,6 @@ io.on("connection", (socket) => {
         console.log('유저룸', userRoom)
         console.log('유저닉네임', userNickName)
         io.emit('myRoomList', { userRoom, userNickName })
-        console.log('io emit myRoomList 지난 뒤')
       }
     })
 

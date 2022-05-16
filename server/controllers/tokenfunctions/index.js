@@ -19,6 +19,7 @@ module.exports = {
     console.log("req.cookies:", req.cookies);
     console.log("req.headers.authorization:", req.headers.authorization);
     console.log("req.headers.cookie:", req.headers.cookie);
+    let authorization = req.headers.cookie
 
     if (!authorization) {
       return null;
@@ -26,6 +27,7 @@ module.exports = {
     // let token = authorization.split(' ')[1]
     let token = authorization.split("=")[1];
     console.log(authorization);
+    let token = authorization.split('=')[1]
 
     try {
       return verify(token, process.env.ACCESS_SECRET);

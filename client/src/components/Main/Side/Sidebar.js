@@ -1,5 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Contents from './Contents';

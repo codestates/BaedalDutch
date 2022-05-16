@@ -60,13 +60,22 @@ const MapContainer = () => {
         title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
         image: markerImage, // 마커 이미지
         clickable: true,
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(function (position) {
-    //     let lat = position.coords.latitude;
-    //     let lon = position.coords.longitude;
+      });
 
+      window.kakao.maps.event.addListener(marker, 'mouseover', () => {
+        alert('하이');
+      });
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
     //     let locPosition = new kakao.maps.LatLng(lat, lon); //좌표 (위도+경도)
     //     let message = '<div style="padding:5px;">당신의 위치</div>'; // 인포윈도우에 표시될 내용입니다
+
+        // 마커와 인포윈도우를 표시합니다
+        displayMarker(locPosition, message);
 
       });
 

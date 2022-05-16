@@ -1,6 +1,7 @@
 #  배달비 더치페이 서비스 BaedalDutch 🛵
 
-![스크린샷 2022-04-25 09 17 56](https://user-images.githubusercontent.com/92617810/165002895-58db7fd7-1cc2-4ce9-8f99-7f4efecb4ec7.png)
+![Logo low pixel](https://user-images.githubusercontent.com/92617810/168429436-d3c1bee3-77b0-452d-9f32-61804a7d64f5.png)
+
 ### 🔗  [BaedalDutch](https://google.com)
 <br>
 
