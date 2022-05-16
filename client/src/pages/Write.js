@@ -158,6 +158,7 @@ const WriteButton = styled.button`
   border: white;
   background-color: #cce8f4;
   border-radius: 6px;
+  cursor: pointer;
 `;
 
 const AddressDiv = styled.div`
@@ -238,7 +239,6 @@ const Write = () => {
       transports: ['websocket', 'polling'],
     });
     let nickname = loginUser.nickname;
-    console.log('write 소켓 닉네임', nickname);
 
     test();
     socket.emit('joinServer', { nickname });
@@ -257,8 +257,6 @@ const Write = () => {
   };
 
   const handleComplete = (data) => {
-    console.log('데이터확인', data);
-    console.log('작동확인');
     let fullAddress = data.address;
     let extraAddress = '';
     if (data.addressType === 'R') {
@@ -272,17 +270,13 @@ const Write = () => {
     }
 
     setWriteInfo({ ...writeInfo, address: fullAddress });
-    console.log('첫번째 어드레스', writeInfo.address);
     setVisible(false);
   };
 
   const test = () => {
-    console.log('늦게하더라도 늦게찍힘?');
-    console.log('비동기???', writeInfo.address);
     const geocoder = new kakao.maps.services.Geocoder();
 
     let callback = function (result, status) {
-      console.log('상태?', status);
       if (status === 'OK') {
         const newAddSearch = result[0];
         setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
@@ -292,24 +286,9 @@ const Write = () => {
   };
 
   const onSubmit = () => {
-    // const geocoder = new kakao.maps.services.Geocoder();
-
-    // let callback = function (result, status) {
-    //   console.log('상태?', status);
-    //   if (status === 'OK') {
-    //     const newAddSearch = result[0];
-    //     console.log(newAddSearch);
-    //     setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
-    //   }
-    //   console.log('writeInfo.lat', writeInfo.lat);
-    // };
-    // geocoder.addressSearch(`${writeInfo.address}`, callback);
-    console.log('제출할때', writeInfo);
     if (writeInfo.lat !== '') {
       dispatch(currentLocationAction({ lat: writeInfo.lat, lng: writeInfo.lng }));
       const { store_name, content, fee } = getValues();
-
-      console.log('axios요청', writeInfo.food_category);
 
       axios
         .post(
@@ -330,25 +309,18 @@ const Write = () => {
           },
         )
         .then(async (data) => {
-          console.log('data:', data);
-          console.log('axios요청 성공');
           dispatch(showWriteAction(false));
           if (data.status === 201) {
-            console.log('partyData:', partyData);
             let id = await data.data.data.id;
             let roomName = await data.data.data.store_name;
             let nickname = await loginUser.nickname;
             let categoryFood = await data.data.data.food_category;
-            console.log('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ', id, roomName, nickname, categoryFood);
 
             socket.emit('createRoom', { id, nickname, roomName, categoryFood });
-            console.log('createRoom 끝');
             window.location.replace('/main');
           }
         })
-    }
-    console.log('if문 끝');
-    
+    }  
   };
 
   const feePattern = {

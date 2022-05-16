@@ -61,18 +61,15 @@ const SearchBar = () => {
 
   const dispatch = useDispatch();
   const searchList = useSelector((state) => state.search?.searchList);
-  console.log('장소확인', searchList);
 
   const changeSearchText = (e) => {
     setInputText(e.target.value);
   };
 
   const handleSubmit = (e) => {
-    console.log('검색');
     e.preventDefault();
     dispatch(inputAction(inputText));
     setInputText('');
-    console.log(inputText);
   };
 
   return (
@@ -90,7 +87,6 @@ const SearchBar = () => {
         {isOpen ? (
           <PlaceList>
             {searchList.map((search) => {
-              console.log(search.place_name);
 
               return (
                 <>

@@ -11,7 +11,6 @@ const axios = require("axios");
 module.exports = {
   // 회원가입
   signup: async (req, res) => {
-    console.log("회원정보확인", req.body);
     const { email, password, nickname, phone_number, image, address } =
       req.body;
     if (
@@ -22,7 +21,6 @@ module.exports = {
       !image ||
       !address
     ) {
-      console.log("진입");
       return res.status(404).send("Bad request sign up");
     }
 
@@ -69,14 +67,12 @@ module.exports = {
 
   // 로그인
   signin: async (req, res) => {
-    console.log(Object.keys(req.body).length);
     // 일반 로그인
     if (Object.keys(req.body).length === 2) {
       const { email, password } = req.body;
       const userInfo = await users.findOne({
         where: { email: email },
       });
-      console.log("userInfo:", userInfo);
       if (
         !userInfo ||
         !bcrypt.compareSync(password, userInfo.dataValues.password)
@@ -105,7 +101,6 @@ module.exports = {
     // 카카오 로그인
     else {
       const { code } = req.body;
-      console.log("code----", code);
       axios
         .get("https://kapi.kakao.com/v2/user/me", {
           headers: {
@@ -116,14 +111,12 @@ module.exports = {
         .then(async result => {
           const nickname = result.data.kakao_account.profile.nickname
           const email = result.data.kakao_account.email
-          console.log('여기는??????', nickname, email)
           const oauthUser = await users.findOne({
             where: {
               email: email,
               nickname: nickname,
             },
           });
-          console.log("여기??????", oauthUser);
           // 이미 가입된 유저
           if (oauthUser) {
             const accessToken = generateAccessToken(oauthUser.dataValues);
@@ -140,7 +133,6 @@ module.exports = {
           }
           // 가입하려는 유저
           else {
-            console.log("여기???");
             await users.create({
               nickname: nickname,
               email: email,
@@ -196,7 +188,6 @@ module.exports = {
   // 회원탈퇴
   delUser: async (req, res) => {
     const userInfo = isAuthorized(req);
-    console.log(req.body);
     try {
       if (!userInfo) {
         return res.status(404).send("bad request users/:id");
@@ -213,17 +204,13 @@ module.exports = {
 
   // 회원정보 수정(작업중)
   updateUser: async (req, res) => {
-    console.log("회원정보 수정 진입");
     const userInfo = isAuthorized(req);
     const { nickname, password, image, phone_number, address } = req.body;
-    console.log("req.body:", req.body);
-    console.log("userInfo:", userInfo);
     try {
       if (!userInfo) {
         return res.status(404).send("bad request mypage");
       } else {
         const user = await users.findOne({ where: { id: userInfo.id } });
-        console.log(user);
 
         // 데이터 수정
         const updateUserInfo = await users.update(
@@ -233,7 +220,6 @@ module.exports = {
         return res
           .status(200)
           .json({ updateUserInfo, message: "success update user info" });
-        console.log("check");
         // 닉네임 중복 체크
         // const checkNickname = await users.findOne({
         //   where: { nickname: nickname },
@@ -276,7 +262,6 @@ module.exports = {
   // 생성한 파티, 가입한 파티 조회(완료)
   getUserParty: async (req, res) => {
     const userInfo = isAuthorized(req);
-    console.log("userInfo", userInfo);
     try {
       if (!userInfo) {
         return res.status(404).send("bad request users/:id");
@@ -287,7 +272,6 @@ module.exports = {
         const userJoin = await users_parties.findAll({
           where: { users_id: req.params.id },
         });
-        console.log("userParty:", userParty);
         return res.status(200).json({ userParty, userJoin });
       }
     } catch (err) {

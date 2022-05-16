@@ -133,8 +133,6 @@ const PartyDetail = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
       .then((data) => {
-        console.log('data:', data);
-        console.log('data.data1:', Object.keys(data.data)[0]);
         // 각각 상태로 분기
         if (Object.keys(data.data)[0] === 'leader') {
           setIsParticipant('leader');
@@ -147,9 +145,6 @@ const PartyDetail = () => {
     if (loginUser) {
       let nickname = loginUser.nickname;
       let roomId = partyData.id;
-      console.log('파티디테일 useEffect-socket쪽 진입');
-      console.log('nickname:', nickname);
-      console.log('roomId:', roomId);
       socket.emit('joinServer', { nickname, roomId });
 
       return () => {
@@ -160,9 +155,6 @@ const PartyDetail = () => {
 
   // 삭제하기
   const showPostUserDelete = (id) => {
-    console.log('삭제클릭');
-    console.log(id);
-
     let nickname = loginUser.nickname;
     socket.emit('leaveRoom', { id, nickname });
 
@@ -174,7 +166,6 @@ const PartyDetail = () => {
       )
       .then((res) => {
         if (res.status === 200) {
-          console.log('삭제성공');
           dispatch(visibleAction(false));
           window.location.replace('/main');
         }
@@ -205,50 +196,21 @@ const PartyDetail = () => {
           withCredentials: true,
         },
       )
-      .then((res) => {
+      .then(async (res) => {
         if (res.status === 200) {
-          console.log('업데이트성공');
-          console.log(changeStoreName);
-          dispatch(visibleAction(false));
-          window.location.replace('/main');
+          await dispatch(visibleAction(false));          
+          await window.location.replace('/main');
         }
       })
       .catch((err) => console.log('에러셈'));
   };
-  // const ClosePartyStatus = () => {
-  //   axios
-  //     .patch(
-  //       `${process.env.REACT_APP_API_URL}/parties/${partyData.id}`,
-  //       {
-  //         store_name: changeStoreName,
-  //         food_category: partyData.food_category,
-  //         member_num: changeDutchMem,
-  //         content: changeContent,
-  //         fee: changeFee,
-  //         address: partyData.address,
-  //       },
-  //       {
-  //         headers: { 'Content-Type': 'application/json' },
-  //         withCredentials: true,
-  //       },
-  //     )
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         dispatch(visibleAction(false));
-  //       }
-  //     })
-  //     .catch((err) => console.log('에러셈'));
-  // };
 
   // 신청하기
   const handleNewbie = () => {
-    console.log('파티데이터 id:', partyData.id);
-
     let id = partyData.id;
     let nickname = loginUser.nickname;
     let roomName = partyData.store_name;
     let categoryFood = partyData.food_category;
-    console.log('신청 내용', id, nickname, roomName, categoryFood);
     socket.emit('joinRoom', { id, nickname, roomName, categoryFood });
 
     axios
@@ -379,10 +341,8 @@ const PartyDetail = () => {
           } else if (isParticipant === 'participant') {
             return <SubmitButton onClick={handleParticipate}> 신청취소 </SubmitButton>;
           } else if (partyData.closed === true) {
-            console.log('closed칸1', partyData.closed);
             return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           } else if (partyData.total_num === partyData.member_num) {
-            console.log('closed칸2', partyData.closed);
             return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           }
         })()}

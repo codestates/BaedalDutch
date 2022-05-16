@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import DaumPostcode from 'react-daum-postcode';
 import { useState } from 'react';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 const { kakao } = window;
 
@@ -74,8 +75,6 @@ const Signup = () => {
   });
 
   const handleComplete = (data) => {
-    console.log('데이터확인', data);
-    console.log('작동확인');
     let fullAddress = data.address;
     let extraAddress = '';
     if (data.addressType === 'R') {
@@ -89,16 +88,12 @@ const Signup = () => {
     }
 
     setWriteInfo({ ...writeInfo, address: fullAddress });
-    console.log('첫번째 어드레스', writeInfo.address);
   };
 
   const test = () => {
-    console.log('늦게하더라도 늦게찍힘?');
-    console.log('비동기???', writeInfo.address);
     const geocoder = new kakao.maps.services.Geocoder();
 
     let callback = function (result, status) {
-      console.log('상태?', status);
       if (status === 'OK') {
         const newAddSearch = result[0];
         setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
@@ -128,16 +123,46 @@ const Signup = () => {
       .then((res) => {
         navigate('/');
       })
-      .catch((err) => {
-        alert(err);
+      .catch((err, res) => {
+        if(err.response.data === 'Bad request sign up'){
+          Swal.fire({
+            title: '주소를 입력해 주세요',
+            width: 400,
+            padding: '3em',
+            confirmButtonColor: '#B51D29',
+            color: 'black',
+            background: '#fff ',
+            backdrop: ` 
+            rgba(0,0,0,0.4)
+          `,
+          });
+        } else if(err.response.data === 'email already exists sign up'){
+          Swal.fire({
+            title: '중복된 이메일입니다',
+            width: 400,
+            padding: '3em',
+            confirmButtonColor: '#B51D29',
+            color: 'black',
+            background: '#fff ',
+            backdrop: ` 
+            rgba(0,0,0,0.4)
+          `,
+          });
+        } else if(err.response.data === 'nickname already exists sign up'){
+          Swal.fire({
+            title: '중복된 닉네임입니다',
+            width: 400,
+            padding: '3em',
+            confirmButtonColor: '#B51D29',
+            color: 'black',
+            background: '#fff ',
+            backdrop: ` 
+            rgba(0,0,0,0.4)
+          `,
+          });
+        } 
       })
   };
-  // if (res.accessToken) {
-  //   console.log('체크');
-  //   navigate('/');
-  // }
-
-  // return;
 
   const nickPattern = {
     value: /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/,
@@ -157,7 +182,6 @@ const Signup = () => {
     message: '휴대전화 번호를 입력해 주세요',
   };
 
-  console.log('방금 클릭한값', writeInfo.address);
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>

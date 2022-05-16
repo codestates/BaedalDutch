@@ -9,8 +9,6 @@ export const partyDataSlice = createSlice({
   initialState,
   reducers: {
     setPartiesAction: (state, action) => {
-      console.log('실행은되는지');
-      console.log('redux데어투', action.payload);
       state.parties = action.payload;
     },
   },

@@ -4,10 +4,8 @@ const { isAuthorized } = require('./tokenfunctions')
 module.exports = {
   // 전체 파티 조회
   getAllParties: async (req, res) => {
-    console.log('getAllParties 진입')
     // 1. closed가 false인 파티만 찾는다.
     const allParty = await parties.findAll({ where: { closed: false } })
-    // console.log('allParty:', allParty)
     // 2. 파티가 없는 경우
     if (!allParty)
       res.status(404).json({
@@ -30,16 +28,13 @@ module.exports = {
   // 유저 id로 토큰 확인한 후
   // 그 파티의 leader와 토큰이 확인된 유저id랑 같은지 확인 후 구별해서 보내주기
   getOneParty: async (req, res) => {
-    console.log('getOneParty 진입')
     // 1. req.params.id와 일치하는 파티 하나를 찾는다. (+closed)
-    console.log('req.params.id:', req.params.id)
     const oneParty = await parties.findOne({
       where: {
         id: req.params.id,
         closed: false,
       },
     })
-    console.log('oneParty:', oneParty)
     // 2. 파티가 없는 경우
     if (!oneParty)
       return res.status(404).json({
@@ -47,7 +42,6 @@ module.exports = {
       })
     // 3. 토큰을 가진 유저인지 확인
     const userInfo = isAuthorized(req)
-    console.log('userInfo:', userInfo)
     // 유저가 토큰을 가지고 있지 않는 경우
     if (!userInfo) {
       res.status(404).json({
@@ -57,7 +51,6 @@ module.exports = {
     const participant = await users_parties.findOne({
       where: { users_id: userInfo.id, parties_id: oneParty.id },
     })
-    console.log('participant.dataValues!!!!!!', participant)
     try {
       // 4. 토큰을 가진 유저인 경우 1-1. 유저 id와 조회한 파티의 leader가 같다면 파티(작성자)를 client에 보내주기\
       if (userInfo.id === oneParty.leader) {
@@ -87,13 +80,10 @@ module.exports = {
 
   // 파티 생성
   createParty: async (req, res) => {
-    console.log('createParty 진입')
     // 1. 유저가 토큰을 가지고 있는지 검증
 
-    console.log('req.headers:', req.headers)
 
     const userInfo = isAuthorized(req)
-    console.log('userInfo:', userInfo)
     // 2. 유저가 토큰을 가지고 있지 않는 경우
     if (!userInfo) {
       res.status(404).json({
@@ -112,7 +102,6 @@ module.exports = {
       lat,
       lng,
     } = req.body
-    console.log('req.body:', req.body)
     try {
       // 4. body가 잘 들어왔다면 (토큰을 가진 유저의 id + req.body)를 담아서 DB에 저장(parties, users_parties)
       const partyInfo = await parties
@@ -129,12 +118,6 @@ module.exports = {
           lng: lng,
         })
         .then(data => {
-          //console.log('data:', data)
-          // users_parties.create({
-          //   users_id: userInfo.id,
-          //   parties_id: data.dataValues.id,
-          // });
-
           res.status(201).json({
             // data: store_name (로직 성공확인되면 이걸로 바꾸기)
             data: data.dataValues,
@@ -151,19 +134,17 @@ module.exports = {
 
   // 파티 삭제
   deleteParty: async (req, res) => {
-    console.log('deleteParty 진입')
     // 1. 유저가 토큰을 가지고 있는지 검증
-    const userInfo = isAuthorized(req)
-    // console.log('userInfo:', userInfo)
-    // 2. 유저가 토큰을 가지고 있지 않는 경우
-    if (!userInfo) {
-      return res.status(404).json({
-        message: 'token none',
-      })
-    }
+    // const userInfo = isAuthorized(req)
+    // // console.log('userInfo:', userInfo)
+    // // 2. 유저가 토큰을 가지고 있지 않는 경우
+    // if (!userInfo) {
+    //   return res.status(404).json({
+    //     message: 'token none',
+    //   })
+    // }
     try {
       // 3. req.params.id DB에서 확인하고 삭제
-      console.log('req.params.id', req.params.id)
       const doDeleteParty = await parties.destroy({
         where: {
           id: req.params.id,
@@ -181,22 +162,20 @@ module.exports = {
 
   // 파티 수정
   updateParty: async (req, res) => {
-    console.log('updateParty 진입')
-    // 1. 유저가 토큰을 가지고 있는지 검증
-    const userInfo = isAuthorized(req)
-    // console.log('userInfo:', userInfo)
-    // 2. 유저가 토큰을 가지고 있지 않는 경우
-    if (!userInfo) {
-      return res.status(404).json({
-        message: 'token none',
-      })
-    }
+    // console.log('updateParty 진입')
+    // // 1. 유저가 토큰을 가지고 있는지 검증
+    // const userInfo = isAuthorized(req)
+    // // console.log('userInfo:', userInfo)
+    // // 2. 유저가 토큰을 가지고 있지 않는 경우
+    // if (!userInfo) {
+    //   return res.status(404).json({
+    //     message: 'token none',
+    //   })
+    // }
     // 3. req.body가 제대로 들어왔는지 확인
     const { store_name, food_category, member_num, content, fee, address } =
       req.body
-    console.log('req.body:', req.body)
     try {
-      console.log('req.params.id:', req.params.id)
       // 1_ update할 칼럼의 정보
       const partyInfo = await parties.update(
         {
@@ -214,7 +193,6 @@ module.exports = {
           },
         },
       )
-      console.log('partyInfo', partyInfo)
       if (!partyInfo) {
         return res.status(404).json({
           message: 'Bad request update parties',
@@ -234,7 +212,6 @@ module.exports = {
 
   // 파티 closed true로 수정
   closeParty: async (req, res) => {
-    console.log('closeParty 진입')
     // 1. 유저가 토큰을 가지고 있는지 검증
     // const userInfo = isAuthorized(req)
     // console.log('userInfo:', userInfo)
@@ -245,7 +222,6 @@ module.exports = {
     //   })
     // }
     try {
-      console.log('req.params.id:', req.params.id)
       const partyInfo = await parties.update(
         // 1_ update할 칼럼의 정보 ( closed only!!!! )
         {

@@ -91,7 +91,7 @@ const MyPageModal = () => {
   return (
     <ModalContiaer ref={modalContainer} showMyPageModal={showMyPageModal}>
       <ModalView>
-        <MyPageButton onClick={moveToMyProfile}>마이 페이지</MyPageButton>
+        {loginUser.phone_number === null ? null : <MyPageButton onClick={moveToMyProfile}>마이 페이지</MyPageButton>}
         {loginUser.nickname === 'admin' ? (
           <AdminButton onClick={moveToAdminPage}>어드민 페이지</AdminButton>
         ) : null}

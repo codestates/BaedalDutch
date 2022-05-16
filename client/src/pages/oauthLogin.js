@@ -35,7 +35,6 @@ const OAuth2RedirectHandler = () => {
               }
             )
             .then((res) => {
-              console.log(res.data);
               dispatch(loginUserAction(res.data.data));
               dispatch(isLoginAction(true));
               navigate('/');

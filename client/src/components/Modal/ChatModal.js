@@ -8,7 +8,6 @@ import io from 'socket.io-client';
 let socket;
 
 const ChatModal = ({ setChattingModal }) => {
-  console.log('챗 모달 진입');
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
   const loginUser = useSelector((state) => state.login.loginUser);
@@ -27,21 +26,14 @@ const ChatModal = ({ setChattingModal }) => {
     socket = io(`${process.env.REACT_APP_API_URL}`, {
       transports: ['websocket', 'polling'],
     });
-    console.log('챗 모달 socket connect 지난 뒤');
     // rooms 정보(roomName, roomUser) 받기
     let nickname = loginUser.nickname;
-    console.log('닉네임', nickname);
-
     socket.emit('joinServer', { nickname });
-    console.log('챗 모달 joinServer 통과');
     socket.on('myRoomList', ({ userRoom, userNickName }) => {
-      console.log('마이룸리스트 진입');
       if (userNickName === nickname) {
         setRoomList(userRoom);
       }
     });
-    console.log('roomList:', roomList);
-
     return () => {
       socket.off();
     };

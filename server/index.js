@@ -63,11 +63,6 @@ let rooms = []
 let roomChatLog = []
 
 io.on("connection", (socket) => {
-  console.log("socket connected")
-  console.log("socket connected, socket.id:", socket.id)
-  console.log("users:", users)
-  console.log("rooms:", rooms)
-  console.log("roomChatLog:", roomChatLog)
   socket.on("joinServer", ({ nickname, roomId }) => {
     let user = {
       id: socket.id,
@@ -79,15 +74,11 @@ io.on("connection", (socket) => {
     if (!check) {
       users.push(user)
     }
-    console.log("users", users)
     users.forEach((el) => {
       if (el.nickname === nickname) {
         let userRoom = el.userRoom
         let userNickName = el.nickname
-        console.log("유저룸", userRoom)
-        console.log("유저닉네임", userNickName)
         io.emit("myRoomList", { userRoom, userNickName })
-        console.log("io emit myRoomList 지난 뒤")
       }
     })
 
@@ -103,14 +94,12 @@ io.on("connection", (socket) => {
   })
 
   socket.on("createRoom", ({ id, roomName, nickname, categoryFood }) => {
-    console.log("createRoom 진입")
     let room = {
       id,
       roomName,
       categoryFood,
       roomUsers: [nickname],
     }
-    console.log("room1", room)
     let check = rooms.find((room) => room.id === id)
 
     if (!check) {
@@ -127,11 +116,9 @@ io.on("connection", (socket) => {
         }
       })
     }
-    console.log("room2", room)
   })
 
   socket.on("sendRoomMessage", (roomMessageInfo) => {
-    console.log("sendRoomMessage 진입")
     let roomId = roomMessageInfo.roomId
     let check = roomChatLog.find((el) => el[0] === roomMessageInfo.roomId)
 
@@ -161,12 +148,10 @@ io.on("connection", (socket) => {
   })
 
   socket.on("joinRoom", ({ id, nickname, roomName, categoryFood }) => {
-    console.log("joinRoom 1")
     let checkRoomId = rooms.find((el) => el.id === id)
 
     if (checkRoomId) {
       let checkRoomUsers = checkRoomId.roomUsers.find((el) => el === nickname)
-      console.log("joinRoom 2")
 
       if (!checkRoomUsers) {
         checkRoomId.roomUsers.push(nickname)
@@ -183,7 +168,6 @@ io.on("connection", (socket) => {
         })
       }
     }
-    console.log("joinRoom 3")
   })
 
   socket.on("leaveRoom", ({ roomId, nickname }) => {
