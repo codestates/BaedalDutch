@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 const FooterContainer = styled.div`
   width: 100%;
-  background-color: #dddddd;
+  background-color: #fffff0;
   padding: 40px 0;
   display: flex;
   flex-direction: column;
@@ -17,6 +17,7 @@ const FooterContainer = styled.div`
 const Title = styled.div`
   font-weight: 500;
   padding-bottom: 20px;
+  font-size: 30px;
 `;
 
 const IconContainer = styled.div`
@@ -41,16 +42,17 @@ const Content = styled.div`
 
 const MemberName = styled.div`
   padding-bottom: 10px;
+  font-size: 20px;
 `;
 
 const MemberPoition = styled.div`
   padding-bottom: 10px;
 
-  font-size: 12px;
+  font-size: 18px;
 `;
 
 const MemberGithub = styled.div`
-  font-size: 10px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   &:hover {
