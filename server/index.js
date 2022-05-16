@@ -87,7 +87,6 @@ io.on('connection', socket => {
         console.log('유저룸', userRoom)
         console.log('유저닉네임', userNickName)
         io.emit('myRoomList', { userRoom, userNickName })
-        console.log('io emit myRoomList 지난 뒤')
       }
     })
 
