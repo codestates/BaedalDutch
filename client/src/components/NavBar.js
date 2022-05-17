@@ -18,7 +18,7 @@ const Nav = styled.nav`
   width: 100%;
   background-color: white;
   box-shadow: 0px 1px 7px 0px rgba(0, 0, 0, 0.1);
-  height: 100px;
+  height: 99px;
 `;
 
 const LogoWrap = styled(Link)`

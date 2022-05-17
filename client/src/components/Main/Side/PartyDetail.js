@@ -6,6 +6,13 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { showModalAction } from '../../../store/modal';
 import io from 'socket.io-client';
+import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { showModalAction } from '../../../store/modal';
+import io from 'socket.io-client';
+import { useEffect, useState } from 'react';
+import { showModalAction } from '../../../store/modal';
+import io from 'socket.io-client';
 
 const Container = styled.div`
   display: flex;
@@ -68,6 +75,11 @@ const FoodImg = styled.img`
 const PartyMember = styled.div``;
 const Fee = styled.div``;
 const Dutch = styled.div``;
+const CreatedDate = styled.div``;
+const Introduce = styled.div`
+  border: 2px solid rgba(0, 0, 0, 0.2);
+`;
+const SubmitButton = styled.button``;
 const UpdatedAt = styled.div`
   display: flex;
   padding: 20px;
@@ -145,6 +157,35 @@ const PartyDetail = () => {
     if (loginUser) {
       let nickname = loginUser.nickname;
       let roomId = partyData.id;
+      socket.emit('joinServer', { nickname, roomId });
+
+      return () => {
+        socket.off();
+      };
+    }
+  }, [partyData.total_num]);
+
+
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
+      .then((data) => {
+        console.log('data:', data);
+        console.log('data.data1:', Object.keys(data.data)[0]);
+        // 각각 상태로 분기
+        if (Object.keys(data.data)[0] === 'leader') {
+          setIsParticipant('leader');
+        } else if (Object.keys(data.data)[0] === 'participant') {
+          setIsParticipant('participant');
+        } else {
+          setIsParticipant('newbie');
+        }
+      });
+    if (loginUser) {
+      let nickname = loginUser.nickname;
+      let roomId = partyData.id;
+      console.log('파티디테일 useEffect-socket쪽 진입');
+      console.log('nickname:', nickname);
+      console.log('roomId:', roomId);
       socket.emit('joinServer', { nickname, roomId });
 
       return () => {
@@ -254,6 +295,8 @@ const PartyDetail = () => {
   return (
     <Container>
       <ButtonMenu>
+        <ReturnButton onClick={() => dispatch(visibleAction(false))}>뒤로가기</ReturnButton>
+        {loginId.id === partyData.leader ? (
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>
           <i className="fa-solid fa-circle-arrow-left"></i>
         </ReturnButton>
@@ -279,7 +322,6 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-              <span> {partyData.store_name}</span>
             )}
           </StoreName>
           <PartyMember>
@@ -292,6 +334,13 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
+              <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
+            )}
+              <span>{` ${partyData.total_num} / ${partyData.member_num}`}</span>
+            )}
+            명
+              <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
+            )}
               <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
             )}
           </PartyMember>
@@ -309,6 +358,15 @@ const PartyDetail = () => {
             )}
             원
           </Fee>
+          <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)} 원</Dutch>
+        </StoreInformation>
+      </Store>
+      <CreatedDate>{formatDate(partyData.updatedAt)}</CreatedDate>
+          <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
+        </StoreInformation>
+      </Store>
+      <UpdatedAt>작성시간 : {formatDate(partyData.updatedAt)}</UpdatedAt>
+      <StoreAddress>주소 : {partyData.address}</StoreAddress>
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
         </StoreInformation>
       </Store>
@@ -326,6 +384,10 @@ const PartyDetail = () => {
           <div>{partyData.content}</div>
         )}
       </Introduce>
+
+      <SubmitButton>
+        {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>}
+      </SubmitButton>
       <Submit>
         {(function () {
           if (isLogin === false) {

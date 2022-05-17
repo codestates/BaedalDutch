@@ -28,7 +28,6 @@ const MapContainer = () => {
       level: 5,
     };
     const map = new kakao.maps.Map(container, options);
-
     const positions =
       partyData &&
       partyData.map((party, i) => {
@@ -59,6 +58,15 @@ const MapContainer = () => {
 
       window.kakao.maps.event.addListener(marker, 'click', () => {});
     }
+    //     // 마커와 인포윈도우를 표시합니다
+    //     displayMarker(locPosition, message);
+    //   });
+    // } else {
+    //   let locPosition = new kakao.maps.LatLng(33.450701, 126.570667); //위치 나중에 서울 중심으로 바꾸기
+    //   let message = '위치정보를 켜주세요';
+
+    //   displayMarker(locPosition, message);
+    // }
 
     // if (navigator.geolocation) {
     //   navigator.geolocation.getCurrentPosition(function (position) {

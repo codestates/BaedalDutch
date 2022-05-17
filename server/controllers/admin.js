@@ -23,6 +23,24 @@ module.exports = {
     }
   },
 
+    // 전체 회원 정보 조회(완료)
+    getAllUserInfo: async (req, res) => {
+      const adminInfo = isAuthorized(req)
+      const userInfo = await users.findAll({ where: { nickname: { [Op.ne]: "admin" } }})
+      console.log(userInfo)
+      console.log('adminInfo::', adminInfo)
+      try{
+        //res.status(200).json({ userInfo })
+        if(adminInfo.nickname === "admin") {
+          return res.status(200).json({ userInfo })
+        } else {
+          return res.status(404).send('bad request alluserinfo')
+        }
+      } catch(err){
+        return res.status(500).send('Server Error alluserinfo')
+      }
+    },
+
   // 회원삭제(완료)
   deleteUser: async (req, res) => {
     const adminInfo = isAuthorized(req)
@@ -94,18 +112,19 @@ module.exports = {
       return res.status(500).send('Server Error allpartyinfo')
     }
   },
+
   // 파티삭제(완료)
-  deleteParty: async (req, res) => {
-    const adminInfo = isAuthorized(req)
-    try{
-      if(adminInfo.nickname === 'admin') {
-        await parties.destroy({ where: { id: req.params.id }})
-        return res.status(200).send('successfully delete admin parties')
-      } else {
-        res.status(404).send('Bad request delete admin parties')
-      }
-    } catch(err){
-      return res.status(500).send('Server Error delete admin parties')
-    }
-  },
-};
+//   deleteParty: async (req, res) => {
+//     const adminInfo = isAuthorized(req)
+//     try{
+//       if(adminInfo.nickname === 'admin') {
+//         await parties.destroy({ where: { id: req.params.id }})
+//         return res.status(200).send('successfully delete admin parties')
+//       } else {
+//         res.status(404).send('Bad request delete admin parties')
+//       }
+//     } catch(err){
+//       return res.status(500).send('Server Error delete admin parties')
+//     }
+//   },
+ };
