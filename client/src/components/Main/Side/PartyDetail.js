@@ -261,7 +261,7 @@ const PartyDetail = () => {
         },
       )
       .then((data) => {
-        console.log('data신청', data);
+        console.log('data신청--', data);
       });
     setIsParticipant('participant');
     dispatch(visibleAction(false));

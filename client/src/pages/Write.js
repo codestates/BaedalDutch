@@ -292,19 +292,19 @@ const Write = () => {
   };
 
   const onSubmit = () => {
-    const geocoder = new kakao.maps.services.Geocoder();
+    // const geocoder = new kakao.maps.services.Geocoder();
 
-    let callback = function (result, status) {
-      console.log('상태?', status);
-      if (status === 'OK') {
-        const newAddSearch = result[0];
-        console.log(newAddSearch);
-        setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
-      }
-      console.log('writeInfo.lat', writeInfo.lat);
-    };
-    geocoder.addressSearch(`${writeInfo.address}`, callback);
-    console.log('제출할때', writeInfo);
+    // let callback = function (result, status) {
+    //   console.log('상태?', status);
+    //   if (status === 'OK') {
+    //     const newAddSearch = result[0];
+    //     console.log(newAddSearch);
+    //     setWriteInfo({ ...writeInfo, lat: newAddSearch.y, lng: newAddSearch.x });
+    //   }
+    //   console.log('writeInfo.lat', writeInfo.lat);
+    // };
+    // geocoder.addressSearch(`${writeInfo.address}`, callback);
+    // console.log('제출할때', writeInfo);
     if (writeInfo.lat !== '') {
       dispatch(currentLocationAction({ lat: writeInfo.lat, lng: writeInfo.lng }));
       const { store_name, content, fee } = getValues();
@@ -344,10 +344,13 @@ const Write = () => {
             socket.emit('createRoom', { id, nickname, roomName, categoryFood });
             console.log('createRoom 끝');
           }
+        })
+        .then(() => {
+          window.location.replace('/main');
+          // window.location.href = 'https://baedaldutch.tk/main';
         });
     }
     console.log('if문 끝');
-    window.location.replace('/main');
   };
 
   const feePattern = {
