@@ -1,5 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Contents from './Contents';
@@ -25,7 +28,7 @@ const Sidebarbox = styled.div`
   color: #202020;
   width: 500px;
   height: 90%;
-  z-index: 99;
+  z-index: 900;
 `;
 
 // const Parties = styled.div`
@@ -65,10 +68,14 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const showDetail = useSelector((state) => state.visible.showDetail);
   const showSideBar = useSelector((state) => state.side.showSideBar);
+  const showListButton = useSelector((state) => state.list.showListButton);
   const isMobile = useMediaQuery({ query: '(max-width: 800px)' }, undefined);
-  // if (isMobile) {
-  //   dispatch(ShowSideBarAction(false));
-  // }
+
+  if (isMobile && showListButton === false) {
+    dispatch(ShowSideBarAction(false));
+  } else {
+    dispatch(ShowSideBarAction(true));
+  }
 
   return (
     <Container showSideBar={showSideBar}>

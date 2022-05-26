@@ -6,6 +6,13 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { showModalAction } from '../../../store/modal';
 import io from 'socket.io-client';
+import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { showModalAction } from '../../../store/modal';
+import io from 'socket.io-client';
+import { useEffect, useState } from 'react';
+import { showModalAction } from '../../../store/modal';
+import io from 'socket.io-client';
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +41,7 @@ const ReWriteButton = styled.button`
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: grey;
+  background-color: black;
   left: 120px;
 `;
 const DeleteButton = styled.button`
@@ -48,7 +55,7 @@ const DeleteButton = styled.button`
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: grey;
+  background-color: black;
   left: 10px;
 `;
 const Store = styled.div`
@@ -68,6 +75,11 @@ const FoodImg = styled.img`
 const PartyMember = styled.div``;
 const Fee = styled.div``;
 const Dutch = styled.div``;
+const CreatedDate = styled.div``;
+const Introduce = styled.div`
+  border: 2px solid rgba(0, 0, 0, 0.2);
+`;
+const SubmitButton = styled.button``;
 const UpdatedAt = styled.div`
   display: flex;
   padding: 20px;
@@ -91,7 +103,7 @@ const Submit = styled.button`
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: skyblue;
+  background-color: rgba(242, 198, 112);
   margin: 10px;
 `;
 
@@ -133,6 +145,30 @@ const PartyDetail = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
       .then((data) => {
+        // 각각 상태로 분기
+        if (Object.keys(data.data)[0] === 'leader') {
+          setIsParticipant('leader');
+        } else if (Object.keys(data.data)[0] === 'participant') {
+          setIsParticipant('participant');
+        } else {
+          setIsParticipant('newbie');
+        }
+      });
+    if (loginUser) {
+      let nickname = loginUser.nickname;
+      let roomId = partyData.id;
+      socket.emit('joinServer', { nickname, roomId });
+
+      return () => {
+        socket.off();
+      };
+    }
+  }, [partyData.total_num]);
+
+
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/parties/${partyData.id}`, { withCredentials: true })
+      .then((data) => {
         console.log('data:', data);
         console.log('data.data1:', Object.keys(data.data)[0]);
         // 각각 상태로 분기
@@ -160,9 +196,6 @@ const PartyDetail = () => {
 
   // 삭제하기
   const showPostUserDelete = (id) => {
-    console.log('삭제클릭');
-    console.log(id);
-
     let nickname = loginUser.nickname;
     socket.emit('leaveRoom', { id, nickname });
 
@@ -174,7 +207,6 @@ const PartyDetail = () => {
       )
       .then((res) => {
         if (res.status === 200) {
-          console.log('삭제성공');
           dispatch(visibleAction(false));
           window.location.replace('/main');
         }
@@ -205,50 +237,21 @@ const PartyDetail = () => {
           withCredentials: true,
         },
       )
-      .then((res) => {
+      .then(async (res) => {
         if (res.status === 200) {
-          console.log('업데이트성공');
-          console.log(changeStoreName);
-          dispatch(visibleAction(false));
-          window.location.replace('/main');
+          await dispatch(visibleAction(false));          
+          await window.location.replace('/main');
         }
       })
       .catch((err) => console.log('에러셈'));
   };
-  // const ClosePartyStatus = () => {
-  //   axios
-  //     .patch(
-  //       `${process.env.REACT_APP_API_URL}/parties/${partyData.id}`,
-  //       {
-  //         store_name: changeStoreName,
-  //         food_category: partyData.food_category,
-  //         member_num: changeDutchMem,
-  //         content: changeContent,
-  //         fee: changeFee,
-  //         address: partyData.address,
-  //       },
-  //       {
-  //         headers: { 'Content-Type': 'application/json' },
-  //         withCredentials: true,
-  //       },
-  //     )
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         dispatch(visibleAction(false));
-  //       }
-  //     })
-  //     .catch((err) => console.log('에러셈'));
-  // };
 
   // 신청하기
   const handleNewbie = () => {
-    console.log('파티데이터 id:', partyData.id);
-
     let id = partyData.id;
     let nickname = loginUser.nickname;
     let roomName = partyData.store_name;
     let categoryFood = partyData.food_category;
-    console.log('신청 내용', id, nickname, roomName, categoryFood);
     socket.emit('joinRoom', { id, nickname, roomName, categoryFood });
 
     axios
@@ -292,8 +295,10 @@ const PartyDetail = () => {
   return (
     <Container>
       <ButtonMenu>
+        <ReturnButton onClick={() => dispatch(visibleAction(false))}>뒤로가기</ReturnButton>
+        {loginId.id === partyData.leader ? (
         <ReturnButton onClick={() => dispatch(visibleAction(false))}>
-          <i class="fa-solid fa-circle-arrow-left"></i>
+          <i className="fa-solid fa-circle-arrow-left"></i>
         </ReturnButton>
         {loginUser.id === partyData.leader ? (
           <>
@@ -317,7 +322,6 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
-              <span> {partyData.store_name}</span>
             )}
           </StoreName>
           <PartyMember>
@@ -330,6 +334,13 @@ const PartyDetail = () => {
                 }}
               ></input>
             ) : (
+              <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
+            )}
+              <span>{` ${partyData.total_num} / ${partyData.member_num}`}</span>
+            )}
+            명
+              <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
+            )}
               <span>{` ${partyData.total_num}명 / ${partyData.member_num}명`}</span>
             )}
           </PartyMember>
@@ -347,6 +358,15 @@ const PartyDetail = () => {
             )}
             원
           </Fee>
+          <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)} 원</Dutch>
+        </StoreInformation>
+      </Store>
+      <CreatedDate>{formatDate(partyData.updatedAt)}</CreatedDate>
+          <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
+        </StoreInformation>
+      </Store>
+      <UpdatedAt>작성시간 : {formatDate(partyData.updatedAt)}</UpdatedAt>
+      <StoreAddress>주소 : {partyData.address}</StoreAddress>
           <Dutch>더치비용 : {parseInt(partyData.fee / partyData.member_num)}원</Dutch>
         </StoreInformation>
       </Store>
@@ -364,6 +384,10 @@ const PartyDetail = () => {
           <div>{partyData.content}</div>
         )}
       </Introduce>
+
+      <SubmitButton>
+        {loginId.id === partyData.leader ? <div onClick>마감하기</div> : <div>신청하기</div>}
+      </SubmitButton>
       <Submit>
         {(function () {
           if (isLogin === false) {
@@ -379,10 +403,8 @@ const PartyDetail = () => {
           } else if (isParticipant === 'participant') {
             return <SubmitButton onClick={handleParticipate}> 신청취소 </SubmitButton>;
           } else if (partyData.closed === true) {
-            console.log('closed칸1', partyData.closed);
             return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           } else if (partyData.total_num === partyData.member_num) {
-            console.log('closed칸2', partyData.closed);
             return <SubmitButton> 신청마감되었습니다 </SubmitButton>;
           }
         })()}

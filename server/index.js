@@ -1,17 +1,17 @@
-require('dotenv').config()
-const fs = require('fs')
-const http = require('http')
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
-const express = require('express')
+require("dotenv").config()
+const fs = require("fs")
+const http = require("http")
+const cors = require("cors")
+const cookieParser = require("cookie-parser")
+const express = require("express")
 // const morgan = require('morgan')
-const helmet = require('helmet')
-const path = require('path')
+const helmet = require("helmet")
+const path = require("path")
 const app = express()
-const usersRouter = require('./routes/users')
-const partiesRouter = require('./routes/parties')
-const ordersRouter = require('./routes/orders')
-const adminRouter = require('./routes/admin')
+const usersRouter = require("./routes/users")
+const partiesRouter = require("./routes/parties")
+const ordersRouter = require("./routes/orders")
+const adminRouter = require("./routes/admin")
 
 // app.use(express.static(path.join(__dirname, '../client/public')))
 app.use(express.json())
@@ -22,8 +22,13 @@ app.use(express.urlencoded({ extended: false }))
 let server = http.createServer(app)
 app.use(
   cors({
-    origin: true,
-    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
+    origin: [
+      "http://baedaldutch-ukuk.s3-website-us-east-1.amazonaws.com",
+      "https://d823dlhxcxwnu.cloudfront.net",
+      "https://baedaldutch.tk",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
     credentials: true,
     // cookie: {
     //   maxAge: 24 * 6 * 60 * 10000,
@@ -31,6 +36,26 @@ app.use(
     //   secure: true,
     //   sameSite: "None",
     // },
+  })
+)
+app.use(cookieParser())
+
+app.use("/users", usersRouter)
+app.use("/parties", partiesRouter)
+app.use("/orders", ordersRouter)
+app.use("/admin", adminRouter)
+
+const PORT = 80
+
+server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
+const io = require("socket.io")(server, {
+  transports: ["websocket", "polling"],
+    cookie: {
+      maxAge: 24 * 6 * 60 * 10000,
+      httpOnly: false,
+      secure: true,
+      sameSite: "None",
+    },
   }),
 )
 app.use(cookieParser())
@@ -51,9 +76,9 @@ server = app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
 const io = require('socket.io')(server, {
   transports: ['websocket', 'polling'],
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['*'],
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["*"],
     credentials: true,
   },
 })
@@ -62,60 +87,48 @@ let users = []
 let rooms = []
 let roomChatLog = []
 
-io.on('connection', socket => {
-  console.log('socket connected, socket.id:', socket.id)
-  console.log('users:', users)
-  console.log('rooms:', rooms)
-  console.log('roomChatLog:', roomChatLog)
-  socket.on('joinServer', ({ nickname, roomId }) => {
-    console.log('joinServer 진입')
+io.on("connection", (socket) => {
+  socket.on("joinServer", ({ nickname, roomId }) => {
     let user = {
       id: socket.id,
       nickname,
       userRoom: [],
     }
-    let check = users.find(user => user.nickname === nickname)
+    let check = users.find((user) => user.nickname === nickname)
 
     if (!check) {
       users.push(user)
     }
-    console.log('users', users)
-    users.forEach(el => {
+    users.forEach((el) => {
       if (el.nickname === nickname) {
         let userRoom = el.userRoom
         let userNickName = el.nickname
-        console.log('유저룸', userRoom)
-        console.log('유저닉네임', userNickName)
-        io.emit('myRoomList', { userRoom, userNickName })
-        console.log('io emit myRoomList 지난 뒤')
+        io.emit("myRoomList", { userRoom, userNickName })
       }
     })
 
     if (roomId) {
-      let check = roomChatLog.find(el => el[0] === roomId)
+      let check = roomChatLog.find((el) => el[0] === roomId)
 
       if (check) {
         let slice = check.slice(1)
-
-        io.emit('roomChatLog', { slice, roomId })
+        io.emit("roomChatLog", { slice, roomId })
       }
     }
   })
 
-  socket.on('createRoom', ({ id, roomName, nickname, categoryFood }) => {
-    console.log('createRoom 진입')
+  socket.on("createRoom", ({ id, roomName, nickname, categoryFood }) => {
     let room = {
       id,
       roomName,
       categoryFood,
       roomUsers: [nickname],
     }
-    console.log('room1', room)
-    let check = rooms.find(room => room.id === id)
+    let check = rooms.find((room) => room.id === id)
 
     if (!check) {
       rooms.push(room)
-      users.forEach(el => {
+      users.forEach((el) => {
         if (el.nickname === nickname) {
           let userRoomData = {
             roomName,
@@ -127,18 +140,16 @@ io.on('connection', socket => {
         }
       })
     }
-    console.log('room2', room)
   })
 
-  socket.on('sendRoomMessage', roomMessageInfo => {
-    console.log('sendRoomMessage 진입')
+  socket.on("sendRoomMessage", (roomMessageInfo) => {
     let roomId = roomMessageInfo.roomId
-    let check = roomChatLog.find(el => el[0] === roomMessageInfo.roomId)
+    let check = roomChatLog.find((el) => el[0] === roomMessageInfo.roomId)
 
     if (!check) {
       roomChatLog.push([roomMessageInfo.roomId])
 
-      let recheck = roomChatLog.find(el => el[0] === roomMessageInfo.roomId)
+      let recheck = roomChatLog.find((el) => el[0] === roomMessageInfo.roomId)
 
       recheck.push({
         nickname: roomMessageInfo.nickname,
@@ -147,7 +158,7 @@ io.on('connection', socket => {
 
       let slice = recheck.slice(1)
 
-      io.emit('roomChatLog2', { slice, roomId })
+      io.emit("roomChatLog2", { slice, roomId })
     } else {
       check.push({
         nickname: roomMessageInfo.nickname,
@@ -156,21 +167,19 @@ io.on('connection', socket => {
 
       let slice = check.slice(1)
 
-      io.emit('roomChatLog2', { slice, roomId })
+      io.emit("roomChatLog2", { slice, roomId })
     }
   })
 
-  socket.on('joinRoom', ({ id, nickname, roomName, categoryFood }) => {
-    console.log('joinRoom 1')
-    let checkRoomId = rooms.find(el => el.id === id)
+  socket.on("joinRoom", ({ id, nickname, roomName, categoryFood }) => {
+    let checkRoomId = rooms.find((el) => el.id === id)
 
     if (checkRoomId) {
-      let checkRoomUsers = checkRoomId.roomUsers.find(el => el === nickname)
-      console.log('joinRoom 2')
+      let checkRoomUsers = checkRoomId.roomUsers.find((el) => el === nickname)
 
       if (!checkRoomUsers) {
         checkRoomId.roomUsers.push(nickname)
-        users.forEach(el => {
+        users.forEach((el) => {
           if (el.nickname === nickname) {
             let userRoomData = {
               roomName,
@@ -183,28 +192,26 @@ io.on('connection', socket => {
         })
       }
     }
-    console.log('joinRoom 3')
   })
 
   socket.on('leaveRoom', ({ roomId, nickname }) => {
     users.forEach(el => {
       if (el.nickname === nickname) {
-        let index = el.userRoom.findIndex(el => el.id === roomId)
+        let index = el.userRoom.findIndex((el) => el.id === roomId)
 
         el.userRoom.splice(index, 1)
       }
     })
-    rooms.forEach(el => {
+    rooms.forEach((el) => {
       if (el.id === roomId) {
-        let index = el.roomUsers.findIndex(el => el === nickname)
-
+        let index = el.roomUsers.findIndex((el) => el === nickname)
         el.roomUsers.splice(index, 1)
       }
     })
   })
 
-  socket.on('disconnect', () => {
-    console.log('socket disconnected')
+  socket.on("disconnect", () => {
+    console.log("socket disconnected")
   })
 })
 

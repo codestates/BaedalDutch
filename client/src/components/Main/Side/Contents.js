@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { partyDataAction, visibleAction } from '../../../store/visible';
+import { useSelector } from 'react-redux';
+import { setPartiesAction } from '../../../store/partyData';
 import { setPartiesAction } from '../../../store/partyData';
 import io from 'socket.io-client';
 
@@ -55,7 +57,6 @@ const Contents = () => {
     });
     setParties(data.data);
     dispatch(setPartiesAction(data.data));
-    console.log('여기에찍으면?');
     // getMyInfo();
   };
 
@@ -79,8 +80,6 @@ const Contents = () => {
     getAllData();
   }, []);
 
-  console.log('파티확인', parties);
-
   // const handlePostList = (parties.id) => {
   //   setClick(true)
   // }
@@ -89,13 +88,11 @@ const Contents = () => {
     dispatch(partyDataAction(party));
   };
 
-  console.log('파티 걋수', parties.length);
-
   return (
     <Container>
       <PartyNumber>
         {parties.length === 0 ? (
-          <div>파티가없습니다</div>
+          <div>파티가 없습니다</div>
         ) : (
           <div>파티목록 : {parties.length}개</div>
         )}
@@ -103,6 +100,7 @@ const Contents = () => {
       {parties.map((party, i) => {
         return (
           <Party
+            key={i}
             onClick={() => {
               SoloParty(party);
             }}

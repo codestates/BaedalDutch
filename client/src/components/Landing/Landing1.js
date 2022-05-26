@@ -1,117 +1,133 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import dutch from '../../assets/dutch.jpeg';
-import { Zoom } from 'react-awesome-reveal';
 import { useNavigate } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components/macro';
+import Lan1 from '../../assets/Landing1.gif';
 
-function Landing1() {
+const Landing1 = () => {
   const navigate = useNavigate();
-
   const handleMain = () => {
     navigate('/main');
   };
-
   return (
-    <div>
-      <Div>
-        <Wrapper>
-          <TextDiv>
-            <Zoom triggerOnce={false} duration={1500}>
-              <Text data-text="음식값보다 비싼 배달비 ! ">비싸지는 배달비</Text>
-              <Text>함께 나눠봐요</Text>
-              <Text>BaedalDutch</Text>
-            </Zoom>
-            <GoButton onClick={handleMain}>바로시작</GoButton>
-          </TextDiv>
-        </Wrapper>
-      </Div>
-    </div>
+    <AboutSection className="flex-center-C">
+      <Main>
+        <Content>
+          <AboutText>
+            <Rectangle6>
+              <Text onClick={handleMain}>둘러보기</Text>
+            </Rectangle6>
+            <Title>배달시키실 때 배달비 많이 부담되시죠?</Title>
+            <SubText>이제 함께 나눠서 절약해봐요!</SubText>
+            <SubText>
+              <Baedal>BaedalDutch</Baedal> 가 함께 할께요
+            </SubText>
+          </AboutText>
+
+          <Rocket>
+            <img src={Lan1} alt="" />
+          </Rocket>
+        </Content>
+      </Main>
+    </AboutSection>
   );
-}
+};
+
+//애니메이션 무빙
+const move = keyframes`
+0% { transform: translateY(-5px)  }
+    50% { transform: translateY(10px) }
+    100% { transform: translateY(-5px) }
+`;
+
+const AboutSection = styled.section`
+  border: 1px solid #ffeaa0;
+  width: 100%;
+  padding-left: 10px;
+  height: 800px;
+  background-color: #ffeaa0; ;
+`;
+
+const Main = styled.div`
+  margin: 15rem;
+  align-items: center;
+`;
+
+const Title = styled.h1`
+  font-size: 35px;
+  line-height: 1.5;
+  padding: 1rem 0;
+  color: black;
+  width: 110%;
+  word-break: keep-all;
+`;
+
+const Rectangle6 = styled.div`
+  border-radius: 12px;
+  height: 53px;
+  width: 148px;
+  padding: 11px;
+  background-color: white;
+  cursor: pointer;
+`;
+const Text = styled.div`
+  text-align: center;
+  vertical-align: top;
+  font-size: 24px;
+  color: black;
+`;
+const Content = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @media screen and (max-width: 1300px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+`;
+
+const Rocket = styled.div`
+  display: flex;
+  width: 50%;
+  padding-bottom: 5rem;
+  animation: ${move} 2.5s ease infinite;
+  max-width: 100%;
+  height: auto;
+
+  & img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-width: 200px;
+  }
+  @media screen and (max-width: 1300px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 500px;
+  }
+`;
+const SubText = styled.h5`
+  font-size: 30px;
+  line-height: 1.5;
+
+  color: black;
+  width: 100%;
+  word-break: keep-all;
+`;
+
+const AboutText = styled.div`
+  width: 50%;
+  position: relative;
+  margin-bottom: 50px;
+  width: 500px;
+`;
+
+const Baedal = styled.span`
+  font-style: italic;
+  font-size: 40px;
+  color: #009900;
+`;
 
 export default Landing1;
-
-export const Div = styled.div`
-  width: 100vw;
-  height: 100%;
-  background-image: url(${dutch});
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  @media (max-width: 710px) {
-    background-size: cover;
-  }
-  @media (max-width: 576px) {
-    background-size: cover;
-  }
-  @media (max-width: 400px) {
-    background-size: cover;
-  }
-`;
-
-export const Wrapper = styled.div`
-  background-color: rgba(0, 0, 0, 0.41);
-  border-bottom: 1px solid;
-  padding-top: 75px;
-  height: 100vh;
-  padding: 0 20px;
-  align-items: center;
-  display: flex;
-`;
-
-export const TextDiv = styled.div`
-  margin-left: 20%;
-  @media (max-width: 710px) {
-    margin-left: 13%;
-  }
-  @media (max-width: 576px) {
-    margin-left: 13%;
-  }
-  @media (max-width: 400px) {
-    margin-left: 13%;
-  }
-`;
-
-export const Text = styled.div`
-  color: #ffffff;
-  font-size: 56px;
-  font-weight: 700;
-  margin-bottom: 5px;
-  position: relative;
-  @media (max-width: 710px) {
-    font-size: 3rem;
-  }
-  @media (max-width: 576px) {
-    font-size: 1.7rem;
-  }
-  @media (max-width: 400px) {
-    font-size: 1.7rem;
-  }
-`;
-
-export const GoButton = styled.button`
-  margin-top: 20px;
-  width: 180px;
-  height: 60px;
-  font-size: 20px;
-  font-weight: 500;
-  border-radius: 50px;
-  //background-color: #7C0811;
-  background-color: #d9c6ac;
-  color: #7a5728;
-  //7C0811  B51D29
-  //color: #D9C6AC;
-  border: 0;
-  @media (max-width: 710px) {
-    margin-top: 15%;
-    margin-left: 37px;
-  }
-  @media (max-width: 576px) {
-    margin-left: 37px;
-    margin-top: 15%;
-  }
-  @media (max-width: 400px) {
-    margin-left: 37px;
-    margin-top: 15%;
-  }
-`;

@@ -86,13 +86,9 @@ function Signin() {
         },
       )
       .then((response) => {
-        console.log('들어오는가');
-        console.log('login res::', response);
         if (response.data.accessToken) {
-          console.log('135', isLogin);
           dispatch(isLoginAction(true));
           dispatch(loginUserAction(response.data.data));
-          console.log('response.data.data:', response.data.data);
           dispatch(showModalAction(false));
           sessionStorage.setItem('user', JSON.stringify(response));
           navigate('/main');
@@ -119,18 +115,7 @@ function Signin() {
           dispatch(isLoginAction(true));
           dispatch(showModalAction(false));
           navigate('/main');
-
-          //           sessionStorage.setItem('isLogin', 'true');
-          //           // setShowModal(false);
-          //           window.location.reload();
-          //           // dispatch(isLoginAction(true));
-          //           // dispatch(showModalAction(false));
-          //           // navigate('/main');
-        },
-        // (error) => {
-        //   console.log('에러면여기로');
-        //   console.log(error);
-        // },
+        }
       );
     } catch (err) {
       console.log(err);
@@ -149,18 +134,7 @@ function Signin() {
     }
   };
 
-  // let data = await postSignIn({ email, password });
-
-  // if (data) {
-  //   console.log("user info data: ", data);
-  //   sessionStorage.setItem("isLogin", "true");
-  // sessionStorage.setItem("userInfo", data.data)
-  //   setShowModal(false);
-  // }
-
   const showModal = useSelector((state) => state.modal.showModal);
-  // const showModal = useSelector((state) => state.modal.showModal);
-
   return (
     <>
       <Container>

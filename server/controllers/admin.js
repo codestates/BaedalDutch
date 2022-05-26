@@ -8,13 +8,11 @@ module.exports = {
     const { email, password } = req.body;
 
     const userInfo = await users.findOne({ where: { email: email, password: password } });
-    console.log(userInfo)
     if (!userInfo) {
       return res.status(404).send("bad request admin sign in");
     } 
     if(userInfo.nickname === 'admin'){
       try {
-        console.log(userInfo.nickname)
         const accessToken = generateAccessToken(userInfo.dataValues);
         sendAccessToken(res, accessToken).json({ accessToken, message: "success sign in for admin" });
       } catch (err) {
@@ -24,6 +22,24 @@ module.exports = {
       res.status(404).send("bad request admin sign in")
     }
   },
+
+    // 전체 회원 정보 조회(완료)
+    getAllUserInfo: async (req, res) => {
+      const adminInfo = isAuthorized(req)
+      const userInfo = await users.findAll({ where: { nickname: { [Op.ne]: "admin" } }})
+      console.log(userInfo)
+      console.log('adminInfo::', adminInfo)
+      try{
+        //res.status(200).json({ userInfo })
+        if(adminInfo.nickname === "admin") {
+          return res.status(200).json({ userInfo })
+        } else {
+          return res.status(404).send('bad request alluserinfo')
+        }
+      } catch(err){
+        return res.status(500).send('Server Error alluserinfo')
+      }
+    },
 
   // 회원삭제(완료)
   deleteUser: async (req, res) => {
@@ -42,12 +58,9 @@ module.exports = {
   updateUser: async (req, res) => {
     const adminInfo = isAuthorized(req)
     const { nickname, password, image, phone_number } = req.body
-    console.log('adminInfo', adminInfo)
     try{
       const user = await users.findOne({ where: { id: req.params.id }})
-      //console.log(user)
       if(adminInfo.nickname === "admin") {    
-        console.log('check')
         // 닉네임 중복 체크        
         // const nicknameCheck = await users.findOne({
         //   where: { nickname: nickname },
@@ -76,7 +89,6 @@ module.exports = {
     const userInfo = await users.findAll({ where: { nickname: { [Op.ne]: "admin" } }})
     try{
       if(adminInfo.nickname === "admin") {
-        console.log(adminInfo)
         res.status(200).json({ userInfo })
       } else {
         res.statsu(404).send('bad request alluserinfo')
@@ -89,7 +101,6 @@ module.exports = {
   // 모든 파티 조회(완료)
   getAllParty: async (req, res) => {
     const adminInfo = isAuthorized(req)
-    console.log('adminInfo', adminInfo)
     try{
       if(adminInfo.nickname === "admin"){
         const userParty = await parties.findAll({ })
@@ -101,18 +112,19 @@ module.exports = {
       return res.status(500).send('Server Error allpartyinfo')
     }
   },
+
   // 파티삭제(완료)
-  deleteParty: async (req, res) => {
-    const adminInfo = isAuthorized(req)
-    try{
-      if(adminInfo.nickname === 'admin') {
-        await parties.destroy({ where: { id: req.params.id }})
-        return res.status(200).send('successfully delete admin parties')
-      } else {
-        res.status(404).send('Bad request delete admin parties')
-      }
-    } catch(err){
-      return res.status(500).send('Server Error delete admin parties')
-    }
-  },
-};
+//   deleteParty: async (req, res) => {
+//     const adminInfo = isAuthorized(req)
+//     try{
+//       if(adminInfo.nickname === 'admin') {
+//         await parties.destroy({ where: { id: req.params.id }})
+//         return res.status(200).send('successfully delete admin parties')
+//       } else {
+//         res.status(404).send('Bad request delete admin parties')
+//       }
+//     } catch(err){
+//       return res.status(500).send('Server Error delete admin parties')
+//     }
+//   },
+ };

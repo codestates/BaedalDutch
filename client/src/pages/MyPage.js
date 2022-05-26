@@ -141,13 +141,9 @@ function MyPage() {
 
   // 마이페이지 수정
   const handleUserEdit = (selectedFile) => {
-    console.log('0');
-    console.log('selectedFile', selectedFile);
     const { nickname, phone_number, address, password, passwordCheck } = settingUserinfo;
-    console.log('1');
     setChangeInfoBtn(true);
     if (changeInfoBtn) {
-      console.log('2');
       if (
         !nickname ||
         !phone_number ||
@@ -157,13 +153,10 @@ function MyPage() {
         setMessage({ ...message, errorMessage: '모든 항목은 필수입니다' });
         setValidation({ ...validation, errorValidation: true });
       } else if (message.nicknameMessage === '이미 존재하는 닉네임입니다') {
-        console.log('3');
         setMessage({ ...message, errorMessage: '다시 입력해주세요' });
         setValidation({ ...validation, errorValidation: true });
       } else {
-        console.log('4');
         dispatch(loginUserAction(settingUserinfo));
-        console.log('settingUserinfo:', settingUserinfo);
         axios
           .patch(
             `${process.env.REACT_APP_API_URL}/users/mypage`,
@@ -186,7 +179,6 @@ function MyPage() {
                 let callback = function (result, status) {
                   if (status === 'OK') {
                     const newAddSearch = result[0];
-                    // console.log('newAddSearch',newAddSearch)
                     const newAddSearchLng = newAddSearch.x;
                     const newAddSearchLat = newAddSearch.y;
                     dispatch(lat(newAddSearchLat));
@@ -228,7 +220,6 @@ function MyPage() {
         { withCredentials: true },
       )
       .then((res) => {
-        console.log('res:', res);
         if (loginUser.nickname === e.target.value) {
           setValidation({ ...validation, nicknameValidation: false });
           setMessage({ ...message, nicknameMessage: '' });
@@ -266,8 +257,6 @@ function MyPage() {
       cancelButtonText: '취소',
     }).then((result) => {
       if (result.value) {
-        // dispatch(axiosUserDelete());
-        console.log(document.cookie);
         axios.delete(`${process.env.REACT_APP_API_URL}/users/${loginUser.id}`, {
           withCredentials: true,
         });
@@ -317,7 +306,6 @@ function MyPage() {
   const fileInput = useRef(null);
   /* 이미지 저장 버튼 눌렀을 때 S3 업로드, 서버 요청 */
   const handleUpload = (file) => {
-    console.log('file:', file);
     if (!file) console.log('이미지 없음');
     else {
       setIsLoad(true);
@@ -332,9 +320,7 @@ function MyPage() {
       };
 
       myBucket.putObject(params, (err, data) => {
-        console.log('params:', params);
         const imageSrc = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${file.name}`;
-        console.log('imageSrc:', imageSrc);
         setSettingUserinfo({
           id: loginUser.id,
           image: imageSrc,
@@ -344,11 +330,6 @@ function MyPage() {
           password: loginUser.password,
           passwordCheck: loginUser.passwordCheck,
         });
-        console.log('settingUserinfo', settingUserinfo);
-        console.log('loginUser:', loginUser);
-        console.log('data:', data);
-        console.log('err:', err);
-
         setTimeout(() => {
           setIsLoad(false);
           saveProfile(imageSrc);
@@ -358,8 +339,6 @@ function MyPage() {
   };
   /* 프로필 이미지 저장 요청 */
   const saveProfile = (src) => {
-    console.log('프로필 이미지 저장 진입');
-    console.log('src:', src);
     try {
       axios.patch(
         `${process.env.REACT_APP_API_URL}/users/mypage`,
@@ -552,10 +531,10 @@ function MyPage() {
                 <Div>{loginUser.phone_number}</Div>
                 <InputTitle>주소</InputTitle>
                 <Div>{loginUser.address}</Div>
-                <InputTitle>비밀번호</InputTitle>
+                {/* <InputTitle>비밀번호</InputTitle>
                 <InputFieldPassWord />
                 <InputTitle>비밀번호확인</InputTitle>
-                <InputFieldPassWord />
+                <InputFieldPassWord /> */}
                 <SignUpToLogin onClick={handleUserDelete}>회원탈퇴</SignUpToLogin>
                 <EditButton
                   onClick={() => {
@@ -568,7 +547,9 @@ function MyPage() {
             )}
           </MyPageDiv>
         </MapDiv>
-        <HomeButton onClick={clickHomelBtn}>Home</HomeButton>
+        <HomeButton onClick={clickHomelBtn}>
+          <i className="fa-solid fa-house-chimney"></i>
+        </HomeButton>
       </Wrapper>
     </div>
   );
@@ -620,16 +601,16 @@ const MyPageDiv = styled.div`
 
 const HomeButton = styled.button`
   font-family: var(--main-font);
-  font-size: 12px;
+  font-size: 30px;
   display: ${(props) => (props.openPost ? 'none' : 'block')};
   position: fixed;
   bottom: 60px;
   right: 16px;
   border-radius: 100%;
   border: none;
-  width: 60px;
-  height: 60px;
-  background-color: #111111;
+  width: 80px;
+  height: 80px;
+  background-color: rgba(242, 198, 112);
   color: white;
   &:hover {
     cursor: pointer;
@@ -637,7 +618,7 @@ const HomeButton = styled.button`
   @media (max-width: 576px) {
     width: 70px;
     height: 70px;
-    font-size: 14px;
+    font-size: 30px;
   }
   @media (max-width: 400px) {
     width: 70px;
@@ -654,7 +635,7 @@ const MyPageForm = styled.form`
 
 const InputTitle = styled.div`
   margin-top: 10px;
-  font-size: 18px;
+  font-size: 25px;
   @media (max-width: 576px) {
     margin-top: 3px;
     font-size: 18px;
@@ -745,9 +726,9 @@ const InputFieldPassWord = styled.div`
 const Div = styled.div`
   width: 500px;
   height: 56px;
-  font-size: 16px;
-  color: #525252;
-  margin-top: 10px;
+  font-size: 20px;
+  color: grey;
+  margin-top: 30px;
   @media (max-width: 400px) {
     margin-left: -20px;
     font-size: 16px;
@@ -756,15 +737,15 @@ const Div = styled.div`
 `;
 
 const EditButton = styled.button`
-  float: right;
+  float: center;
   width: 200px;
   height: 56px;
-  background-color: #111111;
+  background-color: black;
   color: white;
   border: none;
   border-radius: 6px;
   margin-top: 30px;
-  font-size: 16px;
+  font-size: 20px;
   &:hover {
     cursor: pointer;
   }
@@ -792,9 +773,10 @@ const EditButton = styled.button`
 `;
 
 const SignUpToLogin = styled.div`
+  width: 50px;
   margin-top: 20px;
-  font-size: 12px;
-  color: gray;
+  font-size: 15px;
+  color: red;
   &:hover {
     cursor: pointer;
   }

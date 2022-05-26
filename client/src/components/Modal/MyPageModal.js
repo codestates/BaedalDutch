@@ -11,7 +11,7 @@ import axios from 'axios';
 const ModalContiaer = styled.div`
   position: fixed;
   display: ${(props) => (props.showMyPageModal ? 'block' : 'none')};
-  z-index: 1;
+  z-index: 100;
   justify-content: flex-end;
   right: 0;
   top: 30px;
@@ -76,7 +76,7 @@ const MyPageModal = () => {
 
   const handleLogoutClick = (e) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/users/logout`, {}, { withCredentials: true })
+      .post(`${process.env.REACT_APP_API_URL}/users/signout`, {}, { withCredentials: true })
       .then((res) => {})
       .catch((err) => console.log(err));
   };
@@ -91,7 +91,7 @@ const MyPageModal = () => {
   return (
     <ModalContiaer ref={modalContainer} showMyPageModal={showMyPageModal}>
       <ModalView>
-        <MyPageButton onClick={moveToMyProfile}>마이 페이지</MyPageButton>
+        {loginUser.phone_number === null ? null : <MyPageButton onClick={moveToMyProfile}>마이 페이지</MyPageButton>}
         {loginUser.nickname === 'admin' ? (
           <AdminButton onClick={moveToAdminPage}>어드민 페이지</AdminButton>
         ) : null}

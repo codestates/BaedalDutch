@@ -18,8 +18,6 @@ const MapContainer = () => {
   const searchPlace = useSelector((state) => state.search?.defaultInput);
   const currentLat = useSelector((state) => state.location.lat);
   const currentLng = useSelector((state) => state.location.lng);
-  console.log('확인', currentLat);
-  console.log('확인2', currentLng);
 
   const myMap = useRef(null);
   useEffect(() => {
@@ -30,17 +28,15 @@ const MapContainer = () => {
       level: 5,
     };
     const map = new kakao.maps.Map(container, options);
-
-    const positions = partyData.map((party, i) => {
-      return {
-        title: party.store_name,
-        food_category: party.food_category,
-        latlng: new kakao.maps.LatLng(party.lat, party.lng),
-      };
-    });
-
-    console.log('카테고리나오게', positions.food_category);
-
+    const positions =
+      partyData &&
+      partyData.map((party, i) => {
+        return {
+          title: party.store_name,
+          food_category: party.food_category,
+          latlng: new kakao.maps.LatLng(party.lat, party.lng),
+        };
+      });
     for (var i = 0; i < positions.length; i++) {
       // 마커 이미지의 이미지 크기 입니다
       var imageSize = new kakao.maps.Size(50, 50);
@@ -60,10 +56,17 @@ const MapContainer = () => {
         clickable: true,
       });
 
-      window.kakao.maps.event.addListener(marker, 'click', () => {
-        alert('하이');
-      });
+      window.kakao.maps.event.addListener(marker, 'click', () => {});
     }
+    //     // 마커와 인포윈도우를 표시합니다
+    //     displayMarker(locPosition, message);
+    //   });
+    // } else {
+    //   let locPosition = new kakao.maps.LatLng(33.450701, 126.570667); //위치 나중에 서울 중심으로 바꾸기
+    //   let message = '위치정보를 켜주세요';
+
+    //   displayMarker(locPosition, message);
+    // }
 
     // if (navigator.geolocation) {
     //   navigator.geolocation.getCurrentPosition(function (position) {
@@ -121,7 +124,6 @@ const MapContainer = () => {
       });
 
       function placesSearchCB(data, status) {
-        console.log('정보확인', data);
         dispatch(saveSearchListAction(data));
         if (status === kakao.maps.services.Status.OK) {
           for (let i = 0; i < data.length; i++) {

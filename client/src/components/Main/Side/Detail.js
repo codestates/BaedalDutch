@@ -6,7 +6,6 @@ const PartyDetail = () => {
   return (
     <Container>
       {parties.map((party, i) => {
-        console.log(party.food_category);
         return (
           <Party>
             <FoodImg src={`icon/${party.food_category}.png`} alt=""></FoodImg>

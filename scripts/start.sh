@@ -9,3 +9,4 @@ export DATABASE_PORT=$(aws ssm get-parameters --region us-east-1 --names DATABAS
 export ACCESS_SECRET=$(aws ssm get-parameters --region us-east-1 --names ACCESS_SECRET --query Parameters[0].Value | sed 's/"//g')
 
 pm2 start index.js
+authbind --deep pm2 start index.js
